@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.util;
+package pl.jkkk.cps.view.util.core;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +11,7 @@ public class FxmlStageSetup {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private static Stage applicationStage;
+    private static WindowDimensions windowDimensions;
 
     /*------------------------ METHODS REGION ------------------------*/
     private FxmlStageSetup() {
@@ -24,6 +25,14 @@ public class FxmlStageSetup {
         FxmlStageSetup.applicationStage = applicationStage;
     }
 
+    public static WindowDimensions getWindowDimensions() {
+        return windowDimensions;
+    }
+
+    public static void setWindowDimensions(WindowDimensions windowDimensions) {
+        FxmlStageSetup.windowDimensions = windowDimensions;
+    }
+
     /**
      * Method load fxml file.
      */
@@ -32,15 +41,26 @@ public class FxmlStageSetup {
     }
 
     /**
+     * Method prepare Stage by setting all required parameters
+     */
+    private static void prepareStage(String filePath, String title,
+                                     WindowDimensions dimensions) throws IOException {
+        applicationStage.setScene(new Scene(loadFxml(filePath)));
+        applicationStage.setTitle(title);
+        applicationStage.setWidth(dimensions.getWidth());
+        applicationStage.setHeight(dimensions.getHeight());
+        applicationStage.show();
+    }
+
+    /**
      * Method load stage from scratch and set `applicationStage` - use on startup of application
      * stage is passed from start method from Main class.
      */
-    public static void buildStage(Stage stage, String filePath, String title) throws IOException {
+    public static void buildStage(Stage stage, String filePath,
+                                  String title, WindowDimensions dimensions) throws IOException {
         setApplicationStage(stage);
-        applicationStage.setScene(new Scene(loadFxml(filePath)));
-        applicationStage.setTitle(title);
-        applicationStage.sizeToScene();
-        applicationStage.show();
+        setWindowDimensions(dimensions);
+        prepareStage(filePath, title, windowDimensions);
     }
 
     /**
@@ -49,10 +69,7 @@ public class FxmlStageSetup {
      */
     public static void loadStage(String filePath, String title) throws IOException {
         setApplicationStage(new Stage());
-        applicationStage.setScene(new Scene(loadFxml(filePath)));
-        applicationStage.setTitle(title);
-        applicationStage.sizeToScene();
-        applicationStage.show();
+        prepareStage(filePath, title, windowDimensions);
     }
 
     /**

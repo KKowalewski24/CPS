@@ -7,7 +7,7 @@ public class PopOutWindow {
     /*------------------------ FIELDS REGION ------------------------*/
 
     /*------------------------ METHODS REGION ------------------------*/
-    public final void messageBox(String title, String message, Alert.AlertType alertType) {
+    public static final void messageBox(String title, String message, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
