@@ -43,7 +43,6 @@
                 </configuration>
             </plugin>
 
-            <!--            TODO FIX ISSUE WITH RUN IN CMD-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
