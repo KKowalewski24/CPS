@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
 <AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.jkkk.cps.view.controller.MainPanel">
-
+    <children>
+        <Button fx:id="buttonBarChart" layoutX="824.0" layoutY="366.0" mnemonicParsing="false"
+                onAction="#onActionButtonBarChart" prefHeight="69.0" prefWidth="199.0"
+                text="Display Bar Chart"/>
+        <Button fx:id="buttonLineChart" layoutX="182.0" layoutY="366.0" mnemonicParsing="false"
+                onAction="#onActionButtonLineChart" prefHeight="69.0" prefWidth="199.0"
+                text="Display Line Chart"/>
+    </children>
 </AnchorPane>

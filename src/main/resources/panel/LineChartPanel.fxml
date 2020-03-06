@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pl.jkkk.cps.view.controller.LineChartPanel">
+    <children>
+        <Button fx:id="buttonReturn" onAction="#onActionReturn" layoutX="34.0" layoutY="33.0"
+                mnemonicParsing="false"
+                prefHeight="30.0"
+                prefWidth="100.0" text="Return"/>
+
+        <AnchorPane layoutX="205.0" layoutY="14.0" prefHeight="771.0" prefWidth="790.0">
+            <children>
+                <Button fx:id="buttonDrawChart" layoutX="314.0" layoutY="683.0"
+                        mnemonicParsing="false" onAction="#onActionDrawChart" prefHeight="57.0"
+                        prefWidth="163.0" text="Draw Chart"/>
+
+                <LineChart fx:id="lineChart" layoutX="83.0" layoutY="40.0" prefHeight="614.0"
+                           prefWidth="624.0">
+                    <xAxis>
+                        <CategoryAxis label="category" side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="number" side="LEFT"/>
+                    </yAxis>
+                </LineChart>
+
+            </children>
+        </AnchorPane>
+
+    </children>
+</AnchorPane>
