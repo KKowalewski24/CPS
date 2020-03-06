@@ -18,21 +18,21 @@ public class LineChartPanel implements Initializable {
 
     /*------------------------ FIELDS REGION ------------------------*/
     @FXML
-    private LineChart lineChart;
+    private LineChart<Number, Number> lineChart;
 
     /*------------------------ METHODS REGION ------------------------*/
 
     //TODO IMPROVE
     private void drawChart() {
-        XYChart.Series series = new XYChart.Series<>();
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.getData().addAll(
-                prepareDataRecord("aaa", 200),
-                prepareDataRecord("bbb", 500),
-                prepareDataRecord("ccc", 800),
-                prepareDataRecord("ddd", 100),
-                prepareDataRecord("eee", 350),
-                prepareDataRecord("fff", 400),
-                prepareDataRecord("ggg", 550)
+                prepareDataRecord(1, 200),
+                prepareDataRecord(2, 500),
+                prepareDataRecord(3, 800),
+                prepareDataRecord(4, 100),
+                prepareDataRecord(5, 350),
+                prepareDataRecord(6, 400),
+                prepareDataRecord(7, 550)
         );
 
         lineChart.getData().add(series);

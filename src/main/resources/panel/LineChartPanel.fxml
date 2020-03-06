@@ -22,7 +22,7 @@
                 <LineChart fx:id="lineChart" layoutX="83.0" layoutY="40.0" prefHeight="614.0"
                            prefWidth="624.0">
                     <xAxis>
-                        <CategoryAxis label="category" side="BOTTOM"/>
+                        <NumberAxis label="category" side="BOTTOM"/>
                     </xAxis>
                     <yAxis>
                         <NumberAxis label="number" side="LEFT"/>

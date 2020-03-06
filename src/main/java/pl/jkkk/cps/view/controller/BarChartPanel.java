@@ -18,7 +18,7 @@ public class BarChartPanel implements Initializable {
 
     /*------------------------ FIELDS REGION ------------------------*/
     @FXML
-    private BarChart barChart;
+    private BarChart<String, Number> barChart;
 
     /*------------------------ METHODS REGION ------------------------*/
 
@@ -30,7 +30,7 @@ public class BarChartPanel implements Initializable {
         String italy = "Italy";
         String usa = "USA";
 
-        XYChart.Series series1 = new XYChart.Series();
+        XYChart.Series<String, Number> series1 = new XYChart.Series();
         series1.setName("2003");
         series1.getData().addAll(
                 prepareDataRecord(austria, 25601.34),
@@ -40,7 +40,7 @@ public class BarChartPanel implements Initializable {
                 prepareDataRecord(usa, 12000)
         );
 
-        XYChart.Series series2 = new XYChart.Series();
+        XYChart.Series<String, Number> series2 = new XYChart.Series();
         series2.setName("2004");
         series2.getData().addAll(
                 prepareDataRecord(austria, 57401.85),
@@ -50,7 +50,7 @@ public class BarChartPanel implements Initializable {
                 prepareDataRecord(usa, 14845.27)
         );
 
-        XYChart.Series series3 = new XYChart.Series();
+        XYChart.Series<String, Number> series3 = new XYChart.Series();
         series3.setName("2005");
         series3.getData().addAll(
                 prepareDataRecord(austria, 45000.65),

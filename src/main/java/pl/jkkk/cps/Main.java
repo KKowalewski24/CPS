@@ -16,7 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         StageController.buildStage(stage, PATH_MAIN_PANEL,
-                TITLE_MAIN_PANEL, new WindowDimensions(1200, 800));
+                TITLE_MAIN_PANEL, new WindowDimensions(1200, 900));
     }
 
     public static void main(String[] args) {
