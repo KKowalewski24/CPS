@@ -12,6 +12,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.FileChooser;
+import pl.jkkk.cps.view.helper.CustomTab;
+import pl.jkkk.cps.view.helper.CustomTabPane;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
 
@@ -76,12 +78,12 @@ public class MainPanel implements Initializable {
     private void prepareTabPaneCharts(int index) {
         LineChart<Number, Number> lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
 
-        Tab chartTab = prepareTab("Wykres", lineChart, false);
-        Tab histogramTab = prepareTab("Histogram", lineChart, false);
-        Tab paramsTab = prepareTab("Parametry", lineChart, false);
-
         tabPaneCharts.getTabs().add(new Tab("Karta " + index,
-                new TabPane(chartTab, histogramTab, paramsTab)));
+                new CustomTabPane(
+                        new CustomTab("Wykres", lineChart, false),
+                        new CustomTab("Histogram", lineChart, false),
+                        new CustomTab("Parametry", lineChart, false)
+                )));
     }
 
     @FXML
@@ -165,6 +167,5 @@ public class MainPanel implements Initializable {
         prepareTabPaneParams();
         prepareTabPaneCharts(0);
     }
-
 }
     

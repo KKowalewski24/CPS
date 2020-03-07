@@ -18,6 +18,7 @@ public class Main extends Application {
     public void start(Stage stage) {
         StageController.buildStage(stage, PATH_MAIN_PANEL,
                 TITLE_MAIN_PANEL, new WindowDimensions(1400, 900), PATH_CSS_STYLING);
+        StageController.getApplicationStage().setResizable(false);
     }
 
     public static void main(String[] args) {
