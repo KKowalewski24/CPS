@@ -1,18 +1,25 @@
 package pl.jkkk.cps.view.controller;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
@@ -20,20 +27,40 @@ import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
 public class MainPanel implements Initializable {
 
     /*------------------------ FIELDS REGION ------------------------*/
-    private static final int NUMBER_OF_TABS = 7;
+    private static final List<String> signalTypeList = Stream.of(
+            "szum o rozkładzie jednostajnym",
+            "szum gaussowski",
+            "sygnał sinusoidalny",
+            "sygnał sinusoidalny wyprostowany jednopołówkowo",
+            "sygnał sinusoidalny wyprostowany dwupołówkowo",
+            "sygnał prostokątny",
+            "sygnał prostokątny symetryczny",
+            "sygnał trójkątny",
+            "skok jednostkowy",
+            "impuls jednostkowy",
+            "szum impulsowy"
+    ).collect(Collectors.toCollection(ArrayList::new));
+
+    private static final List<String> operationTypeList = Stream.of(
+            "dodawanie",
+            "odejmowanie",
+            "mnożenie",
+            "dzielenie"
+    ).collect(Collectors.toCollection(ArrayList::new));
 
     @FXML
-    private TabPane tabPaneParams;
+    private ComboBox comboBoxSignalTypes;
     @FXML
-    private ComboBox comboBoxGenerateType;
-    @FXML
-    private ComboBox comboBoxOperationType;
+    private ComboBox comboBoxOperationTypes;
     @FXML
     private TabPane tabPaneCharts;
 
     /*------------------------ METHODS REGION ------------------------*/
-    private void prepareTabPaneParams() {
 
+    private void prepareTabPaneParams() {
+        signalTypeList.forEach((it) -> comboBoxSignalTypes.getItems().add(it));
+        operationTypeList.forEach((it) -> comboBoxOperationTypes.getItems().add(it));
+        comboBoxSignalTypes.getSelectionModel().selectFirst();
     }
 
     private Tab prepareTab(String title, Node content, boolean isClosable) {
@@ -51,13 +78,51 @@ public class MainPanel implements Initializable {
         Tab histogramTab = prepareTab("Histogram", lineChart, false);
         Tab paramsTab = prepareTab("Parametry", lineChart, false);
 
-        TabPane innerTabPane = new TabPane(chartTab, histogramTab, paramsTab);
-        tabPaneCharts.getTabs().add(new Tab("Karta " + index, innerTabPane));
+        tabPaneCharts.getTabs().add(new Tab("Karta " + index,
+                new TabPane(chartTab, histogramTab, paramsTab)));
+    }
+
+    @FXML
+    private void onActionLoadChart(ActionEvent actionEvent) {
+        //TODO ADD IMPL
+    }
+
+    @FXML
+    private void onActionSaveChart(ActionEvent actionEvent) {
+        //TODO ADD IMPL
     }
 
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
+        //TODO ADD IMPL
+        String selectedSignal = comboBoxSignalTypes.getSelectionModel()
+                .getSelectedItem().toString();
 
+        if (selectedSignal.equals(signalTypeList.get(0))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(1))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(2))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(3))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(4))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(5))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(6))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(7))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(8))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(9))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(10))) {
+
+        } else if (selectedSignal.equals(signalTypeList.get(11))) {
+
+        }
     }
 
     @FXML
@@ -67,7 +132,13 @@ public class MainPanel implements Initializable {
 
     @FXML
     private void onActionButtonAddNewTab(ActionEvent actionEvent) {
-        prepareTabPaneCharts(tabPaneCharts.getTabs().size());
+        ObservableList<Tab> tabList = tabPaneCharts.getTabs();
+        if (tabList.size() != 0) {
+            prepareTabPaneCharts(tabList.size());
+        } else {
+            PopOutWindow.messageBox("Brak Wykresów",
+                    "Wykresy nie zostały jeszcze wygenerowane", Alert.AlertType.WARNING);
+        }
     }
 
     @FXML

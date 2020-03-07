@@ -7,50 +7,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.jkkk.cps.view.controller.MainPanel">
     <children>
-        <TabPane fx:id="tabPaneParams" layoutX="43.0" layoutY="160.0" prefHeight="619.0"
-                 prefWidth="440.0" tabClosingPolicy="UNAVAILABLE">
-            <tabs>
-                <Tab text="Generowanie">
-                    <AnchorPane>
-                        <Label layoutX="150.0" layoutY="21.0" prefHeight="28.0" prefWidth="141.0"
-                               text="Wybierz Rodzaj Sygnału"/>
-
-                        <ComboBox fx:id="comboBoxGenerateType" layoutX="19.0" layoutY="56.0"
-                                  prefHeight="29.0" prefWidth="402.0"/>
-                    </AnchorPane>
-                </Tab>
-
-                <Tab text="Operacje">
-                    <AnchorPane>
-                        <Label layoutX="166.0" layoutY="22.0" prefHeight="28.0" prefWidth="108.0"
-                               text="Wybierz Operacje"/>
-
-                        <ComboBox fx:id="comboBoxOperationType" layoutX="19.0" layoutY="56.0"
-                                  prefHeight="29.0" prefWidth="402.0"/>
-                    </AnchorPane>
-                </Tab>
-
-                <Tab text="Zapis">
-                    <AnchorPane>
-                        <children>
-                            <Button layoutX="107.0" layoutY="60.0" mnemonicParsing="false"
-                                    prefHeight="73.0" prefWidth="227.0" text="Wczytaj Wykres"/>
-                            <Button layoutX="107.0" layoutY="192.0" mnemonicParsing="false"
-                                    prefHeight="73.0" prefWidth="227.0" text="Zapisz Wykres"/>
-                        </children>
-                    </AnchorPane>
-                </Tab>
-            </tabs>
-        </TabPane>
-        <Button layoutX="139.0" layoutY="803.0" minHeight="35.0" minWidth="100.0"
-                mnemonicParsing="false" onAction="#onActionButtonGenerateData" prefHeight="51.0"
-                prefWidth="248.0" text="Generuj Wykres"/>
-        <TabPane fx:id="tabPaneCharts" layoutX="495.0" layoutY="160.0" minHeight="675.0"
-                 minWidth="850.0" prefHeight="673.0" prefWidth="850.0"
-                 tabClosingPolicy="UNAVAILABLE">
-        </TabPane>
-
-        <ToolBar layoutX="526.0" layoutY="48.0" prefHeight="61.0" prefWidth="348.0">
+        <ToolBar layoutX="526.0" layoutY="48.0" prefHeight="61.0" prefWidth="349.0">
             <items>
                 <Button minHeight="35.0" minWidth="100.0" mnemonicParsing="false"
                         onAction="#onActionButtonReloadStage" text="Odśwież Stronę"/>
@@ -62,6 +19,52 @@
                         text="Zamknij Program"/>
             </items>
         </ToolBar>
+
+        <TabPane fx:id="tabPaneParams" layoutX="43.0" layoutY="160.0" prefHeight="619.0"
+                 prefWidth="440.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Generowanie">
+                    <AnchorPane>
+                        <Label layoutX="150.0" layoutY="21.0" prefHeight="28.0" prefWidth="141.0"
+                               text="Wybierz Rodzaj Sygnału"/>
+
+                        <ComboBox fx:id="comboBoxSignalTypes" layoutX="19.0" layoutY="56.0"
+                                  prefHeight="29.0" prefWidth="402.0"/>
+                    </AnchorPane>
+                </Tab>
+
+                <Tab text="Operacje">
+                    <AnchorPane>
+                        <Label layoutX="166.0" layoutY="22.0" prefHeight="28.0" prefWidth="108.0"
+                               text="Wybierz Operacje"/>
+
+                        <ComboBox fx:id="comboBoxOperationTypes" layoutX="19.0" layoutY="56.0"
+                                  prefHeight="29.0" prefWidth="402.0"/>
+                    </AnchorPane>
+                </Tab>
+
+                <Tab text="Zapis">
+                    <AnchorPane>
+                        <children>
+                            <Button layoutX="107.0" layoutY="60.0" mnemonicParsing="false"
+                                    onAction="#onActionLoadChart" prefHeight="73.0"
+                                    prefWidth="227.0" text="Wczytaj Wykres"/>
+                            <Button layoutX="107.0" layoutY="192.0" mnemonicParsing="false"
+                                    onAction="#onActionSaveChart" prefHeight="73.0"
+                                    prefWidth="227.0" text="Zapisz Wykres"/>
+                        </children>
+                    </AnchorPane>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <Button layoutX="139.0" layoutY="792.0" minHeight="35.0" minWidth="100.0"
+                mnemonicParsing="false" onAction="#onActionButtonGenerateData" prefHeight="51.0"
+                prefWidth="248.0" text="Generuj Wykres"/>
+
+        <TabPane fx:id="tabPaneCharts" layoutX="495.0" layoutY="160.0" minHeight="675.0"
+                 minWidth="850.0" prefHeight="673.0" prefWidth="850.0"
+                 tabClosingPolicy="UNAVAILABLE">
+        </TabPane>
 
     </children>
 </AnchorPane>
