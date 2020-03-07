@@ -12,6 +12,18 @@ public class StageController {
     /*------------------------ FIELDS REGION ------------------------*/
 
     /*------------------------ METHODS REGION ------------------------*/
+    public static Stage getApplicationStage() {
+        return FxmlStageSetup.getApplicationStage();
+    }
+
+    public static WindowDimensions getWindowDimensions() {
+        return FxmlStageSetup.getWindowDimensions();
+    }
+
+    public static String getGlobalCssStyling() {
+        return FxmlStageSetup.getGlobalCssStyling();
+    }
+
     public static void buildStage(Stage stage, String filePath, String title,
                                   WindowDimensions dimensions, String cssFilePath) {
         try {

@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.stage.FileChooser;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
 
@@ -61,6 +62,7 @@ public class MainPanel implements Initializable {
         signalTypeList.forEach((it) -> comboBoxSignalTypes.getItems().add(it));
         operationTypeList.forEach((it) -> comboBoxOperationTypes.getItems().add(it));
         comboBoxSignalTypes.getSelectionModel().selectFirst();
+        comboBoxOperationTypes.getSelectionModel().selectFirst();
     }
 
     private Tab prepareTab(String title, Node content, boolean isClosable) {
@@ -84,12 +86,24 @@ public class MainPanel implements Initializable {
 
     @FXML
     private void onActionLoadChart(ActionEvent actionEvent) {
-        //TODO ADD IMPL
+        try {
+            new FileChooser().showOpenDialog(StageController.getApplicationStage()).getName();
+            //TODO ADD IMPL
+        } catch (NullPointerException e) {
+            PopOutWindow.messageBox("Błąd Ładowania Pliku",
+                    "Nie można załadować wybranego pliku", Alert.AlertType.WARNING);
+        }
     }
 
     @FXML
     private void onActionSaveChart(ActionEvent actionEvent) {
-        //TODO ADD IMPL
+        try {
+            new FileChooser().showOpenDialog(StageController.getApplicationStage()).getName();
+            //TODO ADD IMPL
+        } catch (NullPointerException e) {
+            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+                    "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
+        }
     }
 
     @FXML
