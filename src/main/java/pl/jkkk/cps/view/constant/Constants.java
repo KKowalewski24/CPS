@@ -12,6 +12,8 @@ public class Constants {
     public static final String PATH_BAR_CHART_PANEL = "/panel/BarChartPanel.fxml";
     public static final String TITLE_BAR_CHART_PANEL = "Bar Chart Panel";
 
+    public static final String PATH_CSS_STYLING = "/PanelStyles.css";
+
     /*------------------------ METHODS REGION ------------------------*/
     private Constants() {
     }
