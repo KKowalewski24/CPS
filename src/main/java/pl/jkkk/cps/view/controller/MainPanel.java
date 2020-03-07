@@ -3,8 +3,10 @@ package pl.jkkk.cps.view.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import pl.jkkk.cps.view.util.StageController;
@@ -23,6 +25,10 @@ public class MainPanel implements Initializable {
     @FXML
     private TabPane tabPaneParams;
     @FXML
+    private ComboBox comboBoxGenerateType;
+    @FXML
+    private ComboBox comboBoxOperationType;
+    @FXML
     private TabPane tabPaneCharts;
 
     /*------------------------ METHODS REGION ------------------------*/
@@ -30,17 +36,28 @@ public class MainPanel implements Initializable {
 
     }
 
+    private Tab prepareTab(String title, Node content, boolean isClosable) {
+        Tab tab = new Tab(title, content);
+        tab.setClosable(isClosable);
+
+        return tab;
+    }
+
     //TODO FINISH IMPL
     private void prepareTabPaneCharts(int index) {
         LineChart<Number, Number> lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
-        Tab chartTab = new Tab("Wykres", lineChart);
 
-        Tab histogramTab = new Tab();
-
-        Tab paramsTab = new Tab();
+        Tab chartTab = prepareTab("Wykres", lineChart, false);
+        Tab histogramTab = prepareTab("Histogram", lineChart, false);
+        Tab paramsTab = prepareTab("Parametry", lineChart, false);
 
         TabPane innerTabPane = new TabPane(chartTab, histogramTab, paramsTab);
         tabPaneCharts.getTabs().add(new Tab("Karta " + index, innerTabPane));
+    }
+
+    @FXML
+    private void onActionButtonGenerateData(ActionEvent actionEvent) {
+
     }
 
     @FXML

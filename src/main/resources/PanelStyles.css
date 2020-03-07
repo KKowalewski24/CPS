@@ -7,7 +7,7 @@
 }
 
 .label {
-    -fx-text-fill: lightgray;
+    -fx-text-fill: white;
 }
 
 .text-field {
@@ -70,9 +70,13 @@
 }
 
 .chart-vertical-grid-lines {
-    -fx-stroke: #FFFFFF;
+    -fx-stroke: white;
 }
 
 .chart-horizontal-grid-lines {
-    -fx-stroke: #FFFFFF;
+    -fx-stroke: white;
+}
+
+.tab-pane {
+    -fx-border-color: lightgray;
 }
