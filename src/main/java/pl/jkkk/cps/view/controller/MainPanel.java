@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.view.helper.CustomTab;
 import pl.jkkk.cps.view.helper.CustomTabPane;
@@ -55,23 +56,48 @@ public class MainPanel implements Initializable {
     @FXML
     private ComboBox comboBoxSignalTypes;
     @FXML
+    private TextField textFieldAmplitude;
+    @FXML
+    private TextField textFieldStartTime;
+    @FXML
+    private TextField textFieldSignalDuration;
+    @FXML
+    private TextField textFieldBasicPeriod;
+    @FXML
+    private TextField textFieldFillFactor;
+    @FXML
+    private TextField textFieldJumpTime;
+    @FXML
+    private TextField textFieldProbability;
+    @FXML
+    private TextField textFieldSamplingFrequency;
+    @FXML
     private ComboBox comboBoxOperationTypes;
     @FXML
     private TabPane tabPaneCharts;
 
-    private LineChart<Number, Number> lineChart = new LineChart<>(
-            new NumberAxis(), new NumberAxis());
-    private BarChart<String, Number> barChart = new BarChart<>(
-            new CategoryAxis(), new NumberAxis());
-
     /*------------------------ METHODS REGION ------------------------*/
+    private void textFieldSetValue(TextField textField, String string) {
+        textField.setText(string);
+    }
+
     private void prepareTabPaneParams() {
         signalTypeList.forEach((it) -> comboBoxSignalTypes.getItems().add(it));
         operationTypeList.forEach((it) -> comboBoxOperationTypes.getItems().add(it));
         comboBoxSignalTypes.getSelectionModel().selectFirst();
         comboBoxOperationTypes.getSelectionModel().selectFirst();
+
+        textFieldSetValue(textFieldAmplitude, String.valueOf(1));
+        textFieldSetValue(textFieldStartTime, String.valueOf(0));
+        textFieldSetValue(textFieldSignalDuration, String.valueOf(5));
+        textFieldSetValue(textFieldBasicPeriod, String.valueOf(1));
+        textFieldSetValue(textFieldFillFactor, String.valueOf(0.5));
+        textFieldSetValue(textFieldJumpTime, String.valueOf(2));
+        textFieldSetValue(textFieldProbability, String.valueOf(0.5));
+        textFieldSetValue(textFieldSamplingFrequency, String.valueOf(16));
     }
 
+    //TODO FIX ISSUE WITH STORING REFERENCE TO CHART
     private void prepareTabPaneCharts(int index) {
         tabPaneCharts.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
