@@ -3,15 +3,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+<AnchorPane prefHeight="900.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.jkkk.cps.view.controller.MainPanel">
     <children>
-        <Button fx:id="buttonBarChart" layoutX="824.0" layoutY="366.0" mnemonicParsing="false"
-                onAction="#onActionButtonBarChart" prefHeight="69.0" prefWidth="199.0"
-                text="Display Bar Chart"/>
-        <Button fx:id="buttonLineChart" layoutX="182.0" layoutY="366.0" mnemonicParsing="false"
-                onAction="#onActionButtonLineChart" prefHeight="69.0" prefWidth="199.0"
-                text="Display Line Chart"/>
+        <TabPane fx:id="tabPaneParams" layoutX="43.0" layoutY="160.0" prefHeight="675.0"
+                 prefWidth="440.0" tabClosingPolicy="UNAVAILABLE">
+        </TabPane>
+
+        <TabPane fx:id="tabPaneCharts" layoutX="495.0" layoutY="160.0" minHeight="675.0"
+                 minWidth="850.0" prefHeight="673.0" prefWidth="850.0"
+                 tabClosingPolicy="UNAVAILABLE">
+        </TabPane>
+
+        <ToolBar layoutX="526.0" layoutY="48.0" prefHeight="61.0" prefWidth="348.0">
+            <items>
+                <Button minHeight="35.0" minWidth="100.0" mnemonicParsing="false"
+                        onAction="#onActionButtonReloadStage" text="Odśwież Stronę"/>
+                <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
+                        mnemonicParsing="false" onAction="#onActionButtonAddNewTab"
+                        text="Dodaj Kartę"/>
+                <Button layoutX="106.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
+                        mnemonicParsing="false" onAction="#onActionButtonCloseProgram"
+                        text="Zamknij Program"/>
+            </items>
+        </ToolBar>
     </children>
 </AnchorPane>

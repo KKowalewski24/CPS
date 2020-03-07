@@ -68,3 +68,11 @@
     -fx-border-color: transparent;
     -fx-table-cell-border-color: transparent;
 }
+
+.chart-vertical-grid-lines {
+    -fx-stroke: #FFFFFF;
+}
+
+.chart-horizontal-grid-lines {
+    -fx-stroke: #FFFFFF;
+}
