@@ -4,7 +4,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Alert;
@@ -58,8 +59,12 @@ public class MainPanel implements Initializable {
     @FXML
     private TabPane tabPaneCharts;
 
-    /*------------------------ METHODS REGION ------------------------*/
+    private LineChart<Number, Number> lineChart = new LineChart<>(
+            new NumberAxis(), new NumberAxis());
+    private BarChart<String, Number> barChart = new BarChart<>(
+            new CategoryAxis(), new NumberAxis());
 
+    /*------------------------ METHODS REGION ------------------------*/
     private void prepareTabPaneParams() {
         signalTypeList.forEach((it) -> comboBoxSignalTypes.getItems().add(it));
         operationTypeList.forEach((it) -> comboBoxOperationTypes.getItems().add(it));
@@ -67,22 +72,14 @@ public class MainPanel implements Initializable {
         comboBoxOperationTypes.getSelectionModel().selectFirst();
     }
 
-    private Tab prepareTab(String title, Node content, boolean isClosable) {
-        Tab tab = new Tab(title, content);
-        tab.setClosable(isClosable);
-
-        return tab;
-    }
-
-    //TODO FINISH IMPL
     private void prepareTabPaneCharts(int index) {
-        LineChart<Number, Number> lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
-
         tabPaneCharts.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
-                        new CustomTab("Wykres", lineChart, false),
-                        new CustomTab("Histogram", lineChart, false),
-                        new CustomTab("Parametry", lineChart, false)
+                        new CustomTab("Wykres", new LineChart<>(new NumberAxis(),
+                                new NumberAxis()), false),
+                        new CustomTab("Histogram", new BarChart<>(new CategoryAxis(),
+                                new NumberAxis()), false),
+                        new CustomTab("Parametry", null, false)
                 )));
     }
 
