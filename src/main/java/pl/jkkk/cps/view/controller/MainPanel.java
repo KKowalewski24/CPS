@@ -39,11 +39,8 @@ import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
 
 public class MainPanel implements Initializable {
 
-
-
     /*------------------------ FIELDS REGION ------------------------*/
-
-    /*------------------- LEFT SIDE -------------------*/
+    /* LEFT SIDE */
     @FXML
     private ComboBox comboBoxSignalTypes;
     @FXML
@@ -65,7 +62,7 @@ public class MainPanel implements Initializable {
     @FXML
     private ComboBox comboBoxOperationTypes;
 
-    /*------------------- RIGHT SIDE -------------------*/
+    /* RIGHT SIDE */
     @FXML
     private TabPane tabPaneResults;
     @FXML
@@ -94,6 +91,8 @@ public class MainPanel implements Initializable {
     private TextField textFieldTransformationTime;
 
     /*------------------------ METHODS REGION ------------------------*/
+
+    /*------------------------ PREPARE EMPTY PANES AND CHARTS ------------------------*/
     private void fillTextFields() {
         textFieldSetValue(textFieldAmplitude, String.valueOf(1));
         textFieldSetValue(textFieldStartTime, String.valueOf(0));
@@ -141,6 +140,61 @@ public class MainPanel implements Initializable {
                 )));
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        prepareTabPaneInputs();
+        prepareTabPaneResults(0);
+    }
+    /*------------------------------------------------------------------------*/
+
+    /*------------------------ BUTTON TOP BAR ------------------------*/
+    @FXML
+    private void onActionButtonReloadStage(ActionEvent actionEvent) {
+        StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+    }
+
+    @FXML
+    private void onActionButtonAddNewTab(ActionEvent actionEvent) {
+        ObservableList<Tab> tabList = tabPaneResults.getTabs();
+        if (tabList.size() != 0) {
+            prepareTabPaneResults(tabList.size());
+        } else {
+            PopOutWindow.messageBox("Brak Wykresów",
+                    "Wykresy nie zostały jeszcze wygenerowane", Alert.AlertType.WARNING);
+        }
+    }
+
+    @FXML
+    private void onActionButtonCloseProgram(ActionEvent actionEvent) {
+        System.exit(0);
+    }
+    /*------------------------------------------------------------------------*/
+
+    /*------------------------ FILE READ / WRITE ------------------------*/
+    @FXML
+    private void onActionLoadChart(ActionEvent actionEvent) {
+        try {
+            new FileChooser().showOpenDialog(StageController.getApplicationStage()).getName();
+            //TODO ADD IMPL
+        } catch (NullPointerException e) {
+            PopOutWindow.messageBox("Błąd Ładowania Pliku",
+                    "Nie można załadować wybranego pliku", Alert.AlertType.WARNING);
+        }
+    }
+
+    @FXML
+    private void onActionSaveChart(ActionEvent actionEvent) {
+        try {
+            new FileChooser().showOpenDialog(StageController.getApplicationStage()).getName();
+            //TODO ADD IMPL
+        } catch (NullPointerException e) {
+            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+                    "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
+        }
+    }
+    /*------------------------------------------------------------------------*/
+
+    /*------------------------ FILL PREPARED PANES AND CHARTS ------------------------*/
     private void fillLineChart(CustomTabPane customTabPane,
                                Collection<ChartRecord<Number, Number>> dataCollection) {
         LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
@@ -184,51 +238,6 @@ public class MainPanel implements Initializable {
         fillParamsTab(customTabPane);
     }
 
-    /*------------------------ BUTTON BAR ------------------------*/
-    @FXML
-    private void onActionButtonReloadStage(ActionEvent actionEvent) {
-        StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
-    }
-
-    @FXML
-    private void onActionButtonAddNewTab(ActionEvent actionEvent) {
-        ObservableList<Tab> tabList = tabPaneResults.getTabs();
-        if (tabList.size() != 0) {
-            prepareTabPaneResults(tabList.size());
-        } else {
-            PopOutWindow.messageBox("Brak Wykresów",
-                    "Wykresy nie zostały jeszcze wygenerowane", Alert.AlertType.WARNING);
-        }
-    }
-
-    @FXML
-    private void onActionButtonCloseProgram(ActionEvent actionEvent) {
-        System.exit(0);
-    }
-
-    /*------------------------ FILE ------------------------*/
-    @FXML
-    private void onActionLoadChart(ActionEvent actionEvent) {
-        try {
-            new FileChooser().showOpenDialog(StageController.getApplicationStage()).getName();
-            //TODO ADD IMPL
-        } catch (NullPointerException e) {
-            PopOutWindow.messageBox("Błąd Ładowania Pliku",
-                    "Nie można załadować wybranego pliku", Alert.AlertType.WARNING);
-        }
-    }
-
-    @FXML
-    private void onActionSaveChart(ActionEvent actionEvent) {
-        try {
-            new FileChooser().showOpenDialog(StageController.getApplicationStage()).getName();
-            //TODO ADD IMPL
-        } catch (NullPointerException e) {
-            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
-                    "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
-        }
-    }
-
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
         //TODO ADD IMPL
@@ -256,12 +265,6 @@ public class MainPanel implements Initializable {
                         new ChartRecord<String, Number>("ee", 5)
                 ).collect(Collectors.toCollection(ArrayList::new)));
     }
-
-    /*------------------------ MAIN METHOD ------------------------*/
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        prepareTabPaneInputs();
-        prepareTabPaneResults(0);
-    }
+    /*------------------------------------------------------------------------*/
 }
     
