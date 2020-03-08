@@ -15,6 +15,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import pl.jkkk.cps.logic.model.OperationType;
+import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.helper.CustomTab;
 import pl.jkkk.cps.view.helper.CustomTabPane;
@@ -28,9 +30,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static pl.jkkk.cps.view.constant.Constants.OPERATION_TYPE_LIST;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
-import static pl.jkkk.cps.view.constant.Constants.SIGNAL_TYPE_LIST;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareDataRecord;
@@ -75,8 +75,26 @@ public class MainPanel implements Initializable {
     }
 
     private void prepareTabPaneParams() {
-        fillComboBox(comboBoxSignalTypes, SIGNAL_TYPE_LIST);
-        fillComboBox(comboBoxOperationTypes, OPERATION_TYPE_LIST);
+        fillComboBox(comboBoxSignalTypes, Stream.of(
+                SignalType.UNIFORM_NOISE.getName(),
+                SignalType.GAUSSIAN_NOISE.getName(),
+                SignalType.SINUSOIDAL_SIGNAL.getName(),
+                SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName(),
+                SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName(),
+                SignalType.RECTANGULAR_SIGNAL.getName(),
+                SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName(),
+                SignalType.TRIANGULAR_SIGNAL.getName(),
+                SignalType.UNIT_JUMP.getName(),
+                SignalType.UNIT_IMPULSE.getName(),
+                SignalType.IMPULSE_NOISE.getName()
+        ).collect(Collectors.toCollection(ArrayList::new)));
+
+        fillComboBox(comboBoxOperationTypes, Stream.of(
+                OperationType.ADDITION.getName(),
+                OperationType.SUBTRACTION.getName(),
+                OperationType.MULTIPLICATION.getName(),
+                OperationType.DIVISION.getName()
+        ).collect(Collectors.toCollection(ArrayList::new)));
 
         fillTextFields();
     }
@@ -187,40 +205,6 @@ public class MainPanel implements Initializable {
 
         String selectedOperation = comboBoxOperationTypes.getSelectionModel()
                 .getSelectedItem().toString();
-
-        if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(0))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(1))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(2))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(3))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(4))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(5))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(6))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(7))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(8))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(9))) {
-
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(10))) {
-
-        }
-
-        if (selectedOperation.equals(OPERATION_TYPE_LIST.get(0))) {
-
-        } else if (selectedOperation.equals(OPERATION_TYPE_LIST.get(1))) {
-
-        } else if (selectedOperation.equals(OPERATION_TYPE_LIST.get(2))) {
-
-        } else if (selectedOperation.equals(OPERATION_TYPE_LIST.get(3))) {
-
-        }
 
 //        TODO IN FINAL VERSION MOVE TO IF STATEMENTS
         fillCustomTabPaneWithData(tabPaneCharts,
