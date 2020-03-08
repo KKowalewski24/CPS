@@ -11,12 +11,9 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToolBar;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.model.OperationType;
@@ -42,7 +39,11 @@ import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
 
 public class MainPanel implements Initializable {
 
+
+
     /*------------------------ FIELDS REGION ------------------------*/
+
+    /*------------------- LEFT SIDE -------------------*/
     @FXML
     private ComboBox comboBoxSignalTypes;
     @FXML
@@ -63,8 +64,34 @@ public class MainPanel implements Initializable {
     private TextField textFieldSamplingFrequency;
     @FXML
     private ComboBox comboBoxOperationTypes;
+
+    /*------------------- RIGHT SIDE -------------------*/
     @FXML
     private TabPane tabPaneResults;
+    @FXML
+    private Pane paramsTab;
+    @FXML
+    private TextField textFieldSignalAverageValue;
+    @FXML
+    private TextField textFieldAbsoluteSignalAverageValue;
+    @FXML
+    private TextField textFieldSignalEffectiveValue;
+    @FXML
+    private TextField textFieldSignalVariance;
+    @FXML
+    private TextField textFieldAverageSignalStrength;
+    @FXML
+    private TextField textFieldMediumSquareError;
+    @FXML
+    private TextField textFieldSignalNoiseRatio;
+    @FXML
+    private TextField textFieldPeakSignalNoiseRatio;
+    @FXML
+    private TextField textFieldMaximumDifference;
+    @FXML
+    private TextField textFieldEffectiveNumberOfBits;
+    @FXML
+    private TextField textFieldTransformationTime;
 
     /*------------------------ METHODS REGION ------------------------*/
     private void fillTextFields() {
@@ -110,7 +137,7 @@ public class MainPanel implements Initializable {
                                 new NumberAxis()), false),
                         new CustomTab("Histogram", new BarChart<>(new CategoryAxis(),
                                 new NumberAxis()), false),
-                        new CustomTab("Parametry", null, false)
+                        new CustomTab("Parametry", paramsTab, false)
                 )));
     }
 
