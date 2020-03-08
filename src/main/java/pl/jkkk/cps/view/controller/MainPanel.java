@@ -264,6 +264,18 @@ public class MainPanel implements Initializable {
                         new ChartRecord<String, Number>("dd", 4),
                         new ChartRecord<String, Number>("ee", 5)
                 ).collect(Collectors.toCollection(ArrayList::new)));
+
+        textFieldSetValue(textFieldSignalAverageValue,"");
+        textFieldSetValue(textFieldAbsoluteSignalAverageValue,"");
+        textFieldSetValue(textFieldSignalEffectiveValue,"");
+        textFieldSetValue(textFieldSignalVariance,"");
+        textFieldSetValue(textFieldAverageSignalStrength,"");
+        textFieldSetValue(textFieldMediumSquareError,"");
+        textFieldSetValue(textFieldSignalNoiseRatio,"");
+        textFieldSetValue(textFieldPeakSignalNoiseRatio,"");
+        textFieldSetValue(textFieldMaximumDifference,"");
+        textFieldSetValue(textFieldEffectiveNumberOfBits,"");
+        textFieldSetValue(textFieldTransformationTime,"");
     }
     /*------------------------------------------------------------------------*/
 }
