@@ -3,29 +3,29 @@ package pl.jkkk.cps.view.helper;
 public class ChartRecord<T1, T2> {
 
     /*------------------------ FIELDS REGION ------------------------*/
-    private T1 xAxis;
-    private T2 yAxis;
+    private T1 axisX;
+    private T2 axisY;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public ChartRecord(T1 xAxis, T2 yAxis) {
-        this.xAxis = xAxis;
-        this.yAxis = yAxis;
+    public ChartRecord(T1 axisX, T2 axisY) {
+        this.axisX = axisX;
+        this.axisY = axisY;
     }
 
-    public T1 getxAxis() {
-        return xAxis;
+    public T1 getAxisX() {
+        return axisX;
     }
 
-    public void setxAxis(T1 xAxis) {
-        this.xAxis = xAxis;
+    public void setAxisX(T1 axisX) {
+        this.axisX = axisX;
     }
 
-    public T2 getyAxis() {
-        return yAxis;
+    public T2 getAxisY() {
+        return axisY;
     }
 
-    public void setyAxis(T2 yAxis) {
-        this.yAxis = yAxis;
+    public void setAxisY(T2 axisY) {
+        this.axisY = axisY;
     }
 }
     

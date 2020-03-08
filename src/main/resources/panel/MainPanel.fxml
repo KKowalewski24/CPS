@@ -20,7 +20,7 @@
             </items>
         </ToolBar>
 
-        <TabPane fx:id="tabPaneParams" layoutX="43.0" layoutY="160.0" prefHeight="619.0"
+        <TabPane fx:id="tabPaneInputs" layoutX="43.0" layoutY="160.0" prefHeight="619.0"
                  prefWidth="440.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="Generowanie">
@@ -107,7 +107,7 @@
                 mnemonicParsing="false" onAction="#onActionButtonGenerateData" prefHeight="51.0"
                 prefWidth="248.0" text="Generuj Wykres"/>
 
-        <TabPane fx:id="tabPaneCharts" layoutX="495.0" layoutY="160.0" minHeight="675.0"
+        <TabPane fx:id="tabPaneResults" layoutX="495.0" layoutY="160.0" minHeight="675.0"
                  minWidth="850.0" prefHeight="673.0" prefWidth="850.0"
                  tabClosingPolicy="UNAVAILABLE">
         </TabPane>

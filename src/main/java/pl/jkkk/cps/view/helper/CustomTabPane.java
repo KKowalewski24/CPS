@@ -21,24 +21,12 @@ public class CustomTabPane extends TabPane {
         return chartTab;
     }
 
-    public void setChartTab(CustomTab chartTab) {
-        this.chartTab = chartTab;
-    }
-
     public CustomTab getHistogramTab() {
         return histogramTab;
     }
 
-    public void setHistogramTab(CustomTab histogramTab) {
-        this.histogramTab = histogramTab;
-    }
-
     public CustomTab getParamsTab() {
         return paramsTab;
-    }
-
-    public void setParamsTab(CustomTab paramsTab) {
-        this.paramsTab = paramsTab;
     }
 }
     

@@ -11,9 +11,13 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.SignalType;
@@ -60,7 +64,7 @@ public class MainPanel implements Initializable {
     @FXML
     private ComboBox comboBoxOperationTypes;
     @FXML
-    private TabPane tabPaneCharts;
+    private TabPane tabPaneResults;
 
     /*------------------------ METHODS REGION ------------------------*/
     private void fillTextFields() {
@@ -74,7 +78,7 @@ public class MainPanel implements Initializable {
         textFieldSetValue(textFieldSamplingFrequency, String.valueOf(16));
     }
 
-    private void prepareTabPaneParams() {
+    private void prepareTabPaneInputs() {
         fillComboBox(comboBoxSignalTypes, Stream.of(
                 SignalType.UNIFORM_NOISE.getName(),
                 SignalType.GAUSSIAN_NOISE.getName(),
@@ -99,8 +103,8 @@ public class MainPanel implements Initializable {
         fillTextFields();
     }
 
-    private void prepareTabPaneCharts(int index) {
-        tabPaneCharts.getTabs().add(new Tab("Karta " + index,
+    private void prepareTabPaneResults(int index) {
+        tabPaneResults.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
                         new CustomTab("Wykres", new LineChart<>(new NumberAxis(),
                                 new NumberAxis()), false),
@@ -116,7 +120,7 @@ public class MainPanel implements Initializable {
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {
-            series.getData().add(prepareDataRecord(it.getxAxis(), it.getyAxis()));
+            series.getData().add(prepareDataRecord(it.getAxisX(), it.getAxisY()));
         });
 
         lineChart.getData().clear();
@@ -129,7 +133,7 @@ public class MainPanel implements Initializable {
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {
-            series.getData().add(prepareDataRecord(it.getxAxis(), it.getyAxis()));
+            series.getData().add(prepareDataRecord(it.getAxisX(), it.getAxisY()));
         });
 
         barChart.getData().clear();
@@ -137,8 +141,9 @@ public class MainPanel implements Initializable {
 
     }
 
-    private void fillParamsTab() {
+    private void fillParamsTab(CustomTabPane customTabPane) {
 //        TODO ADD IMPL
+        Pane pane = (Pane) customTabPane.getParamsTab().getContent();
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
@@ -149,7 +154,7 @@ public class MainPanel implements Initializable {
 
         fillLineChart(customTabPane, lineChartCollection);
         fillBarChart(customTabPane, barChartCollection);
-        fillParamsTab();
+        fillParamsTab(customTabPane);
     }
 
     /*------------------------ BUTTON BAR ------------------------*/
@@ -160,9 +165,9 @@ public class MainPanel implements Initializable {
 
     @FXML
     private void onActionButtonAddNewTab(ActionEvent actionEvent) {
-        ObservableList<Tab> tabList = tabPaneCharts.getTabs();
+        ObservableList<Tab> tabList = tabPaneResults.getTabs();
         if (tabList.size() != 0) {
-            prepareTabPaneCharts(tabList.size());
+            prepareTabPaneResults(tabList.size());
         } else {
             PopOutWindow.messageBox("Brak Wykresów",
                     "Wykresy nie zostały jeszcze wygenerowane", Alert.AlertType.WARNING);
@@ -207,7 +212,7 @@ public class MainPanel implements Initializable {
                 .getSelectedItem().toString();
 
 //        TODO IN FINAL VERSION MOVE TO IF STATEMENTS
-        fillCustomTabPaneWithData(tabPaneCharts,
+        fillCustomTabPaneWithData(tabPaneResults,
                 Stream.of(
                         new ChartRecord<Number, Number>(1, 200),
                         new ChartRecord<Number, Number>(2, 500),
@@ -228,8 +233,8 @@ public class MainPanel implements Initializable {
     /*------------------------ MAIN METHOD ------------------------*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        prepareTabPaneParams();
-        prepareTabPaneCharts(0);
+        prepareTabPaneInputs();
+        prepareTabPaneResults(0);
     }
 }
     
