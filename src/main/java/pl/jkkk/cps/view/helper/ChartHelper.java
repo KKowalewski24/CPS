@@ -1,6 +1,10 @@
 package pl.jkkk.cps.view.helper;
 
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+
+import java.util.Collection;
 
 public class ChartHelper {
 
@@ -30,5 +34,13 @@ public class ChartHelper {
         return new XYChart.Data(stringOne, stringTwo);
     }
 
+    public static void textFieldSetValue(TextField textField, String string) {
+        textField.setText(string);
+    }
+
+    public static void fillComboBox(ComboBox comboBox, Collection collection) {
+        collection.forEach((it) -> comboBox.getItems().add(it));
+        comboBox.getSelectionModel().selectFirst();
+    }
 }
     

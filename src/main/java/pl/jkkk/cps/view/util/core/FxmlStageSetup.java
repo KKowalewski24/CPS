@@ -50,7 +50,7 @@ public class FxmlStageSetup {
     }
 
     /**
-     * Method prepare Stage by setting all required parameters
+     * Method prepare Stage by setting all required parameters.
      */
     private static void prepareStage(String filePath, String title,
                                      WindowDimensions dimensions) throws IOException {
