@@ -15,13 +15,18 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.helper.CustomTab;
 import pl.jkkk.cps.view.helper.CustomTabPane;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static pl.jkkk.cps.view.constant.Constants.OPERATION_TYPE_LIST;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
@@ -87,6 +92,48 @@ public class MainPanel implements Initializable {
                 )));
     }
 
+    private void fillLineChart(CustomTabPane customTabPane,
+                               Collection<ChartRecord<Number, Number>> dataCollection) {
+        LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
+        XYChart.Series series = new XYChart.Series<>();
+
+        dataCollection.forEach((it) -> {
+            series.getData().add(prepareDataRecord(it.getxAxis(), it.getyAxis()));
+        });
+
+        lineChart.getData().clear();
+        lineChart.getData().add(series);
+    }
+
+    private void fillBarChart(CustomTabPane customTabPane,
+                              Collection<ChartRecord<String, Number>> dataCollection) {
+        BarChart barChart = (BarChart) customTabPane.getHistogramTab().getContent();
+        XYChart.Series series = new XYChart.Series<>();
+
+        dataCollection.forEach((it) -> {
+            series.getData().add(prepareDataRecord(it.getxAxis(), it.getyAxis()));
+        });
+
+        barChart.getData().clear();
+        barChart.getData().add(series);
+
+    }
+
+    private void fillParamsTab() {
+//        TODO ADD IMPL
+    }
+
+    private void fillCustomTabPaneWithData(TabPane tabPane,
+                                           Collection<ChartRecord<Number, Number>> lineChartCollection,
+                                           Collection<ChartRecord<String, Number>> barChartCollection) {
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        CustomTabPane customTabPane = (CustomTabPane) tab.getContent();
+
+        fillLineChart(customTabPane, lineChartCollection);
+        fillBarChart(customTabPane, barChartCollection);
+        fillParamsTab();
+    }
+
     /*------------------------ BUTTON BAR ------------------------*/
     @FXML
     private void onActionButtonReloadStage(ActionEvent actionEvent) {
@@ -138,6 +185,9 @@ public class MainPanel implements Initializable {
         String selectedSignal = comboBoxSignalTypes.getSelectionModel()
                 .getSelectedItem().toString();
 
+        String selectedOperation = comboBoxOperationTypes.getSelectionModel()
+                .getSelectedItem().toString();
+
         if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(0))) {
 
         } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(1))) {
@@ -160,27 +210,35 @@ public class MainPanel implements Initializable {
 
         } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(10))) {
 
-        } else if (selectedSignal.equals(SIGNAL_TYPE_LIST.get(11))) {
+        }
+
+        if (selectedOperation.equals(OPERATION_TYPE_LIST.get(0))) {
+
+        } else if (selectedOperation.equals(OPERATION_TYPE_LIST.get(1))) {
+
+        } else if (selectedOperation.equals(OPERATION_TYPE_LIST.get(2))) {
+
+        } else if (selectedOperation.equals(OPERATION_TYPE_LIST.get(3))) {
 
         }
 
-        Tab tab = tabPaneCharts.getSelectionModel().getSelectedItem();
-        CustomTabPane customTabPane = (CustomTabPane) tab.getContent();
-        LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
-
-        XYChart.Series<Number, Number> series = new XYChart.Series<>();
-        series.getData().addAll(
-                prepareDataRecord(1, 200),
-                prepareDataRecord(2, 500),
-                prepareDataRecord(3, 800),
-                prepareDataRecord(4, 100),
-                prepareDataRecord(5, 350),
-                prepareDataRecord(6, 400),
-                prepareDataRecord(7, 550)
-        );
-
-        lineChart.getData().clear();
-        lineChart.getData().add(series);
+//        TODO IN FINAL VERSION MOVE TO IF STATEMENTS
+        fillCustomTabPaneWithData(tabPaneCharts,
+                Stream.of(
+                        new ChartRecord<Number, Number>(1, 200),
+                        new ChartRecord<Number, Number>(2, 500),
+                        new ChartRecord<Number, Number>(3, 800),
+                        new ChartRecord<Number, Number>(4, 100),
+                        new ChartRecord<Number, Number>(5, 350),
+                        new ChartRecord<Number, Number>(6, 400)
+                ).collect(Collectors.toCollection(ArrayList::new)),
+                Stream.of(
+                        new ChartRecord<String, Number>("aa", 1),
+                        new ChartRecord<String, Number>("bb", 2),
+                        new ChartRecord<String, Number>("cc", 3),
+                        new ChartRecord<String, Number>("dd", 4),
+                        new ChartRecord<String, Number>("ee", 5)
+                ).collect(Collectors.toCollection(ArrayList::new)));
     }
 
     /*------------------------ MAIN METHOD ------------------------*/
