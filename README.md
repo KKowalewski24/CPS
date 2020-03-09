@@ -1,4 +1,4 @@
-# KSR
+# CPS
 
 #### How To
 * Run `./mvnw package exec:java`

@@ -12,10 +12,22 @@ public class StageController {
     /*------------------------ FIELDS REGION ------------------------*/
 
     /*------------------------ METHODS REGION ------------------------*/
-    public static void buildStage(Stage stage, String filePath,
-                                  String title, WindowDimensions dimensions) {
+    public static Stage getApplicationStage() {
+        return FxmlStageSetup.getApplicationStage();
+    }
+
+    public static WindowDimensions getWindowDimensions() {
+        return FxmlStageSetup.getWindowDimensions();
+    }
+
+    public static String getGlobalCssStyling() {
+        return FxmlStageSetup.getGlobalCssStyling();
+    }
+
+    public static void buildStage(Stage stage, String filePath, String title,
+                                  WindowDimensions dimensions, String cssFilePath) {
         try {
-            FxmlStageSetup.buildStage(stage, filePath, title, dimensions);
+            FxmlStageSetup.buildStage(stage, filePath, title, dimensions, cssFilePath);
         } catch (IOException | IllegalStateException e) {
             PopOutWindow.messageBox("Stage Building Error",
                     "Stage cannot be properly built", Alert.AlertType.ERROR);

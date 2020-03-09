@@ -12,6 +12,7 @@ public class FxmlStageSetup {
     /*------------------------ FIELDS REGION ------------------------*/
     private static Stage applicationStage;
     private static WindowDimensions windowDimensions;
+    private static String globalCssStyling;
 
     /*------------------------ METHODS REGION ------------------------*/
     private FxmlStageSetup() {
@@ -33,6 +34,14 @@ public class FxmlStageSetup {
         FxmlStageSetup.windowDimensions = windowDimensions;
     }
 
+    public static String getGlobalCssStyling() {
+        return globalCssStyling;
+    }
+
+    public static void setGlobalCssStyling(String globalCssStyling) {
+        FxmlStageSetup.globalCssStyling = globalCssStyling;
+    }
+
     /**
      * Method load fxml file.
      */
@@ -41,11 +50,16 @@ public class FxmlStageSetup {
     }
 
     /**
-     * Method prepare Stage by setting all required parameters
+     * Method prepare Stage by setting all required parameters.
      */
     private static void prepareStage(String filePath, String title,
                                      WindowDimensions dimensions) throws IOException {
-        applicationStage.setScene(new Scene(loadFxml(filePath)));
+        Scene scene = new Scene(loadFxml(filePath));
+        if (globalCssStyling != null) {
+            scene.getStylesheets().add(globalCssStyling);
+        }
+
+        applicationStage.setScene(scene);
         applicationStage.setTitle(title);
         applicationStage.setWidth(dimensions.getWidth());
         applicationStage.setHeight(dimensions.getHeight());
@@ -57,9 +71,11 @@ public class FxmlStageSetup {
      * stage is passed from start method from Main class.
      */
     public static void buildStage(Stage stage, String filePath,
-                                  String title, WindowDimensions dimensions) throws IOException {
+                                  String title, WindowDimensions dimensions,
+                                  String cssFilePath) throws IOException {
         setApplicationStage(stage);
         setWindowDimensions(dimensions);
+        setGlobalCssStyling(cssFilePath);
         prepareStage(filePath, title, windowDimensions);
     }
 
