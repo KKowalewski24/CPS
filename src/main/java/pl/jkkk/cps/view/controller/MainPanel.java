@@ -16,7 +16,9 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.OperationType;
+import pl.jkkk.cps.logic.model.Series;
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.helper.CustomTab;
@@ -196,12 +198,12 @@ public class MainPanel implements Initializable {
 
     /*------------------------ FILL PREPARED PANES AND CHARTS ------------------------*/
     private void fillLineChart(CustomTabPane customTabPane,
-                               Collection<ChartRecord<Number, Number>> dataCollection) {
+                               Series dataCollection) {
         LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {
-            series.getData().add(prepareDataRecord(it.getAxisX(), it.getAxisY()));
+            series.getData().add(prepareDataRecord(it.getX(), it.getY()));
         });
 
         lineChart.getData().clear();
@@ -225,10 +227,22 @@ public class MainPanel implements Initializable {
     private void fillParamsTab(CustomTabPane customTabPane) {
 //        TODO ADD IMPL
         Pane pane = (Pane) customTabPane.getParamsTab().getContent();
+
+        textFieldSetValue(textFieldSignalAverageValue, "");
+        textFieldSetValue(textFieldAbsoluteSignalAverageValue, "");
+        textFieldSetValue(textFieldSignalEffectiveValue, "");
+        textFieldSetValue(textFieldSignalVariance, "");
+        textFieldSetValue(textFieldAverageSignalStrength, "");
+        textFieldSetValue(textFieldMediumSquareError, "");
+        textFieldSetValue(textFieldSignalNoiseRatio, "");
+        textFieldSetValue(textFieldPeakSignalNoiseRatio, "");
+        textFieldSetValue(textFieldMaximumDifference, "");
+        textFieldSetValue(textFieldEffectiveNumberOfBits, "");
+        textFieldSetValue(textFieldTransformationTime, "");
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Collection<ChartRecord<Number, Number>> lineChartCollection,
+                                           Series lineChartCollection,
                                            Collection<ChartRecord<String, Number>> barChartCollection) {
         Tab tab = tabPane.getSelectionModel().getSelectedItem();
         CustomTabPane customTabPane = (CustomTabPane) tab.getContent();
@@ -250,13 +264,13 @@ public class MainPanel implements Initializable {
 //        TODO IN FINAL VERSION MOVE TO IF STATEMENTS
         fillCustomTabPaneWithData(tabPaneResults,
                 Stream.of(
-                        new ChartRecord<Number, Number>(1, 200),
-                        new ChartRecord<Number, Number>(2, 500),
-                        new ChartRecord<Number, Number>(3, 800),
-                        new ChartRecord<Number, Number>(4, 100),
-                        new ChartRecord<Number, Number>(5, 350),
-                        new ChartRecord<Number, Number>(6, 400)
-                ).collect(Collectors.toCollection(ArrayList::new)),
+                        new Data(1.0, 200.0),
+                        new Data(2.0, 500.0),
+                        new Data(3.0, 800.0),
+                        new Data(4.0, 100.0),
+                        new Data(5.0, 350.0),
+                        new Data(6.0, 400.0)
+                ).collect(Collectors.toCollection(Series::new)),
                 Stream.of(
                         new ChartRecord<String, Number>("aa", 1),
                         new ChartRecord<String, Number>("bb", 2),
@@ -264,18 +278,6 @@ public class MainPanel implements Initializable {
                         new ChartRecord<String, Number>("dd", 4),
                         new ChartRecord<String, Number>("ee", 5)
                 ).collect(Collectors.toCollection(ArrayList::new)));
-
-        textFieldSetValue(textFieldSignalAverageValue,"");
-        textFieldSetValue(textFieldAbsoluteSignalAverageValue,"");
-        textFieldSetValue(textFieldSignalEffectiveValue,"");
-        textFieldSetValue(textFieldSignalVariance,"");
-        textFieldSetValue(textFieldAverageSignalStrength,"");
-        textFieldSetValue(textFieldMediumSquareError,"");
-        textFieldSetValue(textFieldSignalNoiseRatio,"");
-        textFieldSetValue(textFieldPeakSignalNoiseRatio,"");
-        textFieldSetValue(textFieldMaximumDifference,"");
-        textFieldSetValue(textFieldEffectiveNumberOfBits,"");
-        textFieldSetValue(textFieldTransformationTime,"");
     }
     /*------------------------------------------------------------------------*/
 }
