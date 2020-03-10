@@ -3,34 +3,37 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="900.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.jkkk.cps.view.controller.MainPanel">
     <children>
-        <ToolBar layoutX="526.0" layoutY="48.0" prefHeight="61.0" prefWidth="349.0">
+        <ToolBar layoutX="366.0" layoutY="14.0" prefHeight="61.0" prefWidth="468.0">
             <items>
                 <Button minHeight="35.0" minWidth="100.0" mnemonicParsing="false"
-                        onAction="#onActionButtonReloadStage" text="Odśwież Stronę"/>
+                        onAction="#onActionButtonGenerateData" prefHeight="35.0" prefWidth="112.0"
+                        text="Generuj Wykres"/>
                 <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
                         mnemonicParsing="false" onAction="#onActionButtonAddNewTab"
                         text="Dodaj Kartę"/>
+                <Button minHeight="35.0" minWidth="100.0" mnemonicParsing="false"
+                        onAction="#onActionButtonReloadStage" text="Odśwież Stronę"/>
                 <Button layoutX="106.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
                         mnemonicParsing="false" onAction="#onActionButtonCloseProgram"
                         text="Zamknij Program"/>
             </items>
         </ToolBar>
 
-        <TabPane fx:id="tabPaneInputs" layoutX="43.0" layoutY="160.0" prefHeight="619.0"
+        <TabPane fx:id="tabPaneInputs" layoutX="22.0" layoutY="84.0" prefHeight="568.0"
                  prefWidth="440.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>
                 <Tab text="Generowanie">
-                    <AnchorPane>
+                    <AnchorPane prefHeight="553.0" prefWidth="440.0">
                         <Label layoutX="150.0" layoutY="21.0" prefHeight="28.0" prefWidth="141.0"
                                text="Wybierz Rodzaj Sygnału"/>
 
                         <ComboBox fx:id="comboBoxSignalTypes" layoutX="19.0" layoutY="56.0"
                                   prefHeight="29.0" prefWidth="402.0"/>
-                        <Pane layoutX="19.0" layoutY="183.0" prefHeight="392.0" prefWidth="402.0">
+                        <Pane layoutX="19.0" layoutY="134.0" prefHeight="392.0" prefWidth="402.0">
                             <children>
                                 <Label layoutX="148.0" layoutY="15.0" prefHeight="28.0"
                                        prefWidth="117.0" text="Wybierz Parametry"/>
@@ -92,23 +95,20 @@
                 <Tab text="Obsługa Plików">
                     <AnchorPane>
                         <children>
-                            <Button layoutX="107.0" layoutY="60.0" mnemonicParsing="false"
-                                    onAction="#onActionLoadChart" prefHeight="73.0"
-                                    prefWidth="227.0" text="Wczytaj Wykres"/>
-                            <Button layoutX="107.0" layoutY="192.0" mnemonicParsing="false"
-                                    onAction="#onActionSaveChart" prefHeight="73.0"
-                                    prefWidth="227.0" text="Zapisz Wykres"/>
+                            <Button layoutX="120.0" layoutY="36.0" mnemonicParsing="false"
+                                    onAction="#onActionLoadChart" prefHeight="50.0"
+                                    prefWidth="200.0" text="Wczytaj Wykres"/>
+                            <Button layoutX="120.0" layoutY="111.0" mnemonicParsing="false"
+                                    onAction="#onActionSaveChart" prefHeight="50.0"
+                                    prefWidth="200.0" text="Zapisz Wykres"/>
                         </children>
                     </AnchorPane>
                 </Tab>
             </tabs>
         </TabPane>
-        <Button layoutX="139.0" layoutY="792.0" minHeight="35.0" minWidth="100.0"
-                mnemonicParsing="false" onAction="#onActionButtonGenerateData" prefHeight="51.0"
-                prefWidth="248.0" text="Generuj Wykres"/>
 
-        <TabPane fx:id="tabPaneResults" layoutX="495.0" layoutY="160.0" minHeight="675.0"
-                 minWidth="850.0" prefHeight="673.0" prefWidth="850.0"
+        <TabPane fx:id="tabPaneResults" layoutX="498.0" layoutY="84.0" minHeight="552.0"
+                 minWidth="666.0" prefHeight="568.0" prefWidth="672.0"
                  tabClosingPolicy="UNAVAILABLE">
 
         </TabPane>
@@ -117,61 +117,60 @@
         <!-- IN ORDER TO USE SCENE BUILDER IN NORMAL WAY - COMMENT OUT THIS PANE -->
         <Pane fx:id="paramsTab" prefHeight="392.0" prefWidth="402.0">
             <children>
-                <Label layoutX="50.0" layoutY="60.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Wartość średnia sygnału"/>
-                <TextField fx:id="textFieldSignalAverageValue" editable="false" layoutX="350.0"
-                           layoutY="60.0"/>
+                <Label layoutX="50.0" layoutY="40.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Wartość średnia sygnału"/>
+                <TextField fx:id="textFieldSignalAverageValue" editable="false"
+                           layoutX="350.0" layoutY="40.0"/>
 
-                <Label layoutX="50.0" layoutY="100.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Wartość średnia bezwzględna sygnału"/>
+                <Label layoutX="50.0" layoutY="80.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Wartość średnia bezwzględna sygnału"/>
                 <TextField fx:id="textFieldAbsoluteSignalAverageValue" editable="false"
-                           layoutX="350.0"
-                           layoutY="100.0"/>
+                           layoutX="350.0" layoutY="80.0"/>
 
-                <Label layoutX="50.0" layoutY="140.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Wartość skuteczna sygnału"/>
-                <TextField fx:id="textFieldSignalEffectiveValue" editable="false" layoutX="350.0"
-                           layoutY="140.0"/>
+                <Label layoutX="50.0" layoutY="120.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Wartość skuteczna sygnału"/>
+                <TextField fx:id="textFieldSignalEffectiveValue" editable="false"
+                           layoutX="350.0" layoutY="120.0"/>
 
-                <Label layoutX="50.0" layoutY="180.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Wariancja sygnału"/>
-                <TextField fx:id="textFieldSignalVariance" editable="false" layoutX="350.0"
-                           layoutY="180.0"/>
+                <Label layoutX="50.0" layoutY="160.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Wariancja sygnału"/>
+                <TextField fx:id="textFieldSignalVariance" editable="false"
+                           layoutX="350.0" layoutY="160.0"/>
 
-                <Label layoutX="50.0" layoutY="220.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Moc średnia sygnału"/>
-                <TextField fx:id="textFieldAverageSignalStrength" editable="false" layoutX="350.0"
-                           layoutY="220.0"/>
+                <Label layoutX="50.0" layoutY="200.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Moc średnia sygnału"/>
+                <TextField fx:id="textFieldAverageSignalStrength" editable="false"
+                           layoutX="350.0" layoutY="200.0"/>
 
-                <Label layoutX="50.0" layoutY="260.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Błąd średniokwadratowy"/>
-                <TextField fx:id="textFieldMediumSquareError" editable="false" layoutX="350.0"
-                           layoutY="260.0"/>
+                <Label layoutX="50.0" layoutY="240.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Błąd średniokwadratowy"/>
+                <TextField fx:id="textFieldMediumSquareError" editable="false"
+                           layoutX="350.0" layoutY="240.0"/>
 
-                <Label layoutX="50.0" layoutY="300.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Stosunek sygnał - szum"/>
-                <TextField fx:id="textFieldSignalNoiseRatio" editable="false" layoutX="350.0"
-                           layoutY="300.0"/>
+                <Label layoutX="50.0" layoutY="280.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Stosunek sygnał - szum"/>
+                <TextField fx:id="textFieldSignalNoiseRatio" editable="false"
+                           layoutX="350.0" layoutY="280.0"/>
 
-                <Label layoutX="50.0" layoutY="340.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Szczytowy stosunek sygnał - szum"/>
-                <TextField fx:id="textFieldPeakSignalNoiseRatio" editable="false" layoutX="350.0"
-                           layoutY="340.0"/>
+                <Label layoutX="50.0" layoutY="320.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Szczytowy stosunek sygnał - szum"/>
+                <TextField fx:id="textFieldPeakSignalNoiseRatio" editable="false"
+                           layoutX="350.0" layoutY="320.0"/>
 
-                <Label layoutX="50.0" layoutY="380.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Maksymalna różnica"/>
-                <TextField fx:id="textFieldMaximumDifference" editable="false" layoutX="350.0"
-                           layoutY="380.0"/>
+                <Label layoutX="50.0" layoutY="360.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Maksymalna różnica"/>
+                <TextField fx:id="textFieldMaximumDifference" editable="false"
+                           layoutX="350.0" layoutY="360.0"/>
 
-                <Label layoutX="50.0" layoutY="420.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Efektywna liczba bitów"/>
-                <TextField fx:id="textFieldEffectiveNumberOfBits" editable="false" layoutX="350.0"
-                           layoutY="420.0"/>
+                <Label layoutX="50.0" layoutY="400.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Efektywna liczba bitów"/>
+                <TextField fx:id="textFieldEffectiveNumberOfBits" editable="false"
+                           layoutX="350.0" layoutY="400.0"/>
 
-                <Label layoutX="50.0" layoutY="460.0" prefHeight="28.0"
-                       prefWidth="240.0" text="Czas transformacji"/>
-                <TextField fx:id="textFieldTransformationTime" editable="false" layoutX="350.0"
-                           layoutY="460.0"/>
+                <Label layoutX="50.0" layoutY="440.0" prefHeight="28.0" prefWidth="240.0"
+                       text="Czas transformacji"/>
+                <TextField fx:id="textFieldTransformationTime" editable="false"
+                           layoutX="350.0" layoutY="440.0"/>
             </children>
         </Pane>
         <!-- #################################################################################### -->
