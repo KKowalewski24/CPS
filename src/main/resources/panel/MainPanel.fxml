@@ -26,7 +26,7 @@
         <ToolBar layoutX="848.0" layoutY="14.0" prefHeight="61.0" prefWidth="322.0">
             <items>
                 <Spinner fx:id="spinnerHistogramRange" prefHeight="29.0" prefWidth="70.0"/>
-                <Button onAction="#onActionHistogramRange" mnemonicParsing="false"
+                <Button mnemonicParsing="false" onAction="#onActionHistogramRange"
                         text="Zmień liczbe przedziałów histogramu"/>
             </items>
         </ToolBar>
@@ -97,6 +97,12 @@
 
                         <ComboBox fx:id="comboBoxOperationTypes" layoutX="19.0" layoutY="56.0"
                                   prefHeight="29.0" prefWidth="402.0"/>
+                        <Label layoutX="61.0" layoutY="130.0" text="Pierwszy Sygnał"/>
+                        <ComboBox fx:id="comboBoxFirstSignal" layoutX="32.0" layoutY="165.0"
+                                  prefWidth="150.0"/>
+                        <Label layoutX="283.0" layoutY="130.0" text="Drugi Sygnał"/>
+                        <ComboBox fx:id="comboBoxSecondSignal" layoutX="245.0" layoutY="165.0"
+                                  prefWidth="150.0"/>
                     </AnchorPane>
                 </Tab>
 
@@ -118,71 +124,7 @@
         <TabPane fx:id="tabPaneResults" layoutX="498.0" layoutY="84.0" minHeight="552.0"
                  minWidth="666.0" prefHeight="568.0" prefWidth="672.0"
                  tabClosingPolicy="UNAVAILABLE">
-
         </TabPane>
-
-        <!-- #################################################################################### -->
-        <!-- IN ORDER TO USE SCENE BUILDER IN NORMAL WAY - COMMENT OUT THIS PANE -->
-        <Pane fx:id="paramsTab" prefHeight="392.0" prefWidth="402.0">
-            <children>
-                <Label layoutX="50.0" layoutY="40.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Wartość średnia sygnału"/>
-                <TextField fx:id="textFieldSignalAverageValue" editable="false"
-                           layoutX="350.0" layoutY="40.0"/>
-
-                <Label layoutX="50.0" layoutY="80.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Wartość średnia bezwzględna sygnału"/>
-                <TextField fx:id="textFieldAbsoluteSignalAverageValue" editable="false"
-                           layoutX="350.0" layoutY="80.0"/>
-
-                <Label layoutX="50.0" layoutY="120.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Wartość skuteczna sygnału"/>
-                <TextField fx:id="textFieldSignalEffectiveValue" editable="false"
-                           layoutX="350.0" layoutY="120.0"/>
-
-                <Label layoutX="50.0" layoutY="160.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Wariancja sygnału"/>
-                <TextField fx:id="textFieldSignalVariance" editable="false"
-                           layoutX="350.0" layoutY="160.0"/>
-
-                <Label layoutX="50.0" layoutY="200.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Moc średnia sygnału"/>
-                <TextField fx:id="textFieldAverageSignalStrength" editable="false"
-                           layoutX="350.0" layoutY="200.0"/>
-
-                <Label layoutX="50.0" layoutY="240.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Błąd średniokwadratowy"/>
-                <TextField fx:id="textFieldMediumSquareError" editable="false"
-                           layoutX="350.0" layoutY="240.0"/>
-
-                <Label layoutX="50.0" layoutY="280.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Stosunek sygnał - szum"/>
-                <TextField fx:id="textFieldSignalNoiseRatio" editable="false"
-                           layoutX="350.0" layoutY="280.0"/>
-
-                <Label layoutX="50.0" layoutY="320.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Szczytowy stosunek sygnał - szum"/>
-                <TextField fx:id="textFieldPeakSignalNoiseRatio" editable="false"
-                           layoutX="350.0" layoutY="320.0"/>
-
-                <Label layoutX="50.0" layoutY="360.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Maksymalna różnica"/>
-                <TextField fx:id="textFieldMaximumDifference" editable="false"
-                           layoutX="350.0" layoutY="360.0"/>
-
-                <Label layoutX="50.0" layoutY="400.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Efektywna liczba bitów"/>
-                <TextField fx:id="textFieldEffectiveNumberOfBits" editable="false"
-                           layoutX="350.0" layoutY="400.0"/>
-
-                <Label layoutX="50.0" layoutY="440.0" prefHeight="28.0" prefWidth="240.0"
-                       text="Czas transformacji"/>
-                <TextField fx:id="textFieldTransformationTime" editable="false"
-                           layoutX="350.0" layoutY="440.0"/>
-            </children>
-        </Pane>
-        <!-- #################################################################################### -->
-
     </children>
 
 </AnchorPane>

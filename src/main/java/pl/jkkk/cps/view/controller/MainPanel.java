@@ -1,9 +1,9 @@
 package pl.jkkk.cps.view.controller;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -37,16 +37,22 @@ import java.util.stream.Stream;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
+import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
 import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
+import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
+import static pl.jkkk.cps.view.helper.ChartHelper.prepareLabelWithPosition;
 import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
 
 public class MainPanel implements Initializable {
 
+    public Pane paramsTab;
     /*------------------------ FIELDS REGION ------------------------*/
     /* LEFT SIDE */
+    @FXML
+    private TabPane tabPaneInputs;
     @FXML
     private ComboBox comboBoxSignalTypes;
     @FXML
@@ -67,34 +73,14 @@ public class MainPanel implements Initializable {
     private TextField textFieldSamplingFrequency;
     @FXML
     private ComboBox comboBoxOperationTypes;
+    @FXML
+    private ComboBox comboBoxFirstSignal;
+    @FXML
+    private ComboBox comboBoxSecondSignal;
 
     /* RIGHT SIDE */
     @FXML
     private TabPane tabPaneResults;
-    @FXML
-    private Pane paramsTab;
-    @FXML
-    private TextField textFieldSignalAverageValue;
-    @FXML
-    private TextField textFieldAbsoluteSignalAverageValue;
-    @FXML
-    private TextField textFieldSignalEffectiveValue;
-    @FXML
-    private TextField textFieldSignalVariance;
-    @FXML
-    private TextField textFieldAverageSignalStrength;
-    @FXML
-    private TextField textFieldMediumSquareError;
-    @FXML
-    private TextField textFieldSignalNoiseRatio;
-    @FXML
-    private TextField textFieldPeakSignalNoiseRatio;
-    @FXML
-    private TextField textFieldMaximumDifference;
-    @FXML
-    private TextField textFieldEffectiveNumberOfBits;
-    @FXML
-    private TextField textFieldTransformationTime;
     @FXML
     private Spinner spinnerHistogramRange;
 
@@ -138,20 +124,39 @@ public class MainPanel implements Initializable {
                 OperationType.DIVISION.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
+        fillComboBox(comboBoxFirstSignal, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxSecondSignal, getTabNameList(tabPaneResults.getTabs()));
+
         fillTextFields();
     }
 
     private void prepareTabPaneResults(int index) {
+
         LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
         lineChart.setCreateSymbols(false);
+
         BarChart barChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
         barChart.setAnimated(true);
+
+        Pane pane = new Pane(
+                prepareLabelWithPosition("Wartość średnia sygnału: ", 25, 40),
+                prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
+                prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
+                prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
+                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200),
+                prepareLabelWithPosition("Błąd średniokwadratowy: ", 25, 240),
+                prepareLabelWithPosition("Stosunek sygnał - szum: ", 25, 280),
+                prepareLabelWithPosition("Szczytowy stosunek sygnał - szum: ", 25, 320),
+                prepareLabelWithPosition("Maksymalna różnica: ", 25, 360),
+                prepareLabelWithPosition("Efektywna liczba bitów: ", 25, 400),
+                prepareLabelWithPosition("Czas transformacji: ", 25, 440)
+        );
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
                         new CustomTab("Wykres", lineChart, false),
                         new CustomTab("Histogram", barChart, false),
-                        new CustomTab("Parametry", paramsTab, false)
+                        new CustomTab("Parametry", pane, false)
                 )));
     }
 
@@ -159,8 +164,9 @@ public class MainPanel implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         spinnerHistogramRange.setValueFactory(new SpinnerValueFactory
                 .IntegerSpinnerValueFactory(5, 20, 10, 5));
-        prepareTabPaneInputs();
+
         prepareTabPaneResults(0);
+        prepareTabPaneInputs();
     }
 
     /*------------------------ BUTTON TOP BAR ------------------------*/
@@ -171,13 +177,9 @@ public class MainPanel implements Initializable {
 
     @FXML
     private void onActionButtonAddNewTab(ActionEvent actionEvent) {
-        ObservableList<Tab> tabList = tabPaneResults.getTabs();
-        if (tabList.size() != 0) {
-            prepareTabPaneResults(tabList.size());
-        } else {
-            PopOutWindow.messageBox("Brak Wykresów",
-                    "Wykresy nie zostały jeszcze wygenerowane", Alert.AlertType.WARNING);
-        }
+        prepareTabPaneResults(tabPaneResults.getTabs().size());
+        fillComboBox(comboBoxFirstSignal, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxSecondSignal, getTabNameList(tabPaneResults.getTabs()));
     }
 
     @FXML
@@ -211,19 +213,10 @@ public class MainPanel implements Initializable {
     /*------------------------ FILL PREPARED PANES AND CHARTS ------------------------*/
     private void fillParamsTab(CustomTabPane customTabPane) {
 //        TODO ADD IMPL
+        Pane pane = (Pane) customTabPane.getParamsTab().getContent();
+        List<Node> paneChildren = pane.getChildren();
 
-        textFieldSetValue(textFieldSignalAverageValue, "");
-        textFieldSetValue(textFieldAbsoluteSignalAverageValue, "");
-        textFieldSetValue(textFieldSignalEffectiveValue, "");
-        textFieldSetValue(textFieldSignalVariance, "");
-        textFieldSetValue(textFieldAverageSignalStrength, "");
-
-//        textFieldSetValue(textFieldMediumSquareError, "");
-//        textFieldSetValue(textFieldSignalNoiseRatio, "");
-//        textFieldSetValue(textFieldPeakSignalNoiseRatio, "");
-//        textFieldSetValue(textFieldMaximumDifference, "");
-//        textFieldSetValue(textFieldEffectiveNumberOfBits, "");
-//        textFieldSetValue(textFieldTransformationTime, "");
+        appendLabelText(paneChildren.get(0), "454545");
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
@@ -238,38 +231,48 @@ public class MainPanel implements Initializable {
 
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
-        //TODO ADD IMPL
-        String selectedSignal = comboBoxSignalTypes.getSelectionModel()
-                .getSelectedItem().toString();
+        //TODO ADD IMPL, IN FINAL VERSION LOAD DATA FROM LOGIC
+        Integer selectedTab = tabPaneInputs.getSelectionModel().getSelectedIndex();
 
-        String selectedOperation = comboBoxOperationTypes.getSelectionModel()
-                .getSelectedItem().toString();
+        switch (selectedTab) {
+            case 0: {
+                String selectedSignal = comboBoxSignalTypes.getSelectionModel()
+                        .getSelectedItem().toString();
 
-        lineChartData = Stream.of(
-                new Data(1.0, 200.0),
-                new Data(2.0, 500.0),
-                new Data(3.0, 800.0),
-                new Data(4.0, 100.0),
-                new Data(5.0, 350.0),
-                new Data(6.0, 400.0)
-        ).collect(Collectors.toCollection(Series::new));
+                lineChartData = Stream.of(
+                        new Data(1.0, 200.0),
+                        new Data(2.0, 500.0),
+                        new Data(3.0, 800.0),
+                        new Data(4.0, 100.0),
+                        new Data(5.0, 350.0),
+                        new Data(6.0, 400.0)
+                ).collect(Collectors.toCollection(Series::new));
 
-        barChartData = Stream.of(
-                new ChartRecord<String, Number>("aa", 1),
-                new ChartRecord<String, Number>("bb", 2),
-                new ChartRecord<String, Number>("cc", 3),
-                new ChartRecord<String, Number>("dd", 4),
-                new ChartRecord<String, Number>("ee", 5),
-                new ChartRecord<String, Number>("e", 6),
-                new ChartRecord<String, Number>("f", 6),
-                new ChartRecord<String, Number>("g", 6),
-                new ChartRecord<String, Number>("h", 6),
-                new ChartRecord<String, Number>("k", 6),
-                new ChartRecord<String, Number>("i", 6)
-        ).collect(Collectors.toCollection(ArrayList::new));
+                barChartData = Stream.of(
+                        new ChartRecord<String, Number>("aa", 1),
+                        new ChartRecord<String, Number>("bb", 2),
+                        new ChartRecord<String, Number>("cc", 3),
+                        new ChartRecord<String, Number>("dd", 4),
+                        new ChartRecord<String, Number>("ee", 5),
+                        new ChartRecord<String, Number>("e", 6),
+                        new ChartRecord<String, Number>("f", 6),
+                        new ChartRecord<String, Number>("g", 6),
+                        new ChartRecord<String, Number>("h", 6),
+                        new ChartRecord<String, Number>("k", 6),
+                        new ChartRecord<String, Number>("i", 6)
+                ).collect(Collectors.toCollection(ArrayList::new));
 
-//        TODO IN FINAL VERSION MOVE TO IF STATEMENTS
-        fillCustomTabPaneWithData(tabPaneResults, lineChartData, barChartData);
+                fillCustomTabPaneWithData(tabPaneResults, lineChartData, barChartData);
+
+                break;
+            }
+            case 1: {
+                String selectedOperation = comboBoxOperationTypes.getSelectionModel()
+                        .getSelectedItem().toString();
+
+                break;
+            }
+        }
     }
 
     @FXML
