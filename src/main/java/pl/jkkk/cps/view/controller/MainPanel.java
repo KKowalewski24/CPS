@@ -8,9 +8,10 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -29,14 +30,17 @@ import pl.jkkk.cps.view.util.StageController;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
+import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
+import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
-import static pl.jkkk.cps.view.helper.ChartHelper.prepareDataRecord;
+import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
 
 public class MainPanel implements Initializable {
@@ -91,6 +95,12 @@ public class MainPanel implements Initializable {
     private TextField textFieldEffectiveNumberOfBits;
     @FXML
     private TextField textFieldTransformationTime;
+    @FXML
+    private Spinner spinnerHistogramRange;
+
+    /* OTHER FIELDS */
+    private Series lineChartData;
+    private List<ChartRecord<String, Number>> barChartData;
 
     /*------------------------ METHODS REGION ------------------------*/
 
@@ -132,22 +142,26 @@ public class MainPanel implements Initializable {
     }
 
     private void prepareTabPaneResults(int index) {
+        LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
+        lineChart.setCreateSymbols(false);
+        BarChart barChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
+        barChart.setAnimated(true);
+
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
-                        new CustomTab("Wykres", new LineChart<>(new NumberAxis(),
-                                new NumberAxis()), false),
-                        new CustomTab("Histogram", new BarChart<>(new CategoryAxis(),
-                                new NumberAxis()), false),
+                        new CustomTab("Wykres", lineChart, false),
+                        new CustomTab("Histogram", barChart, false),
                         new CustomTab("Parametry", paramsTab, false)
                 )));
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        spinnerHistogramRange.setValueFactory(new SpinnerValueFactory
+                .IntegerSpinnerValueFactory(5, 20, 10, 5));
         prepareTabPaneInputs();
         prepareTabPaneResults(0);
     }
-    /*------------------------------------------------------------------------*/
 
     /*------------------------ BUTTON TOP BAR ------------------------*/
     @FXML
@@ -170,7 +184,6 @@ public class MainPanel implements Initializable {
     private void onActionButtonCloseProgram(ActionEvent actionEvent) {
         System.exit(0);
     }
-    /*------------------------------------------------------------------------*/
 
     /*------------------------ FILE READ / WRITE ------------------------*/
     @FXML
@@ -194,58 +207,29 @@ public class MainPanel implements Initializable {
                     "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
         }
     }
-    /*------------------------------------------------------------------------*/
 
     /*------------------------ FILL PREPARED PANES AND CHARTS ------------------------*/
-    private void fillLineChart(CustomTabPane customTabPane,
-                               Series dataCollection) {
-        LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
-        XYChart.Series series = new XYChart.Series<>();
-
-        dataCollection.forEach((it) -> {
-            series.getData().add(prepareDataRecord(it.getX(), it.getY()));
-        });
-
-        lineChart.getData().clear();
-        lineChart.getData().add(series);
-    }
-
-    private void fillBarChart(CustomTabPane customTabPane,
-                              Collection<ChartRecord<String, Number>> dataCollection) {
-        BarChart barChart = (BarChart) customTabPane.getHistogramTab().getContent();
-        XYChart.Series series = new XYChart.Series<>();
-
-        dataCollection.forEach((it) -> {
-            series.getData().add(prepareDataRecord(it.getAxisX(), it.getAxisY()));
-        });
-
-        barChart.getData().clear();
-        barChart.getData().add(series);
-
-    }
-
     private void fillParamsTab(CustomTabPane customTabPane) {
 //        TODO ADD IMPL
-        Pane pane = (Pane) customTabPane.getParamsTab().getContent();
 
         textFieldSetValue(textFieldSignalAverageValue, "");
         textFieldSetValue(textFieldAbsoluteSignalAverageValue, "");
         textFieldSetValue(textFieldSignalEffectiveValue, "");
         textFieldSetValue(textFieldSignalVariance, "");
         textFieldSetValue(textFieldAverageSignalStrength, "");
-        textFieldSetValue(textFieldMediumSquareError, "");
-        textFieldSetValue(textFieldSignalNoiseRatio, "");
-        textFieldSetValue(textFieldPeakSignalNoiseRatio, "");
-        textFieldSetValue(textFieldMaximumDifference, "");
-        textFieldSetValue(textFieldEffectiveNumberOfBits, "");
-        textFieldSetValue(textFieldTransformationTime, "");
+
+//        textFieldSetValue(textFieldMediumSquareError, "");
+//        textFieldSetValue(textFieldSignalNoiseRatio, "");
+//        textFieldSetValue(textFieldPeakSignalNoiseRatio, "");
+//        textFieldSetValue(textFieldMaximumDifference, "");
+//        textFieldSetValue(textFieldEffectiveNumberOfBits, "");
+//        textFieldSetValue(textFieldTransformationTime, "");
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
                                            Series lineChartCollection,
                                            Collection<ChartRecord<String, Number>> barChartCollection) {
-        Tab tab = tabPane.getSelectionModel().getSelectedItem();
-        CustomTabPane customTabPane = (CustomTabPane) tab.getContent();
+        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
 
         fillLineChart(customTabPane, lineChartCollection);
         fillBarChart(customTabPane, barChartCollection);
@@ -261,24 +245,51 @@ public class MainPanel implements Initializable {
         String selectedOperation = comboBoxOperationTypes.getSelectionModel()
                 .getSelectedItem().toString();
 
+        lineChartData = Stream.of(
+                new Data(1.0, 200.0),
+                new Data(2.0, 500.0),
+                new Data(3.0, 800.0),
+                new Data(4.0, 100.0),
+                new Data(5.0, 350.0),
+                new Data(6.0, 400.0)
+        ).collect(Collectors.toCollection(Series::new));
+
+        barChartData = Stream.of(
+                new ChartRecord<String, Number>("aa", 1),
+                new ChartRecord<String, Number>("bb", 2),
+                new ChartRecord<String, Number>("cc", 3),
+                new ChartRecord<String, Number>("dd", 4),
+                new ChartRecord<String, Number>("ee", 5),
+                new ChartRecord<String, Number>("e", 6),
+                new ChartRecord<String, Number>("f", 6),
+                new ChartRecord<String, Number>("g", 6),
+                new ChartRecord<String, Number>("h", 6),
+                new ChartRecord<String, Number>("k", 6),
+                new ChartRecord<String, Number>("i", 6)
+        ).collect(Collectors.toCollection(ArrayList::new));
+
 //        TODO IN FINAL VERSION MOVE TO IF STATEMENTS
-        fillCustomTabPaneWithData(tabPaneResults,
-                Stream.of(
-                        new Data(1.0, 200.0),
-                        new Data(2.0, 500.0),
-                        new Data(3.0, 800.0),
-                        new Data(4.0, 100.0),
-                        new Data(5.0, 350.0),
-                        new Data(6.0, 400.0)
-                ).collect(Collectors.toCollection(Series::new)),
-                Stream.of(
-                        new ChartRecord<String, Number>("aa", 1),
-                        new ChartRecord<String, Number>("bb", 2),
-                        new ChartRecord<String, Number>("cc", 3),
-                        new ChartRecord<String, Number>("dd", 4),
-                        new ChartRecord<String, Number>("ee", 5)
-                ).collect(Collectors.toCollection(ArrayList::new)));
+        fillCustomTabPaneWithData(tabPaneResults, lineChartData, barChartData);
     }
-    /*------------------------------------------------------------------------*/
+
+    @FXML
+    private void onActionHistogramRange(ActionEvent actionEvent) {
+        Integer histogramRange = (Integer) spinnerHistogramRange.getValue();
+
+        try {
+            if (histogramRange <= barChartData.size()) {
+                fillBarChart(castTabPaneToCustomTabPane(tabPaneResults), barChartData
+                        .subList(0, histogramRange));
+            } else {
+                PopOutWindow.messageBox("Błędna Liczba Przedziałów",
+                        "Histogram posiada zbyt małą liczbę przedziałów",
+                        Alert.AlertType.WARNING);
+            }
+        } catch (NullPointerException e) {
+            PopOutWindow.messageBox("Wygeneruj Wykresy",
+                    "Wykresy nie zostały jeszcze wygenerowane",
+                    Alert.AlertType.WARNING);
+        }
+    }
 }
     
