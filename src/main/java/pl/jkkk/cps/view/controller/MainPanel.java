@@ -48,7 +48,6 @@ import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
 
 public class MainPanel implements Initializable {
 
-    public Pane paramsTab;
     /*------------------------ FIELDS REGION ------------------------*/
     /* LEFT SIDE */
     @FXML
@@ -102,7 +101,7 @@ public class MainPanel implements Initializable {
         textFieldSetValue(textFieldSamplingFrequency, String.valueOf(16));
     }
 
-    private void prepareTabPaneInputs() {
+    private void fillComboBoxes() {
         fillComboBox(comboBoxSignalTypes, Stream.of(
                 SignalType.UNIFORM_NOISE.getName(),
                 SignalType.GAUSSIAN_NOISE.getName(),
@@ -126,7 +125,10 @@ public class MainPanel implements Initializable {
 
         fillComboBox(comboBoxFirstSignal, getTabNameList(tabPaneResults.getTabs()));
         fillComboBox(comboBoxSecondSignal, getTabNameList(tabPaneResults.getTabs()));
+    }
 
+    private void prepareTabPaneInputs() {
+        fillComboBoxes();
         fillTextFields();
     }
 
@@ -212,11 +214,11 @@ public class MainPanel implements Initializable {
 
     /*------------------------ FILL PREPARED PANES AND CHARTS ------------------------*/
     private void fillParamsTab(CustomTabPane customTabPane) {
-//        TODO ADD IMPL
         Pane pane = (Pane) customTabPane.getParamsTab().getContent();
         List<Node> paneChildren = pane.getChildren();
 
-        appendLabelText(paneChildren.get(0), "454545");
+//        TODO ADD IMPL
+        appendLabelText(paneChildren.get(0), "PUT REAL DATA FOR ALL");
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
