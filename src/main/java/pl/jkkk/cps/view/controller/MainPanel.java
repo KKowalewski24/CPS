@@ -8,6 +8,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
@@ -50,9 +51,11 @@ import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
 import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
 import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
+import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
+import static pl.jkkk.cps.view.helper.ChartHelper.fillScatterChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareLabelWithPosition;
 import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
@@ -65,6 +68,9 @@ public class MainPanel implements Initializable {
     private TabPane tabPaneInputs;
     @FXML
     private ComboBox comboBoxSignalTypes;
+    @FXML
+    private Pane chooseParamsTab;
+
     @FXML
     private TextField textFieldAmplitude;
     @FXML
@@ -81,6 +87,7 @@ public class MainPanel implements Initializable {
     private TextField textFieldProbability;
     @FXML
     private TextField textFieldSamplingFrequency;
+
     @FXML
     private ComboBox comboBoxOperationTypes;
     @FXML
@@ -95,8 +102,9 @@ public class MainPanel implements Initializable {
     private Spinner spinnerHistogramRange;
 
     /* OTHER FIELDS */
-    private Series lineChartData;
-    private List<ChartRecord<String, Number>> barChartData;
+    private Series chartData;
+    private List<ChartRecord<String, Number>> histogramData;
+    private boolean isScatterChart;
 
     /*------------------------ METHODS REGION ------------------------*/
 
@@ -234,11 +242,15 @@ public class MainPanel implements Initializable {
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Series lineChartCollection,
+                                           Series chartCollection,
                                            Collection<ChartRecord<String, Number>> barChartCollection) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
 
-        fillLineChart(customTabPane, lineChartCollection);
+        if (isScatterChart) {
+            fillScatterChart(customTabPane, chartCollection);
+        } else {
+            fillLineChart(customTabPane, chartCollection);
+        }
         fillBarChart(customTabPane, barChartCollection);
         fillParamsTab(customTabPane);
     }
@@ -289,17 +301,25 @@ public class MainPanel implements Initializable {
                 } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
                     signal = new UnitJumpSignal(rangeStart, rangeLength, amplitude, jumpMoment);
                 } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
+                    isScatterChart = true;
+                    changeLineChartToScatterChart(tabPaneResults,
+                            new ScatterChart(new NumberAxis(), new NumberAxis()));
+
                     signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
                             propability);
                 } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
+                    isScatterChart = true;
+                    changeLineChartToScatterChart(tabPaneResults,
+                            new ScatterChart(new NumberAxis(), new NumberAxis()));
+
                     signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate, amplitude,
                             (int) jumpMoment);
                 }
 
-                lineChartData = new Series();
-                lineChartData.addAll(signal.generate());
+                chartData = new Series();
+                chartData.addAll(signal.generate());
 
-                barChartData = Stream.of(
+                histogramData = Stream.of(
                         new ChartRecord<String, Number>("aa", 1),
                         new ChartRecord<String, Number>("bb", 2),
                         new ChartRecord<String, Number>("cc", 3),
@@ -313,7 +333,7 @@ public class MainPanel implements Initializable {
                         new ChartRecord<String, Number>("i", 6)
                 ).collect(Collectors.toCollection(ArrayList::new));
 
-                fillCustomTabPaneWithData(tabPaneResults, lineChartData, barChartData);
+                fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData);
 
                 break;
             }
@@ -331,8 +351,8 @@ public class MainPanel implements Initializable {
         Integer histogramRange = (Integer) spinnerHistogramRange.getValue();
 
         try {
-            if (histogramRange <= barChartData.size()) {
-                fillBarChart(castTabPaneToCustomTabPane(tabPaneResults), barChartData
+            if (histogramRange <= histogramData.size()) {
+                fillBarChart(castTabPaneToCustomTabPane(tabPaneResults), histogramData
                         .subList(0, histogramRange));
             } else {
                 PopOutWindow.messageBox("Błędna Liczba Przedziałów",

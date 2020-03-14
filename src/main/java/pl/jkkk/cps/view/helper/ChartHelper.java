@@ -3,6 +3,7 @@ package pl.jkkk.cps.view.helper;
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -84,6 +85,13 @@ public class ChartHelper {
         chart.getData().add(series);
     }
 
+    public static void changeLineChartToScatterChart(TabPane tabPane, ScatterChart scatterChart) {
+        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        customTabPane.getChartTab().setContent(scatterChart);
+        ScatterChart newScatterChart = (ScatterChart) customTabPane.getChartTab().getContent();
+        newScatterChart.setAnimated(false);
+    }
+
     public static void fillLineChart(CustomTabPane customTabPane,
                                      Series dataCollection) {
         LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
@@ -94,6 +102,18 @@ public class ChartHelper {
         });
 
         clearAndAddNewDataToChart(lineChart, series);
+    }
+
+    public static void fillScatterChart(CustomTabPane customTabPane,
+                                        Series dataCollection) {
+        ScatterChart scatterChart = (ScatterChart) customTabPane.getChartTab().getContent();
+        XYChart.Series series = new XYChart.Series<>();
+
+        dataCollection.forEach((it) -> {
+            series.getData().add(prepareDataRecord(it.getX(), it.getY()));
+        });
+
+        clearAndAddNewDataToChart(scatterChart, series);
     }
 
     public static void fillBarChart(CustomTabPane customTabPane,
@@ -107,5 +127,6 @@ public class ChartHelper {
 
         clearAndAddNewDataToChart(barChart, series);
     }
+
 }
     
