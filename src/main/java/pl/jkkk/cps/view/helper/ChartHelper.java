@@ -52,14 +52,22 @@ public class ChartHelper {
         return label;
     }
 
+    public static void textFieldSetValue(TextField textField, String string) {
+        textField.setText(string);
+    }
+
+    public static TextField setTextFieldPosition(TextField textField,
+                                                 int pointX, int pointY) {
+        textField.setLayoutX(pointX);
+        textField.setLayoutY(pointY);
+
+        return textField;
+    }
+
     public static void appendLabelText(Node node, String text) {
         Label label = (Label) node;
         String initialText = label.getText().substring(0, label.getText().indexOf(":") + 1);
         label.setText(initialText + "\t\t\t" + text);
-    }
-
-    public static void textFieldSetValue(TextField textField, String string) {
-        textField.setText(string);
     }
 
     public static void fillComboBox(ComboBox comboBox, Collection collection) {

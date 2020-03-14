@@ -58,6 +58,7 @@ import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillScatterChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareLabelWithPosition;
+import static pl.jkkk.cps.view.helper.ChartHelper.setTextFieldPosition;
 import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
 
 public class MainPanel implements Initializable {
@@ -71,22 +72,14 @@ public class MainPanel implements Initializable {
     @FXML
     private Pane chooseParamsTab;
 
-    @FXML
-    private TextField textFieldAmplitude;
-    @FXML
-    private TextField textFieldStartTime;
-    @FXML
-    private TextField textFieldSignalDuration;
-    @FXML
-    private TextField textFieldBasicPeriod;
-    @FXML
-    private TextField textFieldFillFactor;
-    @FXML
-    private TextField textFieldJumpTime;
-    @FXML
-    private TextField textFieldProbability;
-    @FXML
-    private TextField textFieldSamplingFrequency;
+    private TextField textFieldAmplitude = new TextField();
+    private TextField textFieldStartTime = new TextField();
+    private TextField textFieldSignalDuration = new TextField();
+    private TextField textFieldBasicPeriod = new TextField();
+    private TextField textFieldFillFactor = new TextField();
+    private TextField textFieldJumpTime = new TextField();
+    private TextField textFieldProbability = new TextField();
+    private TextField textFieldSamplingFrequency = new TextField();
 
     @FXML
     private ComboBox comboBoxOperationTypes;
@@ -146,9 +139,82 @@ public class MainPanel implements Initializable {
         fillComboBox(comboBoxSecondSignal, getTabNameList(tabPaneResults.getTabs()));
     }
 
+    private void fillChooseParamsTab() {
+
+        List<Node> basicInputs = Stream.of(
+                prepareLabelWithPosition("Wybierz Parametry", 168, 14),
+                prepareLabelWithPosition("Amplituda", 50, 50),
+                prepareLabelWithPosition("Czas początkowy", 50, 90),
+                prepareLabelWithPosition("Czas trwania sygnału", 50, 130),
+                setTextFieldPosition(textFieldAmplitude, 270, 50),
+                setTextFieldPosition(textFieldStartTime, 270, 90),
+                setTextFieldPosition(textFieldSignalDuration, 270, 130)
+        ).collect(Collectors.toCollection(ArrayList::new));
+
+        chooseParamsTab.getChildren().setAll(basicInputs);
+
+        comboBoxSignalTypes.setOnAction((event -> {
+            String selectedSignal = comboBoxSignalTypes.getSelectionModel()
+                    .getSelectedItem().toString();
+
+            if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())
+                    || selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
+
+                chooseParamsTab.getChildren().setAll(basicInputs);
+
+            } else if (selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())
+                    || selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())
+                    || selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())) {
+
+                chooseParamsTab.getChildren().setAll(basicInputs);
+                chooseParamsTab.getChildren().addAll(
+                        prepareLabelWithPosition("Okres podstawowy", 50, 170),
+                        setTextFieldPosition(textFieldBasicPeriod, 270, 170)
+                );
+            } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())
+                    || selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())
+                    || selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())) {
+
+                chooseParamsTab.getChildren().setAll(basicInputs);
+                chooseParamsTab.getChildren().addAll(
+                        prepareLabelWithPosition("Okres podstawowy", 50, 170),
+                        setTextFieldPosition(textFieldBasicPeriod, 270, 170),
+                        prepareLabelWithPosition("Wspł wypełnienia", 50, 210),
+                        setTextFieldPosition(textFieldFillFactor, 270, 210)
+                );
+            } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
+
+                chooseParamsTab.getChildren().setAll(basicInputs);
+                chooseParamsTab.getChildren().addAll(
+                        prepareLabelWithPosition("Czas skoku", 50, 170),
+                        setTextFieldPosition(textFieldJumpTime, 270, 170)
+                );
+            } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
+
+                chooseParamsTab.getChildren().setAll(basicInputs);
+                chooseParamsTab.getChildren().addAll(
+                        prepareLabelWithPosition("Częst próbkowania", 50, 170),
+                        prepareLabelWithPosition("Numer próbki skoku", 50, 210),
+                        setTextFieldPosition(textFieldSamplingFrequency, 270, 170),
+                        setTextFieldPosition(textFieldJumpTime, 270, 210)
+                );
+            } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
+
+                chooseParamsTab.getChildren().setAll(basicInputs);
+                chooseParamsTab.getChildren().addAll(
+                        prepareLabelWithPosition("Prawdopodobieństwo", 50, 170),
+                        prepareLabelWithPosition("Częst próbkowania", 50, 210),
+                        setTextFieldPosition(textFieldProbability, 270, 170),
+                        setTextFieldPosition(textFieldSamplingFrequency, 270, 210)
+                );
+            }
+        }));
+    }
+
     private void prepareTabPaneInputs() {
         fillComboBoxes();
         fillTextFields();
+        fillChooseParamsTab();
     }
 
     private void prepareTabPaneResults(int index) {
@@ -266,6 +332,7 @@ public class MainPanel implements Initializable {
                         .getSelectedItem().toString();
 
                 /* get signal params */
+                //TODO MOVE TO METHOD
                 double amplitude = Double.parseDouble(textFieldAmplitude.getText());
                 double rangeStart = Double.parseDouble(textFieldStartTime.getText());
                 double rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
@@ -278,44 +345,65 @@ public class MainPanel implements Initializable {
                 /* Create proper signal */
                 Signal signal = null;
                 if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
+
                     signal = new UniformNoise(rangeStart, rangeLength, amplitude);
+
                 } else if (selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
+
                     signal = new GaussianNoise(rangeStart, rangeLength, amplitude);
+
                 } else if (selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())) {
+
                     signal = new SinusoidalSignal(rangeStart, rangeLength, amplitude, term);
+
                 } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())) {
+
                     signal = new SinusoidalRectifiedOneHalfSignal(rangeStart, rangeLength,
                             amplitude, term);
+
                 } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())) {
+
                     signal = new SinusoidalRectifiedTwoHalfSignal(rangeStart, rangeLength,
                             amplitude, term);
+
                 } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())) {
+
                     signal = new RectangularSignal(rangeStart, rangeLength, amplitude, term,
                             fulfillment);
+
                 } else if (selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())) {
+
                     signal = new RectangularSymmetricSignal(rangeStart, rangeLength, amplitude,
                             term, fulfillment);
+
                 } else if (selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())) {
+
                     signal = new TriangularSignal(rangeStart, rangeLength, amplitude, term,
                             fulfillment);
-                } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
-                    signal = new UnitJumpSignal(rangeStart, rangeLength, amplitude, jumpMoment);
-                } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
-                    isScatterChart = true;
-                    changeLineChartToScatterChart(tabPaneResults,
-                            new ScatterChart(new NumberAxis(), new NumberAxis()));
 
-                    signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
-                            propability);
+                } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
+
+                    signal = new UnitJumpSignal(rangeStart, rangeLength, amplitude, jumpMoment);
+
                 } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
+
                     isScatterChart = true;
                     changeLineChartToScatterChart(tabPaneResults,
                             new ScatterChart(new NumberAxis(), new NumberAxis()));
 
                     signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate, amplitude,
                             (int) jumpMoment);
-                }
 
+                } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
+
+                    isScatterChart = true;
+                    changeLineChartToScatterChart(tabPaneResults,
+                            new ScatterChart(new NumberAxis(), new NumberAxis()));
+
+                    signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
+                            propability);
+
+                }
                 chartData = new Series();
                 chartData.addAll(signal.generate());
 

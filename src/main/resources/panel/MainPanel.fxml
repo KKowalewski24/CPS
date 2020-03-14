@@ -43,52 +43,8 @@
                                   prefHeight="29.0" prefWidth="402.0"/>
                         <Pane fx:id="chooseParamsTab" layoutX="19.0" layoutY="134.0"
                               prefHeight="392.0"
-                              prefWidth="402.0">
-                            <children>
-                                <Label layoutX="168.0" layoutY="14.0" prefHeight="28.0"
-                                       prefWidth="117.0" text="Wybierz Parametry"/>
+                              prefWidth="402.0"/>
 
-                                <Label layoutX="14.0" layoutY="60.0" prefHeight="28.0"
-                                       prefWidth="120.0" text="Amplituda"/>
-                                <TextField fx:id="textFieldAmplitude" layoutX="226.0"
-                                           layoutY="60.0"/>
-
-                                <Label layoutX="14.0" layoutY="100.0" prefHeight="28.0"
-                                       prefWidth="120.0" text="Czas początkowy"/>
-                                <TextField fx:id="textFieldStartTime" layoutX="226.0"
-                                           layoutY="100.0"/>
-
-                                <Label layoutX="14.0" layoutY="140.0" prefHeight="28.0"
-                                       prefWidth="120.0" text="Czas trwania sygnału"/>
-                                <TextField fx:id="textFieldSignalDuration" layoutX="226.0"
-                                           layoutY="140.0"/>
-
-                                <Label layoutX="14.0" layoutY="180.0" prefHeight="28.0"
-                                       prefWidth="120.0" text="Okres podstawowy"/>
-                                <TextField fx:id="textFieldBasicPeriod" layoutX="226.0"
-                                           layoutY="180.0"/>
-
-                                <Label layoutX="14.0" layoutY="220.0" prefHeight="28.0"
-                                       prefWidth="120.0" text="Wspł wypełnienia"/>
-                                <TextField fx:id="textFieldFillFactor" layoutX="226.0"
-                                           layoutY="220.0"/>
-
-                                <Label layoutX="14.0" layoutY="260.0" prefHeight="28.0"
-                                       prefWidth="120.0" text="Czas skoku"/>
-                                <TextField fx:id="textFieldJumpTime" layoutX="226.0"
-                                           layoutY="260.0"/>
-
-                                <Label layoutX="14.0" layoutY="300.0" prefHeight="28.0"
-                                       prefWidth="129.0" text="Prawdopodobieństwo"/>
-                                <TextField fx:id="textFieldProbability" layoutX="226.0"
-                                           layoutY="300.0"/>
-
-                                <Label layoutX="14.0" layoutY="340.0" prefHeight="28.0"
-                                       prefWidth="120.0" text="Częst próbkowania"/>
-                                <TextField fx:id="textFieldSamplingFrequency" layoutX="226.0"
-                                           layoutY="340.0"/>
-                            </children>
-                        </Pane>
                     </AnchorPane>
                 </Tab>
 
