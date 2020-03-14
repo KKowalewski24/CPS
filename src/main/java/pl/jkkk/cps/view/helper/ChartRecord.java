@@ -7,29 +7,29 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class ChartRecord<T1, T2> {
 
     /*------------------------ FIELDS REGION ------------------------*/
-    private T1 axisX;
-    private T2 axisY;
+    private T1 x;
+    private T2 y;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public ChartRecord(T1 axisX, T2 axisY) {
-        this.axisX = axisX;
-        this.axisY = axisY;
+    public ChartRecord(T1 x, T2 y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public T1 getAxisX() {
-        return axisX;
+    public T1 getX() {
+        return x;
     }
 
-    public void setAxisX(T1 axisX) {
-        this.axisX = axisX;
+    public void setX(T1 x) {
+        this.x = x;
     }
 
-    public T2 getAxisY() {
-        return axisY;
+    public T2 getY() {
+        return y;
     }
 
-    public void setAxisY(T2 axisY) {
-        this.axisY = axisY;
+    public void setY(T2 y) {
+        this.y = y;
     }
 
     @Override
@@ -45,24 +45,24 @@ public class ChartRecord<T1, T2> {
         ChartRecord<?, ?> that = (ChartRecord<?, ?>) o;
 
         return new EqualsBuilder()
-                .append(axisX, that.axisX)
-                .append(axisY, that.axisY)
+                .append(x, that.x)
+                .append(y, that.y)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(axisX)
-                .append(axisY)
+                .append(x)
+                .append(y)
                 .toHashCode();
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("axisX", axisX)
-                .append("axisY", axisY)
+                .append("axisX", x)
+                .append("axisY", y)
                 .toString();
     }
 }
