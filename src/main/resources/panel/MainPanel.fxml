@@ -5,7 +5,7 @@
 
 <AnchorPane prefHeight="700.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="pl.jkkk.cps.view.controller.MainPanel">
+            fx:controller="pl.jkkk.cps.view.controller.mainpanel.MainPanel">
     <children>
         <ToolBar layoutX="416.0" layoutY="14.0" prefHeight="61.0" prefWidth="468.0">
             <items>

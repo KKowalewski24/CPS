@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.controller;
+package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,6 +71,12 @@ public class MainPanel implements Initializable {
     private ComboBox comboBoxSignalTypes;
     @FXML
     private Pane chooseParamsTab;
+    @FXML
+    private ComboBox comboBoxOperationTypes;
+    @FXML
+    private ComboBox comboBoxFirstSignal;
+    @FXML
+    private ComboBox comboBoxSecondSignal;
 
     private TextField textFieldAmplitude = new TextField();
     private TextField textFieldStartTime = new TextField();
@@ -80,13 +86,6 @@ public class MainPanel implements Initializable {
     private TextField textFieldJumpTime = new TextField();
     private TextField textFieldProbability = new TextField();
     private TextField textFieldSamplingFrequency = new TextField();
-
-    @FXML
-    private ComboBox comboBoxOperationTypes;
-    @FXML
-    private ComboBox comboBoxFirstSignal;
-    @FXML
-    private ComboBox comboBoxSecondSignal;
 
     /* RIGHT SIDE */
     @FXML
@@ -321,6 +320,115 @@ public class MainPanel implements Initializable {
         fillParamsTab(customTabPane);
     }
 
+    private void computeCharts() {
+        String selectedSignal = comboBoxSignalTypes.getSelectionModel()
+                .getSelectedItem().toString();
+
+        Double amplitude = null;
+        Double rangeStart = null;
+        Double rangeLength = null;
+        Double term = null;
+        Double fulfillment = null;
+        Double jumpMoment = null;
+        Double probability = null;
+        Double sampleRate = null;
+
+        try {
+            amplitude = Double.parseDouble(textFieldAmplitude.getText());
+            rangeStart = Double.parseDouble(textFieldStartTime.getText());
+            rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
+            term = Double.parseDouble(textFieldBasicPeriod.getText());
+            fulfillment = Double.parseDouble(textFieldFillFactor.getText());
+            jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
+            probability = Double.parseDouble(textFieldProbability.getText());
+            sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
+
+            Signal signal = null;
+            if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
+
+                signal = new UniformNoise(rangeStart, rangeLength, amplitude);
+
+            } else if (selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
+
+                signal = new GaussianNoise(rangeStart, rangeLength, amplitude);
+
+            } else if (selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())) {
+
+                signal = new SinusoidalSignal(rangeStart, rangeLength, amplitude, term);
+
+            } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())) {
+
+                signal = new SinusoidalRectifiedOneHalfSignal(rangeStart, rangeLength,
+                        amplitude, term);
+
+            } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())) {
+
+                signal = new SinusoidalRectifiedTwoHalfSignal(rangeStart, rangeLength,
+                        amplitude, term);
+
+            } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())) {
+
+                signal = new RectangularSignal(rangeStart, rangeLength, amplitude, term,
+                        fulfillment);
+
+            } else if (selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())) {
+
+                signal = new RectangularSymmetricSignal(rangeStart, rangeLength, amplitude,
+                        term, fulfillment);
+
+            } else if (selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())) {
+
+                signal = new TriangularSignal(rangeStart, rangeLength, amplitude, term,
+                        fulfillment);
+
+            } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
+
+                signal = new UnitJumpSignal(rangeStart, rangeLength, amplitude, jumpMoment);
+
+            } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
+
+                isScatterChart = true;
+                changeLineChartToScatterChart(tabPaneResults,
+                        new ScatterChart(new NumberAxis(), new NumberAxis()));
+
+                signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate,
+                        amplitude, jumpMoment.intValue());
+
+            } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
+
+                isScatterChart = true;
+                changeLineChartToScatterChart(tabPaneResults,
+                        new ScatterChart(new NumberAxis(), new NumberAxis()));
+
+                signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
+                        probability);
+
+            }
+            chartData = new Series();
+            chartData.addAll(signal.generate());
+
+            histogramData = Stream.of(
+                    new ChartRecord<String, Number>("aa", 1),
+                    new ChartRecord<String, Number>("bb", 2),
+                    new ChartRecord<String, Number>("cc", 3),
+                    new ChartRecord<String, Number>("dd", 4),
+                    new ChartRecord<String, Number>("ee", 5),
+                    new ChartRecord<String, Number>("e", 6),
+                    new ChartRecord<String, Number>("f", 6),
+                    new ChartRecord<String, Number>("g", 6),
+                    new ChartRecord<String, Number>("h", 6),
+                    new ChartRecord<String, Number>("k", 6),
+                    new ChartRecord<String, Number>("i", 6)
+            ).collect(Collectors.toCollection(ArrayList::new));
+
+            fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData);
+        } catch (NumberFormatException e) {
+            PopOutWindow.messageBox("Błędne Dane",
+                    "Wprowadzono błędne dane", Alert.AlertType.WARNING);
+
+        }
+    }
+
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
         //TODO ADD IMPL, IN FINAL VERSION LOAD DATA FROM LOGIC
@@ -328,101 +436,7 @@ public class MainPanel implements Initializable {
 
         switch (selectedTab) {
             case 0: {
-                String selectedSignal = comboBoxSignalTypes.getSelectionModel()
-                        .getSelectedItem().toString();
-
-                /* get signal params */
-                //TODO MOVE TO METHOD
-                double amplitude = Double.parseDouble(textFieldAmplitude.getText());
-                double rangeStart = Double.parseDouble(textFieldStartTime.getText());
-                double rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
-                double term = Double.parseDouble(textFieldBasicPeriod.getText());
-                double fulfillment = Double.parseDouble(textFieldFillFactor.getText());
-                double jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
-                double propability = Double.parseDouble(textFieldProbability.getText());
-                double sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
-
-                /* Create proper signal */
-                Signal signal = null;
-                if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
-
-                    signal = new UniformNoise(rangeStart, rangeLength, amplitude);
-
-                } else if (selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
-
-                    signal = new GaussianNoise(rangeStart, rangeLength, amplitude);
-
-                } else if (selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())) {
-
-                    signal = new SinusoidalSignal(rangeStart, rangeLength, amplitude, term);
-
-                } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())) {
-
-                    signal = new SinusoidalRectifiedOneHalfSignal(rangeStart, rangeLength,
-                            amplitude, term);
-
-                } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())) {
-
-                    signal = new SinusoidalRectifiedTwoHalfSignal(rangeStart, rangeLength,
-                            amplitude, term);
-
-                } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())) {
-
-                    signal = new RectangularSignal(rangeStart, rangeLength, amplitude, term,
-                            fulfillment);
-
-                } else if (selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())) {
-
-                    signal = new RectangularSymmetricSignal(rangeStart, rangeLength, amplitude,
-                            term, fulfillment);
-
-                } else if (selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())) {
-
-                    signal = new TriangularSignal(rangeStart, rangeLength, amplitude, term,
-                            fulfillment);
-
-                } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
-
-                    signal = new UnitJumpSignal(rangeStart, rangeLength, amplitude, jumpMoment);
-
-                } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
-
-                    isScatterChart = true;
-                    changeLineChartToScatterChart(tabPaneResults,
-                            new ScatterChart(new NumberAxis(), new NumberAxis()));
-
-                    signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate, amplitude,
-                            (int) jumpMoment);
-
-                } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
-
-                    isScatterChart = true;
-                    changeLineChartToScatterChart(tabPaneResults,
-                            new ScatterChart(new NumberAxis(), new NumberAxis()));
-
-                    signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
-                            propability);
-
-                }
-                chartData = new Series();
-                chartData.addAll(signal.generate());
-
-                histogramData = Stream.of(
-                        new ChartRecord<String, Number>("aa", 1),
-                        new ChartRecord<String, Number>("bb", 2),
-                        new ChartRecord<String, Number>("cc", 3),
-                        new ChartRecord<String, Number>("dd", 4),
-                        new ChartRecord<String, Number>("ee", 5),
-                        new ChartRecord<String, Number>("e", 6),
-                        new ChartRecord<String, Number>("f", 6),
-                        new ChartRecord<String, Number>("g", 6),
-                        new ChartRecord<String, Number>("h", 6),
-                        new ChartRecord<String, Number>("k", 6),
-                        new ChartRecord<String, Number>("i", 6)
-                ).collect(Collectors.toCollection(ArrayList::new));
-
-                fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData);
-
+                computeCharts();
                 break;
             }
             case 1: {
@@ -454,4 +468,3 @@ public class MainPanel implements Initializable {
         }
     }
 }
-    
