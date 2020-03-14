@@ -1,14 +1,5 @@
 package pl.jkkk.cps.view.controller;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,12 +17,21 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-
-import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.Series;
 import pl.jkkk.cps.logic.model.SignalType;
-import pl.jkkk.cps.logic.model.signal.*;
+import pl.jkkk.cps.logic.model.signal.GaussianNoise;
+import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
+import pl.jkkk.cps.logic.model.signal.RectangularSignal;
+import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
+import pl.jkkk.cps.logic.model.signal.Signal;
+import pl.jkkk.cps.logic.model.signal.SinusoidalRectifiedOneHalfSignal;
+import pl.jkkk.cps.logic.model.signal.SinusoidalRectifiedTwoHalfSignal;
+import pl.jkkk.cps.logic.model.signal.SinusoidalSignal;
+import pl.jkkk.cps.logic.model.signal.TriangularSignal;
+import pl.jkkk.cps.logic.model.signal.UniformNoise;
+import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
+import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.helper.CustomTab;
 import pl.jkkk.cps.view.helper.CustomTabPane;
@@ -243,7 +243,6 @@ public class MainPanel implements Initializable {
         fillParamsTab(customTabPane);
     }
 
-
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
         //TODO ADD IMPL, IN FINAL VERSION LOAD DATA FROM LOGIC
@@ -266,28 +265,35 @@ public class MainPanel implements Initializable {
 
                 /* Create proper signal */
                 Signal signal = null;
-                if(selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())){
+                if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
                     signal = new UniformNoise(rangeStart, rangeLength, amplitude);
-                }else if(selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())){
+                } else if (selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
                     signal = new GaussianNoise(rangeStart, rangeLength, amplitude);
-                }else if(selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())){
+                } else if (selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())) {
                     signal = new SinusoidalSignal(rangeStart, rangeLength, amplitude, term);
-                }else if(selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())){
-                    signal = new SinusoidalRectifiedOneHalfSignal(rangeStart, rangeLength, amplitude, term);
-                }else if(selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())){
-                    signal = new SinusoidalRectifiedTwoHalfSignal(rangeStart, rangeLength, amplitude, term);
-                }else if(selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())){
-                    signal = new RectangularSignal(rangeStart, rangeLength, amplitude, term, fulfillment);
-                }else if(selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())){
-                    signal = new RectangularSymmetricSignal(rangeStart, rangeLength, amplitude, term, fulfillment);
-                }else if(selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())){
-                    signal = new TriangularSignal(rangeStart, rangeLength, amplitude, term, fulfillment);
-                }else if(selectedSignal.equals(SignalType.UNIT_JUMP.getName())){
+                } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())) {
+                    signal = new SinusoidalRectifiedOneHalfSignal(rangeStart, rangeLength,
+                            amplitude, term);
+                } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())) {
+                    signal = new SinusoidalRectifiedTwoHalfSignal(rangeStart, rangeLength,
+                            amplitude, term);
+                } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())) {
+                    signal = new RectangularSignal(rangeStart, rangeLength, amplitude, term,
+                            fulfillment);
+                } else if (selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())) {
+                    signal = new RectangularSymmetricSignal(rangeStart, rangeLength, amplitude,
+                            term, fulfillment);
+                } else if (selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())) {
+                    signal = new TriangularSignal(rangeStart, rangeLength, amplitude, term,
+                            fulfillment);
+                } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
                     signal = new UnitJumpSignal(rangeStart, rangeLength, amplitude, jumpMoment);
-                }else if(selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())){
-                    signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude, propability);
-                }else if(selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())){
-                    signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate, amplitude, (int)jumpMoment);
+                } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
+                    signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
+                            propability);
+                } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
+                    signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate, amplitude,
+                            (int) jumpMoment);
                 }
 
                 lineChartData = new Series();

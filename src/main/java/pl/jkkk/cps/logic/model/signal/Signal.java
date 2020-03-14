@@ -1,19 +1,20 @@
 package pl.jkkk.cps.logic.model.signal;
 
 import pl.jkkk.cps.logic.model.Data;
+
 import java.util.List;
 
 public interface Signal {
 
-    public List<Data> generate();
+    List<Data> generate();
 
-    public double meanValue();
+    double meanValue();
 
-    public double absMeanValue();
+    double absMeanValue();
 
-    public double rmsValue();
+    double rmsValue();
 
-    public double varianceValue();
+    double varianceValue();
 
-    public double meanPowerValue();
+    double meanPowerValue();
 }
