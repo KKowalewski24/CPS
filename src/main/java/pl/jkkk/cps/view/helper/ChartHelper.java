@@ -44,12 +44,8 @@ public class ChartHelper {
         return new XYChart.Data(stringOne, stringTwo);
     }
 
-    public static Label prepareLabelWithPosition(String text, int pointX, int pointY) {
-        Label label = new Label(text);
-        label.setLayoutX(pointX);
-        label.setLayoutY(pointY);
-
-        return label;
+    public static CustomTabPane castTabPaneToCustomTabPane(TabPane tabPane) {
+        return (CustomTabPane) tabPane.getSelectionModel().getSelectedItem().getContent();
     }
 
     public static void textFieldSetValue(TextField textField, String string) {
@@ -62,6 +58,14 @@ public class ChartHelper {
         textField.setLayoutY(pointY);
 
         return textField;
+    }
+
+    public static Label prepareLabelWithPosition(String text, int pointX, int pointY) {
+        Label label = new Label(text);
+        label.setLayoutX(pointX);
+        label.setLayoutY(pointY);
+
+        return label;
     }
 
     public static void appendLabelText(Node node, String text) {
@@ -82,10 +86,6 @@ public class ChartHelper {
         tabList.forEach((it) -> names.add(it.getText()));
 
         return names;
-    }
-
-    public static CustomTabPane castTabPaneToCustomTabPane(TabPane tabPane) {
-        return (CustomTabPane) tabPane.getSelectionModel().getSelectedItem().getContent();
     }
 
     public static void clearAndAddNewDataToChart(XYChart chart, XYChart.Series series) {
