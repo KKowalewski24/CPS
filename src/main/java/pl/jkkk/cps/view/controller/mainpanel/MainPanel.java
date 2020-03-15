@@ -54,16 +54,10 @@ public class MainPanel implements Initializable {
     private TextField textFieldProbability = new TextField();
     private TextField textFieldSamplingFrequency = new TextField();
 
-    private Series chartData;
-    private List<ChartRecord<String, Number>> histogramData;
-    private boolean isScatterChart;
-
     private Initializer initializer;
     private Loader loader;
 
     /*------------------------ METHODS REGION ------------------------*/
-
-    /*------------------------ PREPARE EMPTY PANES AND CHARTS ------------------------*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         spinnerHistogramRange.setValueFactory(new SpinnerValueFactory
@@ -82,15 +76,14 @@ public class MainPanel implements Initializable {
                 comboBoxSecondSignal, textFieldAmplitude, textFieldStartTime,
                 textFieldSignalDuration, textFieldBasicPeriod, textFieldFillFactor,
                 textFieldJumpTime, textFieldProbability, textFieldSamplingFrequency,
-                tabPaneResults, spinnerHistogramRange, chartData, histogramData,
-                isScatterChart
+                tabPaneResults, spinnerHistogramRange
         );
 
         initializer.prepareTabPaneResults(0);
         initializer.prepareTabPaneInputs();
     }
 
-    /*------------------------ BUTTON TOP BAR ------------------------*/
+    /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionButtonReloadStage(ActionEvent actionEvent) {
         StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
@@ -108,7 +101,12 @@ public class MainPanel implements Initializable {
         System.exit(0);
     }
 
-    /*------------------------ FILE READ / WRITE ------------------------*/
+    @FXML
+    private void onActionHistogramRange(ActionEvent actionEvent) {
+        loader.changeHistogramRange();
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionLoadChart(ActionEvent actionEvent) {
         try {
@@ -131,7 +129,7 @@ public class MainPanel implements Initializable {
         }
     }
 
-    /*------------------------ FILL PREPARED PANES AND CHARTS ------------------------*/
+    /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
         //TODO ADD IMPL, IN FINAL VERSION LOAD DATA FROM LOGIC
@@ -147,10 +145,5 @@ public class MainPanel implements Initializable {
                 break;
             }
         }
-    }
-
-    @FXML
-    private void onActionHistogramRange(ActionEvent actionEvent) {
-        loader.changeHistogramRange();
     }
 }

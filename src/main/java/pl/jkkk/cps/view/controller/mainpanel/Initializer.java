@@ -192,7 +192,7 @@ public class Initializer {
         lineChart.setAnimated(false);
 
         BarChart barChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
-        barChart.setAnimated(true);
+        barChart.setAnimated(false);
 
         Pane pane = new Pane(
                 prepareLabelWithPosition("Wartość średnia sygnału: ", 25, 40),

@@ -100,6 +100,15 @@ public class ChartHelper {
         newScatterChart.setAnimated(false);
     }
 
+    public static void changeScatterChartToLineChart(TabPane tabPane, LineChart lineChart) {
+        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        customTabPane.getChartTab().setContent(lineChart);
+        LineChart newLineChart = (LineChart) customTabPane.getChartTab().getContent();
+        newLineChart.setAnimated(false);
+        newLineChart.setCreateSymbols(false);
+        newLineChart.setAnimated(false);
+    }
+
     public static void fillLineChart(CustomTabPane customTabPane,
                                      Series dataCollection) {
         LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();

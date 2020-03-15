@@ -1,6 +1,7 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
@@ -36,6 +37,7 @@ import java.util.stream.Stream;
 import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
 import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
 import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
+import static pl.jkkk.cps.view.helper.ChartHelper.changeScatterChartToLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillScatterChart;
@@ -72,8 +74,7 @@ public class Loader {
                   TextField textFieldSignalDuration, TextField textFieldBasicPeriod,
                   TextField textFieldFillFactor, TextField textFieldJumpTime,
                   TextField textFieldProbability, TextField textFieldSamplingFrequency,
-                  TabPane tabPaneResults, Spinner spinnerHistogramRange, Series chartData,
-                  List<ChartRecord<String, Number>> histogramData, boolean isScatterChart) {
+                  TabPane tabPaneResults, Spinner spinnerHistogramRange) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypes = comboBoxOperationTypes;
         this.comboBoxFirstSignal = comboBoxFirstSignal;
@@ -88,9 +89,6 @@ public class Loader {
         this.textFieldSamplingFrequency = textFieldSamplingFrequency;
         this.tabPaneResults = tabPaneResults;
         this.spinnerHistogramRange = spinnerHistogramRange;
-        this.chartData = chartData;
-        this.histogramData = histogramData;
-        this.isScatterChart = isScatterChart;
     }
 
     private void fillParamsTab(CustomTabPane customTabPane) {
@@ -158,6 +156,10 @@ public class Loader {
             sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
 
             Signal signal = null;
+            isScatterChart = false;
+            changeScatterChartToLineChart(tabPaneResults,
+                    new LineChart<>(new NumberAxis(), new NumberAxis()));
+
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
 
                 signal = new UniformNoise(rangeStart, rangeLength, amplitude);
