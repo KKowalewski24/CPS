@@ -3,7 +3,9 @@ package pl.jkkk.cps.view.controller.mainpanel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,11 +20,13 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
+import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
+import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
 import pl.jkkk.cps.logic.model.signal.SinusoidalRectifiedOneHalfSignal;
 import pl.jkkk.cps.logic.model.signal.SinusoidalRectifiedTwoHalfSignal;
@@ -60,6 +64,7 @@ public class Loader {
     private TextField textFieldSamplingFrequency;
 
     private TabPane tabPaneResults;
+    private Map<Integer, Signal> signals = new HashMap<>();
 
     private Spinner spinnerHistogramRange;
 
@@ -128,7 +133,6 @@ public class Loader {
         Double jumpMoment = null;
         Double probability = null;
         Double sampleRate = null;
-        int numberOfRanges = (int) spinnerHistogramRange.getValue();
 
         try {
             amplitude = Double.parseDouble(textFieldAmplitude.getText());
@@ -205,25 +209,9 @@ public class Loader {
                         probability);
 
             }
-            List<ChartRecord<Number, Number>> chartData = signal.generate().stream()
-                .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
-                .collect(Collectors.toList());
-        
-            DecimalFormat df = new DecimalFormat("#.##");
-            List<ChartRecord<String, Number>> histogramData = signal.generateHistogram(numberOfRanges).stream()
-                .map(range -> new ChartRecord<String, Number>(
-                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
-                        range.getQuantity()))
-                .collect(Collectors.toList());
 
-            double[] signalParams = new double[5];
-            signalParams[0] = signal.meanValue();
-            signalParams[1] = signal.absMeanValue();
-            signalParams[2] = signal.rmsValue();
-            signalParams[3] = signal.varianceValue();
-            signalParams[4] = signal.meanPowerValue();
+            representSignal(signal);
 
-            fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
         } catch (NumberFormatException e) {
             PopOutWindow.messageBox("Błędne Dane",
                     "Wprowadzono błędne dane", Alert.AlertType.WARNING);
@@ -234,7 +222,58 @@ public class Loader {
     public void performOperationOnCharts() {
         String selectedOperation = comboBoxOperationTypes.getSelectionModel()
                 .getSelectedItem().toString();
+        int s1Index = comboBoxFirstSignal.getSelectionModel().getSelectedIndex();
+        int s2Index = comboBoxSecondSignal.getSelectionModel().getSelectedIndex();
 
+        Signal s1 = signals.get(s1Index);
+        Signal s2 = signals.get(s2Index);
+        Signal resultSignal = null;
+
+        if(selectedOperation.equals(OperationType.ADDITION.getName())){
+            resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
+        }else if(selectedOperation.equals(OperationType.SUBTRACTION.getName())){
+            resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
+        }else if(selectedOperation.equals(OperationType.MULTIPLICATION.getName())){
+            resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
+        }else if(selectedOperation.equals(OperationType.DIVISION.getName())){
+            resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
+        }
+        
+        representSignal(resultSignal);
+    }   
+
+    private void representSignal(Signal signal){
+
+        /* remember signal */
+        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        signals.put(tabIndex, signal);
+
+        /* generate signal */
+        signal.generate();
+
+        /* prepare line/point chart data */
+        List<ChartRecord<Number, Number>> chartData = signal.getData().stream()
+            .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
+            .collect(Collectors.toList());
+    
+        /* prepare barchart data */
+        DecimalFormat df = new DecimalFormat("#.##");
+        List<ChartRecord<String, Number>> histogramData = signal.generateHistogram((int)spinnerHistogramRange.getValue()).stream()
+            .map(range -> new ChartRecord<String, Number>(
+                    df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
+                    range.getQuantity()))
+            .collect(Collectors.toList());
+
+        /* prepare params */
+        double[] signalParams = new double[5];
+        signalParams[0] = signal.meanValue();
+        signalParams[1] = signal.absMeanValue();
+        signalParams[2] = signal.rmsValue();
+        signalParams[3] = signal.varianceValue();
+        signalParams[4] = signal.meanPowerValue();
+
+        /* render it all */
+        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
     }
 }
     

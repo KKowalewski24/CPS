@@ -1,23 +1,78 @@
 package pl.jkkk.cps.logic.model.signal;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
-import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.Range;
+import pl.jkkk.cps.logic.model.Data;
 
-public interface Signal {
+public abstract class Signal {
 
-    List<Data> generate();
+    protected final Data[] data;
 
-    List<Range> generateHistogram(int numberOfRanges);
+    public Signal(int length){
+        this.data = new Data[length];
+    }
 
-    double meanValue();
+    public abstract void generate();
 
-    double absMeanValue();
+    public List<Data> getData(){
+        return Arrays.asList(data);
+    }
 
-    double rmsValue();
+    public List<Range> generateHistogram(int numberOfRanges) {
+        final double min = Arrays.asList(data).stream()
+            .mapToDouble(data -> data.getY()).min().getAsDouble();
+        final double max = Arrays.asList(data).stream()
+            .mapToDouble(data -> data.getY()).max().getAsDouble();
+        final List<Range> ranges = new ArrayList<>();
+        IntStream.range(0, numberOfRanges).forEach(i -> {
+            double begin = min + (max - min) / numberOfRanges * i;
+            double end = min + (max - min) / numberOfRanges * (i + 1);
+            int quantity = (int)Arrays.asList(data).stream()
+                .filter(data -> data.getY() >= begin && data.getY() <= end)
+                .count();
+            ranges.add(new Range(begin, end, quantity));
+        });
+        return ranges;
+    }
 
-    double varianceValue();
+    public double meanValue() {
+        double sum = 0;
+        for (int i = 0; i < data.length; i++) {
+            sum += data[i].getY();
+        }
+        return sum / data.length;
+    }
 
-    double meanPowerValue();
+    public double absMeanValue() {
+        double sum = 0;
+        for (int i = 0; i < data.length; i++) {
+            sum += Math.abs(data[i].getY());
+        }
+        return sum / data.length;
+    }
+
+    public double rmsValue() {
+        return Math.sqrt(meanPowerValue());
+    }
+
+    public double varianceValue() {
+        double mean = meanValue();
+        double sum = 0;
+        for (int i = 0; i < data.length; i++) {
+            sum += Math.pow(data[i].getY() - mean, 2.0);
+        }
+        return sum / data.length;
+    }
+
+    public double meanPowerValue() {
+        double sum = 0;
+        for (int i = 0; i < data.length; i++) {
+            sum += Math.pow(data[i].getY(), 2.0);
+        }
+        return sum / data.length;
+    }
 }
