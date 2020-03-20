@@ -1,3 +1,9 @@
+### Vim ###
+tags
+.tags_metadata
+*.swp
+*~
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
