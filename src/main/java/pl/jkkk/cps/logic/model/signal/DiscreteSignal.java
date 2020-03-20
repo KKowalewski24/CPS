@@ -47,7 +47,7 @@ public abstract class DiscreteSignal implements Signal {
             double begin = min + (max - min) / numberOfRanges * i;
             double end = min + (max - min) / numberOfRanges * (i + 1);
             int quantity = (int)Arrays.asList(data).stream()
-                .filter(data -> data.getY() >= begin && data.getY() < end)
+                .filter(data -> data.getY() >= begin && data.getY() <= end)
                 .count();
             ranges.add(new Range(begin, end, quantity));
         });
