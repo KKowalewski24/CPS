@@ -110,7 +110,7 @@ public class ChartHelper {
     }
 
     public static void fillLineChart(CustomTabPane customTabPane,
-                                     Series dataCollection) {
+                                     Collection<ChartRecord<Number, Number>> dataCollection) {
         LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 
@@ -122,7 +122,7 @@ public class ChartHelper {
     }
 
     public static void fillScatterChart(CustomTabPane customTabPane,
-                                        Series dataCollection) {
+                                        Collection<ChartRecord<Number, Number>> dataCollection) {
         ScatterChart scatterChart = (ScatterChart) customTabPane.getChartTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 

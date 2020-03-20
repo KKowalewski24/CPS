@@ -1,9 +1,12 @@
 package pl.jkkk.cps.logic.model.signal;
 
-import pl.jkkk.cps.logic.model.Data;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
+
+import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.Range;
 
 public abstract class DiscreteSignal implements Signal {
 
@@ -31,6 +34,24 @@ public abstract class DiscreteSignal implements Signal {
             data[i] = new Data(x, y);
         }
         return Arrays.asList(data);
+    }
+
+    @Override
+    public List<Range> generateHistogram(int numberOfRanges) {
+        final double min = Arrays.asList(data).stream()
+            .mapToDouble(data -> data.getY()).min().getAsDouble();
+        final double max = Arrays.asList(data).stream()
+            .mapToDouble(data -> data.getY()).max().getAsDouble();
+        final List<Range> ranges = new ArrayList<>();
+        IntStream.range(0, numberOfRanges).forEach(i -> {
+            double begin = min + (max - min) / numberOfRanges * i;
+            double end = min + (max - min) / numberOfRanges * (i + 1);
+            int quantity = (int)Arrays.asList(data).stream()
+                .filter(data -> data.getY() >= begin && data.getY() < end)
+                .count();
+            ranges.add(new Range(begin, end, quantity));
+        });
+        return ranges;
     }
 
     @Override

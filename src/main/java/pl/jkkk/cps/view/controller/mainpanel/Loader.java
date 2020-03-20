@@ -10,7 +10,6 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import pl.jkkk.cps.logic.model.Series;
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -63,7 +62,7 @@ public class Loader {
 
     private Spinner spinnerHistogramRange;
 
-    private Series chartData;
+    private List<ChartRecord<Number, Number>> chartData;
     private List<ChartRecord<String, Number>> histogramData;
     private boolean isScatterChart;
 
@@ -100,8 +99,8 @@ public class Loader {
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Series chartCollection,
-                                           Collection<ChartRecord<String, Number>> barChartCollection) {
+                            Collection<ChartRecord<Number, Number>> chartCollection,
+                            Collection<ChartRecord<String, Number>> barChartCollection) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
 
         if (isScatterChart) {
@@ -144,6 +143,7 @@ public class Loader {
         Double jumpMoment = null;
         Double probability = null;
         Double sampleRate = null;
+        int numberOfRanges = (int) spinnerHistogramRange.getValue();
 
         try {
             amplitude = Double.parseDouble(textFieldAmplitude.getText());
@@ -220,22 +220,15 @@ public class Loader {
                         probability);
 
             }
-            chartData = new Series();
-            chartData.addAll(signal.generate());
+            chartData = signal.generate().stream()
+                .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
+                .collect(Collectors.toList());
 
-            histogramData = Stream.of(
-                    new ChartRecord<String, Number>("aa", 1),
-                    new ChartRecord<String, Number>("bb", 2),
-                    new ChartRecord<String, Number>("cc", 3),
-                    new ChartRecord<String, Number>("dd", 4),
-                    new ChartRecord<String, Number>("ee", 5),
-                    new ChartRecord<String, Number>("e", 6),
-                    new ChartRecord<String, Number>("f", 6),
-                    new ChartRecord<String, Number>("g", 6),
-                    new ChartRecord<String, Number>("h", 6),
-                    new ChartRecord<String, Number>("k", 6),
-                    new ChartRecord<String, Number>("i", 6)
-            ).collect(Collectors.toCollection(ArrayList::new));
+            histogramData = signal.generateHistogram(numberOfRanges).stream()
+                .map(range -> new ChartRecord<String, Number>(
+                            range.getBegin() + "-" + range.getEnd(),
+                            range.getQuantity()))
+                .collect(Collectors.toList());
 
             fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData);
         } catch (NumberFormatException e) {
