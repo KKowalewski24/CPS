@@ -1,5 +1,12 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -10,6 +17,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -26,13 +34,6 @@ import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.helper.CustomTabPane;
 import pl.jkkk.cps.view.util.PopOutWindow;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
 import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
 import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
@@ -92,11 +93,12 @@ public class Loader {
         Pane pane = (Pane) customTabPane.getParamsTab().getContent();
         List<Node> paneChildren = pane.getChildren();
 
-        appendLabelText(paneChildren.get(0), "" + signalParams[0]);
-        appendLabelText(paneChildren.get(1), "" + signalParams[1]);
-        appendLabelText(paneChildren.get(2), "" + signalParams[2]);
-        appendLabelText(paneChildren.get(3), "" + signalParams[3]);
-        appendLabelText(paneChildren.get(4), "" + signalParams[4]);
+        DecimalFormat df = new DecimalFormat("##.####");
+        appendLabelText(paneChildren.get(0), "" + df.format(signalParams[0]));
+        appendLabelText(paneChildren.get(1), "" + df.format(signalParams[1]));
+        appendLabelText(paneChildren.get(2), "" + df.format(signalParams[2]));
+        appendLabelText(paneChildren.get(3), "" + df.format(signalParams[3]));
+        appendLabelText(paneChildren.get(4), "" + df.format(signalParams[4]));
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
@@ -206,11 +208,12 @@ public class Loader {
             List<ChartRecord<Number, Number>> chartData = signal.generate().stream()
                 .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
                 .collect(Collectors.toList());
-
+        
+            DecimalFormat df = new DecimalFormat("#.##");
             List<ChartRecord<String, Number>> histogramData = signal.generateHistogram(numberOfRanges).stream()
                 .map(range -> new ChartRecord<String, Number>(
-                            range.getBegin() + "-" + range.getEnd(),
-                            range.getQuantity()))
+                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
+                        range.getQuantity()))
                 .collect(Collectors.toList());
 
             double[] signalParams = new double[5];
