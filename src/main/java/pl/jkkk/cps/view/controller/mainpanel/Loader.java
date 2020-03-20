@@ -88,17 +88,21 @@ public class Loader {
         this.spinnerHistogramRange = spinnerHistogramRange;
     }
 
-    private void fillParamsTab(CustomTabPane customTabPane) {
+    private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
         Pane pane = (Pane) customTabPane.getParamsTab().getContent();
         List<Node> paneChildren = pane.getChildren();
 
-//        TODO ADD IMPL
-        appendLabelText(paneChildren.get(0), "PUT REAL DATA FOR ALL");
+        appendLabelText(paneChildren.get(0), "" + signalParams[0]);
+        appendLabelText(paneChildren.get(1), "" + signalParams[1]);
+        appendLabelText(paneChildren.get(2), "" + signalParams[2]);
+        appendLabelText(paneChildren.get(3), "" + signalParams[3]);
+        appendLabelText(paneChildren.get(4), "" + signalParams[4]);
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
                             Collection<ChartRecord<Number, Number>> chartCollection,
-                            Collection<ChartRecord<String, Number>> barChartCollection) {
+                            Collection<ChartRecord<String, Number>> barChartCollection,
+                            double[] signalParams) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
 
         if (isScatterChart) {
@@ -107,7 +111,7 @@ public class Loader {
             fillLineChart(customTabPane, chartCollection);
         }
         fillBarChart(customTabPane, barChartCollection);
-        fillParamsTab(customTabPane);
+        fillParamsTab(customTabPane, signalParams);
     }
 
     public void computeCharts() {
@@ -209,7 +213,14 @@ public class Loader {
                             range.getQuantity()))
                 .collect(Collectors.toList());
 
-            fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData);
+            double[] signalParams = new double[5];
+            signalParams[0] = signal.meanValue();
+            signalParams[1] = signal.absMeanValue();
+            signalParams[2] = signal.rmsValue();
+            signalParams[3] = signal.varianceValue();
+            signalParams[4] = signal.meanPowerValue();
+
+            fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
         } catch (NumberFormatException e) {
             PopOutWindow.messageBox("Błędne Dane",
                     "Wprowadzono błędne dane", Alert.AlertType.WARNING);

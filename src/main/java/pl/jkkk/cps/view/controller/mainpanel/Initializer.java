@@ -199,13 +199,16 @@ public class Initializer {
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
                 prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
                 prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
-                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200),
+                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
+
+         /* not for this task
                 prepareLabelWithPosition("Błąd średniokwadratowy: ", 25, 240),
                 prepareLabelWithPosition("Stosunek sygnał - szum: ", 25, 280),
                 prepareLabelWithPosition("Szczytowy stosunek sygnał - szum: ", 25, 320),
                 prepareLabelWithPosition("Maksymalna różnica: ", 25, 360),
                 prepareLabelWithPosition("Efektywna liczba bitów: ", 25, 400),
                 prepareLabelWithPosition("Czas transformacji: ", 25, 440)
+          */
         );
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
