@@ -62,8 +62,6 @@ public class Loader {
 
     private Spinner spinnerHistogramRange;
 
-    private List<ChartRecord<Number, Number>> chartData;
-    private List<ChartRecord<String, Number>> histogramData;
     private boolean isScatterChart;
 
     /*------------------------ METHODS REGION ------------------------*/
@@ -110,25 +108,6 @@ public class Loader {
         }
         fillBarChart(customTabPane, barChartCollection);
         fillParamsTab(customTabPane);
-    }
-
-    public void changeHistogramRange() {
-        Integer histogramRange = (Integer) spinnerHistogramRange.getValue();
-
-        try {
-            if (histogramRange <= histogramData.size()) {
-                fillBarChart(castTabPaneToCustomTabPane(tabPaneResults), histogramData
-                        .subList(0, histogramRange));
-            } else {
-                PopOutWindow.messageBox("Błędna Liczba Przedziałów",
-                        "Histogram posiada zbyt małą liczbę przedziałów",
-                        Alert.AlertType.WARNING);
-            }
-        } catch (NullPointerException e) {
-            PopOutWindow.messageBox("Wygeneruj Wykresy",
-                    "Wykresy nie zostały jeszcze wygenerowane",
-                    Alert.AlertType.WARNING);
-        }
     }
 
     public void computeCharts() {
@@ -220,11 +199,11 @@ public class Loader {
                         probability);
 
             }
-            chartData = signal.generate().stream()
+            List<ChartRecord<Number, Number>> chartData = signal.generate().stream()
                 .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
                 .collect(Collectors.toList());
 
-            histogramData = signal.generateHistogram(numberOfRanges).stream()
+            List<ChartRecord<String, Number>> histogramData = signal.generateHistogram(numberOfRanges).stream()
                 .map(range -> new ChartRecord<String, Number>(
                             range.getBegin() + "-" + range.getEnd(),
                             range.getQuantity()))

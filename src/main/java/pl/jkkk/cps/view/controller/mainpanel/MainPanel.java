@@ -101,11 +101,6 @@ public class MainPanel implements Initializable {
         System.exit(0);
     }
 
-    @FXML
-    private void onActionHistogramRange(ActionEvent actionEvent) {
-        loader.changeHistogramRange();
-    }
-
     /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionLoadChart(ActionEvent actionEvent) {

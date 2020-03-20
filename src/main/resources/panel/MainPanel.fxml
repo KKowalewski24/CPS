@@ -26,8 +26,6 @@
         <ToolBar layoutX="935.0" layoutY="14.0" prefHeight="61.0" prefWidth="322.0">
             <items>
                 <Spinner fx:id="spinnerHistogramRange" prefHeight="29.0" prefWidth="70.0"/>
-                <Button mnemonicParsing="false" onAction="#onActionHistogramRange"
-                        text="Zmień liczbe przedziałów histogramu"/>
             </items>
         </ToolBar>
 
