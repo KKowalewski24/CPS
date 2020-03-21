@@ -1,5 +1,13 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -11,9 +19,12 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+
 import pl.jkkk.cps.logic.exception.FileOperationException;
+import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.SignalType;
+import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
@@ -30,16 +41,9 @@ import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.logic.reader.FileReader;
 import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.helper.CustomTabPane;
+import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
-
-import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
 import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
 import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
@@ -125,9 +129,27 @@ public class Loader {
 
     private void convertSignalToChart(Signal signal) {
         /* prepare line/point chart data */
-        List<ChartRecord<Number, Number>> chartData = signal.getData()
-                .stream()
-                .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
+        List<Data> data;
+        if(signal instanceof GaussianNoise || signal instanceof UniformNoise){
+            data = new ArrayList<>();
+            for(int i = 0; i < signal.getData().size(); i++){
+                if(i % (signal.getData().size() / 1000) == 0)
+                    data.add(signal.getData().get(i));
+            }
+        }else if(signal instanceof ContinuousSignal || signal instanceof OperationResultSignal){
+            DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
+            data = signal.getData();
+            data = new ArrayList<>(douglasPeucker.calculate(
+                    data,
+                    (data.get(data.size() - 1).getX() - data.get(0).getX()) * 1.0 / 10000.0,
+                    0,
+                    data.size() - 1));
+        }else{
+            data = signal.getData();
+        }
+        System.out.println("Wygenerowanu punktów: " + data.size());
+        List<ChartRecord<Number, Number>> chartData = data.stream()
+                .map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
                 .collect(Collectors.toList());
 
         /* prepare barchart data */
