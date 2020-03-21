@@ -14,7 +14,7 @@ public class UniformNoise extends ContinuousSignal {
     }
 
     @Override
-    protected double value(double t) {
+    public double value(double t) {
         return (rand.nextDouble() * 2.0 - 1.0) * amplitude;
     }
 }

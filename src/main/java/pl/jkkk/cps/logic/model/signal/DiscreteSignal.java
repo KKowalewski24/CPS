@@ -27,4 +27,12 @@ public abstract class DiscreteSignal extends Signal {
             data[i] = new Data(x, y);
         }
     }
+
+    public double getRangeStart() {
+        return rangeStart;
+    }
+
+    public double getRangeLength() {
+        return rangeLength;
+    }
 }

@@ -7,4 +7,7 @@ public abstract class ContinuousSignal extends DiscreteSignal {
     public ContinuousSignal(double rangeStart, double rangeLength) {
         super(rangeStart, rangeLength, NUMBER_OF_SAMPLES / rangeLength);
     }
+
+    @Override
+    abstract public double value(double t);
 }
