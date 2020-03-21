@@ -80,3 +80,7 @@
 .tab-pane {
     -fx-border-color: lightgray;
 }
+
+.chart-symbol {
+    -fx-padding: 3px;
+}

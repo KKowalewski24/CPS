@@ -1,35 +1,29 @@
-package pl.jkkk.cps.view.helper;
+package pl.jkkk.cps.logic.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class ChartRecord<T1, T2> {
+import java.io.Serializable;
+
+public class Data implements Serializable {
 
     /*------------------------ FIELDS REGION ------------------------*/
-    private T1 x;
-    private T2 y;
+    private double x;
+    private double y;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public ChartRecord(T1 x, T2 y) {
+    public Data(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public T1 getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(T1 x) {
-        this.x = x;
-    }
-
-    public T2 getY() {
+    public double getY() {
         return y;
-    }
-
-    public void setY(T2 y) {
-        this.y = y;
     }
 
     @Override
@@ -42,11 +36,11 @@ public class ChartRecord<T1, T2> {
             return false;
         }
 
-        ChartRecord<?, ?> that = (ChartRecord<?, ?>) o;
+        Data data = (Data) o;
 
         return new EqualsBuilder()
-                .append(x, that.x)
-                .append(y, that.y)
+                .append(x, data.x)
+                .append(y, data.y)
                 .isEquals();
     }
 
@@ -61,8 +55,8 @@ public class ChartRecord<T1, T2> {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .append("axisX", x)
-                .append("axisY", y)
+                .append("x", x)
+                .append("y", y)
                 .toString();
     }
 }

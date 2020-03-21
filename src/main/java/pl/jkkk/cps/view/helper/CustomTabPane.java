@@ -32,6 +32,18 @@ public class CustomTabPane extends TabPane {
         return paramsTab;
     }
 
+    public void setChartTab(CustomTab chartTab) {
+        this.chartTab = chartTab;
+    }
+
+    public void setHistogramTab(CustomTab histogramTab) {
+        this.histogramTab = histogramTab;
+    }
+
+    public void setParamsTab(CustomTab paramsTab) {
+        this.paramsTab = paramsTab;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
