@@ -101,24 +101,12 @@ public class MainPanel implements Initializable {
     /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionLoadChart(ActionEvent actionEvent) {
-        try {
-            new FileChooser().showOpenDialog(StageController.getApplicationStage()).getName();
-            //TODO ADD IMPL
-        } catch (NullPointerException e) {
-            PopOutWindow.messageBox("Błąd Ładowania Pliku",
-                    "Nie można załadować wybranego pliku", Alert.AlertType.WARNING);
-        }
+        loader.loadChart();
     }
 
     @FXML
     private void onActionSaveChart(ActionEvent actionEvent) {
-        try {
-            new FileChooser().showOpenDialog(StageController.getApplicationStage()).getName();
-            //TODO ADD IMPL
-        } catch (NullPointerException e) {
-            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
-                    "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
-        }
+        loader.saveChart();
     }
 
     /*--------------------------------------------------------------------------------------------*/

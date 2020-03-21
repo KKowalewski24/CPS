@@ -3,12 +3,13 @@ package pl.jkkk.cps.logic.model.signal;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.Range;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public abstract class Signal {
+public abstract class Signal implements Serializable {
 
     protected final Data[] data;
 

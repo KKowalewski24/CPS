@@ -10,6 +10,8 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
@@ -25,9 +27,11 @@ import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
+import pl.jkkk.cps.logic.reader.FileReader;
 import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.helper.CustomTabPane;
 import pl.jkkk.cps.view.util.PopOutWindow;
+import pl.jkkk.cps.view.util.StageController;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
@@ -62,10 +66,10 @@ public class Loader {
     private TextField textFieldSamplingFrequency;
 
     private TabPane tabPaneResults;
-    private Map<Integer, Signal> signals = new HashMap<>();
-
     private Spinner spinnerHistogramRange;
 
+    private Map<Integer, Signal> signals = new HashMap<>();
+    private FileReader<Signal> signalFileReader;
     private boolean isScatterChart;
 
     /*------------------------ METHODS REGION ------------------------*/
@@ -117,6 +121,47 @@ public class Loader {
         }
         fillBarChart(customTabPane, barChartCollection);
         fillParamsTab(customTabPane, signalParams);
+    }
+
+    private void convertSignalToChart(Signal signal) {
+        /* prepare line/point chart data */
+        List<ChartRecord<Number, Number>> chartData = signal.getData()
+                .stream()
+                .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
+                .collect(Collectors.toList());
+
+        /* prepare barchart data */
+        DecimalFormat df = new DecimalFormat("#.##");
+        List<ChartRecord<String, Number>> histogramData = signal
+                .generateHistogram((int) spinnerHistogramRange.getValue())
+                .stream()
+                .map(range -> new ChartRecord<String, Number>(
+                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
+                        range.getQuantity()))
+                .collect(Collectors.toList());
+
+        /* prepare params */
+        double[] signalParams = new double[5];
+        signalParams[0] = signal.meanValue();
+        signalParams[1] = signal.absMeanValue();
+        signalParams[2] = signal.rmsValue();
+        signalParams[3] = signal.varianceValue();
+        signalParams[4] = signal.meanPowerValue();
+
+        /* render it all */
+        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
+    }
+
+    private void representSignal(Signal signal) {
+
+        /* remember signal */
+        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        signals.put(tabIndex, signal);
+
+        /* generate signal */
+        signal.generate();
+
+        convertSignalToChart(signal);
     }
 
     public void computeCharts() {
@@ -240,40 +285,43 @@ public class Loader {
         representSignal(resultSignal);
     }
 
-    private void representSignal(Signal signal) {
-
-        /* remember signal */
+    public void loadChart() {
         int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
-        signals.put(tabIndex, signal);
 
-        /* generate signal */
-        signal.generate();
+        try {
+            signalFileReader = new FileReader<>(new FileChooser()
+                    .showOpenDialog(StageController.getApplicationStage())
+                    .getName());
 
-        /* prepare line/point chart data */
-        List<ChartRecord<Number, Number>> chartData = signal.getData().stream()
-                .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
-                .collect(Collectors.toList());
+            signals.put(tabIndex, signalFileReader.read());
+            convertSignalToChart(signals.get(tabIndex));
 
-        /* prepare barchart data */
-        DecimalFormat df = new DecimalFormat("#.##");
-        List<ChartRecord<String, Number>> histogramData = signal
-                .generateHistogram((int) spinnerHistogramRange.getValue())
-                .stream()
-                .map(range -> new ChartRecord<String, Number>(
-                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
-                        range.getQuantity()))
-                .collect(Collectors.toList());
+        } catch (NullPointerException | FileOperationException e) {
+            e.printStackTrace();
+            PopOutWindow.messageBox("Błąd Ładowania Pliku",
+                    "Nie można załadować wybranego pliku", Alert.AlertType.WARNING);
+        }
+    }
 
-        /* prepare params */
-        double[] signalParams = new double[5];
-        signalParams[0] = signal.meanValue();
-        signalParams[1] = signal.absMeanValue();
-        signalParams[2] = signal.rmsValue();
-        signalParams[3] = signal.varianceValue();
-        signalParams[4] = signal.meanPowerValue();
+    public void saveChart() {
+        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
 
-        /* render it all */
-        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
+        try {
+            if (signals.get(tabIndex) != null) {
+                signalFileReader = new FileReader<>(new FileChooser()
+                        .showSaveDialog(StageController.getApplicationStage())
+                        .getName());
+
+                signalFileReader.write(signals.get(tabIndex));
+            } else {
+                PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+                        "Sygnał nie został jeszcze wygenerowany", Alert.AlertType.WARNING);
+            }
+        } catch (NullPointerException | FileOperationException e) {
+            e.printStackTrace();
+            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+                    "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
+        }
     }
 }
     

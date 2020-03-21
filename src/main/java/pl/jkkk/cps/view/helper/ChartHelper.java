@@ -70,7 +70,7 @@ public class ChartHelper {
     public static void appendLabelText(Node node, String text) {
         Label label = (Label) node;
         String initialText = label.getText().substring(0, label.getText().indexOf(":") + 1);
-        label.setText(initialText + "\t\t\t" + text);
+        label.setText(initialText + "     " + text);
     }
 
     public static void fillComboBox(ComboBox comboBox, Collection collection) {
