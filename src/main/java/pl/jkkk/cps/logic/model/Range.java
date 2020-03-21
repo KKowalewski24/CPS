@@ -6,7 +6,7 @@ public class Range {
     private final double end;
     private final int quantity;
 
-    public Range(double begin, double end, int quantity){
+    public Range(double begin, double end, int quantity) {
         this.begin = begin;
         this.end = end;
         this.quantity = quantity;

@@ -1,14 +1,5 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -19,14 +10,13 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-
 import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
+import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
-import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
 import pl.jkkk.cps.logic.model.signal.SinusoidalRectifiedOneHalfSignal;
 import pl.jkkk.cps.logic.model.signal.SinusoidalRectifiedTwoHalfSignal;
@@ -38,6 +28,14 @@ import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.helper.CustomTabPane;
 import pl.jkkk.cps.view.util.PopOutWindow;
+
+import java.text.DecimalFormat;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
 import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
 import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
@@ -107,9 +105,9 @@ public class Loader {
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
-                            Collection<ChartRecord<Number, Number>> chartCollection,
-                            Collection<ChartRecord<String, Number>> barChartCollection,
-                            double[] signalParams) {
+                                           Collection<ChartRecord<Number, Number>> chartCollection,
+                                           Collection<ChartRecord<String, Number>> barChartCollection,
+                                           double[] signalParams) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
 
         if (isScatterChart) {
@@ -229,20 +227,20 @@ public class Loader {
         Signal s2 = signals.get(s2Index);
         Signal resultSignal = null;
 
-        if(selectedOperation.equals(OperationType.ADDITION.getName())){
+        if (selectedOperation.equals(OperationType.ADDITION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
-        }else if(selectedOperation.equals(OperationType.SUBTRACTION.getName())){
+        } else if (selectedOperation.equals(OperationType.SUBTRACTION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
-        }else if(selectedOperation.equals(OperationType.MULTIPLICATION.getName())){
+        } else if (selectedOperation.equals(OperationType.MULTIPLICATION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
-        }else if(selectedOperation.equals(OperationType.DIVISION.getName())){
+        } else if (selectedOperation.equals(OperationType.DIVISION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
         }
-        
-        representSignal(resultSignal);
-    }   
 
-    private void representSignal(Signal signal){
+        representSignal(resultSignal);
+    }
+
+    private void representSignal(Signal signal) {
 
         /* remember signal */
         int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
@@ -253,16 +251,18 @@ public class Loader {
 
         /* prepare line/point chart data */
         List<ChartRecord<Number, Number>> chartData = signal.getData().stream()
-            .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
-            .collect(Collectors.toList());
-    
+                .map(data -> new ChartRecord<Number, Number>(data.getX(), data.getY()))
+                .collect(Collectors.toList());
+
         /* prepare barchart data */
         DecimalFormat df = new DecimalFormat("#.##");
-        List<ChartRecord<String, Number>> histogramData = signal.generateHistogram((int)spinnerHistogramRange.getValue()).stream()
-            .map(range -> new ChartRecord<String, Number>(
-                    df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
-                    range.getQuantity()))
-            .collect(Collectors.toList());
+        List<ChartRecord<String, Number>> histogramData = signal
+                .generateHistogram((int) spinnerHistogramRange.getValue())
+                .stream()
+                .map(range -> new ChartRecord<String, Number>(
+                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
+                        range.getQuantity()))
+                .collect(Collectors.toList());
 
         /* prepare params */
         double[] signalParams = new double[5];

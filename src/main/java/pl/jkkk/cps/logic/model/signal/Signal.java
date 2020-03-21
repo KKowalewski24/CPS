@@ -1,39 +1,39 @@
 package pl.jkkk.cps.logic.model.signal;
 
+import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.Range;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import pl.jkkk.cps.logic.model.Range;
-import pl.jkkk.cps.logic.model.Data;
-
 public abstract class Signal {
 
     protected final Data[] data;
 
-    public Signal(int length){
+    public Signal(int length) {
         this.data = new Data[length];
     }
 
     public abstract void generate();
 
-    public List<Data> getData(){
+    public List<Data> getData() {
         return Arrays.asList(data);
     }
 
     public List<Range> generateHistogram(int numberOfRanges) {
         final double min = Arrays.asList(data).stream()
-            .mapToDouble(data -> data.getY()).min().getAsDouble();
+                .mapToDouble(data -> data.getY()).min().getAsDouble();
         final double max = Arrays.asList(data).stream()
-            .mapToDouble(data -> data.getY()).max().getAsDouble();
+                .mapToDouble(data -> data.getY()).max().getAsDouble();
         final List<Range> ranges = new ArrayList<>();
         IntStream.range(0, numberOfRanges).forEach(i -> {
             double begin = min + (max - min) / numberOfRanges * i;
             double end = min + (max - min) / numberOfRanges * (i + 1);
-            int quantity = (int)Arrays.asList(data).stream()
-                .filter(data -> data.getY() >= begin && data.getY() <= end)
-                .count();
+            int quantity = (int) Arrays.asList(data).stream()
+                    .filter(data -> data.getY() >= begin && data.getY() <= end)
+                    .count();
             ranges.add(new Range(begin, end, quantity));
         });
         return ranges;

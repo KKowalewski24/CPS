@@ -11,13 +11,10 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-import pl.jkkk.cps.logic.model.Series;
-import pl.jkkk.cps.view.helper.ChartRecord;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
