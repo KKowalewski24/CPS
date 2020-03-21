@@ -4,7 +4,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Data {
+import java.io.Serializable;
+
+public class Data implements Serializable {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private double x;
