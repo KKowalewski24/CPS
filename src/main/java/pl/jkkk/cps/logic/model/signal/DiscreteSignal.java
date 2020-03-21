@@ -22,7 +22,7 @@ public abstract class DiscreteSignal extends Signal {
     public void generate() {
         double step = rangeLength / (data.length - 1);
         for (int i = 0; i < data.length; i++) {
-            double x = i * step;
+            double x = i * step + rangeStart;
             double y = value(x);
             data[i] = new Data(x, y);
         }
