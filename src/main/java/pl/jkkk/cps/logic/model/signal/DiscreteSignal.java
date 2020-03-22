@@ -16,7 +16,7 @@ public abstract class DiscreteSignal extends Signal {
     }
 
     /* This function act as a REAL continous signal */
-    abstract protected double value(double t);
+    protected abstract double value(double t);
 
     @Override
     public void generate() {

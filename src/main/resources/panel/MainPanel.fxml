@@ -11,7 +11,7 @@
             <items>
                 <Button minHeight="35.0" minWidth="100.0" mnemonicParsing="false"
                         onAction="#onActionButtonGenerateData" prefHeight="35.0" prefWidth="112.0"
-                        text="Generuj Wykres"/>
+                        text="Generuj Sygnał"/>
                 <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
                         mnemonicParsing="false" onAction="#onActionButtonAddNewTab"
                         text="Dodaj Kartę"/>

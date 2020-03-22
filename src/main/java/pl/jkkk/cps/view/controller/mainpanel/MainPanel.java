@@ -3,15 +3,12 @@ package pl.jkkk.cps.view.controller.mainpanel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
-import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
 
 import java.net.URL;

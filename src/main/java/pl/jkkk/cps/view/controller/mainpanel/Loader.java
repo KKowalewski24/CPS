@@ -1,13 +1,5 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import javafx.scene.Node;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -19,7 +11,6 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.OperationType;
@@ -44,6 +35,15 @@ import pl.jkkk.cps.view.helper.CustomTabPane;
 import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
 import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
 import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
@@ -130,13 +130,14 @@ public class Loader {
     private void convertSignalToChart(Signal signal) {
         /* prepare line/point chart data */
         List<Data> data;
-        if(signal instanceof GaussianNoise || signal instanceof UniformNoise){
+        if (signal instanceof GaussianNoise || signal instanceof UniformNoise) {
             data = new ArrayList<>();
-            for(int i = 0; i < signal.getData().size(); i++){
-                if(i % (signal.getData().size() / 1000) == 0)
+            for (int i = 0; i < signal.getData().size(); i++) {
+                if (i % (signal.getData().size() / 1000) == 0) {
                     data.add(signal.getData().get(i));
+                }
             }
-        }else if(signal instanceof ContinuousSignal || signal instanceof OperationResultSignal){
+        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
             DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
             data = signal.getData();
             data = new ArrayList<>(douglasPeucker.calculate(
@@ -144,7 +145,7 @@ public class Loader {
                     (data.get(data.size() - 1).getX() - data.get(0).getX()) * 1.0 / 10000.0,
                     0,
                     data.size() - 1));
-        }else{
+        } else {
             data = signal.getData();
         }
         System.out.println("Wygenerowanu punktów: " + data.size());
@@ -319,7 +320,6 @@ public class Loader {
             convertSignalToChart(signals.get(tabIndex));
 
         } catch (NullPointerException | FileOperationException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błąd Ładowania Pliku",
                     "Nie można załadować wybranego pliku", Alert.AlertType.WARNING);
         }
@@ -340,7 +340,6 @@ public class Loader {
                         "Sygnał nie został jeszcze wygenerowany", Alert.AlertType.WARNING);
             }
         } catch (NullPointerException | FileOperationException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
                     "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
         }
