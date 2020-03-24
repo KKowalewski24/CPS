@@ -145,9 +145,8 @@ public class ChartHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
-    public static void fillLineChart(CustomTabPane customTabPane,
+    public static void fillLineChart(LineChart lineChart,
                                      Collection<ChartRecord<Number, Number>> dataCollection) {
-        LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {
@@ -157,9 +156,8 @@ public class ChartHelper {
         clearAndAddNewDataToChart(lineChart, series);
     }
 
-    public static void fillScatterChart(CustomTabPane customTabPane,
+    public static void fillScatterChart(ScatterChart scatterChart,
                                         Collection<ChartRecord<Number, Number>> dataCollection) {
-        ScatterChart scatterChart = (ScatterChart) customTabPane.getChartTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {
@@ -169,9 +167,8 @@ public class ChartHelper {
         clearAndAddNewDataToChart(scatterChart, series);
     }
 
-    public static void fillBarChart(CustomTabPane customTabPane,
+    public static void fillBarChart(BarChart barChart,
                                     Collection<ChartRecord<String, Number>> dataCollection) {
-        BarChart barChart = (BarChart) customTabPane.getHistogramTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {

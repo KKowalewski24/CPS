@@ -1,12 +1,16 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
@@ -110,18 +114,32 @@ public class Loader {
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Collection<ChartRecord<Number, Number>> chartCollection,
-                                           Collection<ChartRecord<String, Number>> barChartCollection,
-                                           double[] signalParams) {
+                                           Collection<ChartRecord<Number, Number>> mainChartData,
+                                           Collection<ChartRecord<String, Number>> histogramData,
+                                           double[] signalParams,
+                                           Collection<ChartRecord<Number, Number>> lineChartAcFirst,
+                                           Collection<ChartRecord<Number, Number>> lineChartAcSecond,
+                                           Collection<ChartRecord<Number, Number>> lineChartCaFirst,
+                                           Collection<ChartRecord<Number, Number>> lineChartCaSecond) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
 
         if (isScatterChart) {
-            fillScatterChart(customTabPane, chartCollection);
+            fillScatterChart((ScatterChart) customTabPane.getChartTab()
+                    .getContent(), mainChartData);
         } else {
-            fillLineChart(customTabPane, chartCollection);
+            fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
         }
-        fillBarChart(customTabPane, barChartCollection);
+
+        fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
         fillParamsTab(customTabPane, signalParams);
+
+        VBox vBoxAcConversion = (VBox) customTabPane.getACConversionTab().getContent();
+        fillLineChart((LineChart) vBoxAcConversion.getChildren().get(0), lineChartAcFirst);
+        fillLineChart((LineChart) vBoxAcConversion.getChildren().get(1), lineChartAcSecond);
+
+        VBox vBoxCaConversion = (VBox) customTabPane.getCAConversionTab().getContent();
+        fillLineChart((LineChart) vBoxCaConversion.getChildren().get(0), lineChartCaFirst);
+        fillLineChart((LineChart) vBoxCaConversion.getChildren().get(1), lineChartCaSecond);
     }
 
     private void convertSignalToChart(Signal signal) {
@@ -170,8 +188,14 @@ public class Loader {
         signalParams[3] = signal.varianceValue();
         signalParams[4] = signal.meanPowerValue();
 
+        //        TODO FILL COLLECTIONS WITH DATA AND PASS TO METHOD BELOW
+
+
         /* render it all */
-        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
+        // TODO REPLACE WITH REAL COLLECTIONS
+        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData,
+                signalParams, new ArrayList<>(), new ArrayList<>(),
+                new ArrayList<>(), new ArrayList<>());
     }
 
     private void representSignal(Signal signal) {
