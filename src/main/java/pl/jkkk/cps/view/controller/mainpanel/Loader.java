@@ -1,9 +1,6 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
@@ -212,8 +209,7 @@ public class Loader {
 
             Signal signal = null;
             isScatterChart = false;
-            changeScatterChartToLineChart(tabPaneResults,
-                    new LineChart<>(new NumberAxis(), new NumberAxis()));
+            changeScatterChartToLineChart(tabPaneResults);
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
 
@@ -259,8 +255,7 @@ public class Loader {
             } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
 
                 isScatterChart = true;
-                changeLineChartToScatterChart(tabPaneResults,
-                        new ScatterChart(new NumberAxis(), new NumberAxis()));
+                changeLineChartToScatterChart(tabPaneResults);
 
                 signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate,
                         amplitude, jumpMoment.intValue());
@@ -268,8 +263,7 @@ public class Loader {
             } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
 
                 isScatterChart = true;
-                changeLineChartToScatterChart(tabPaneResults,
-                        new ScatterChart(new NumberAxis(), new NumberAxis()));
+                changeLineChartToScatterChart(tabPaneResults);
 
                 signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
                         probability);

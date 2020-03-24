@@ -109,7 +109,6 @@ public class MainPanel implements Initializable {
     /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
-        //TODO ADD IMPL, IN FINAL VERSION LOAD DATA FROM LOGIC
         Integer selectedTab = tabPaneInputs.getSelectionModel().getSelectedIndex();
 
         switch (selectedTab) {

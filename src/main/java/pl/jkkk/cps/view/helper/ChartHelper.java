@@ -2,7 +2,9 @@ package pl.jkkk.cps.view.helper;
 
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
@@ -92,20 +94,36 @@ public class ChartHelper {
         chart.getData().add(series);
     }
 
-    public static void changeLineChartToScatterChart(TabPane tabPane, ScatterChart scatterChart) {
-        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
-        customTabPane.getChartTab().setContent(scatterChart);
-        ScatterChart newScatterChart = (ScatterChart) customTabPane.getChartTab().getContent();
-        newScatterChart.setAnimated(false);
+    public static LineChart prepareLineChart() {
+        LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
+        lineChart.setCreateSymbols(false);
+        lineChart.setAnimated(false);
+
+        return lineChart;
     }
 
-    public static void changeScatterChartToLineChart(TabPane tabPane, LineChart lineChart) {
+    public static BarChart prepareBarChart() {
+        BarChart barChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
+        barChart.setAnimated(false);
+
+        return barChart;
+    }
+
+    public static ScatterChart prepareScatterChart() {
+        ScatterChart scatterChart = new ScatterChart(new NumberAxis(), new NumberAxis());
+        scatterChart.setAnimated(false);
+
+        return scatterChart;
+    }
+
+    public static void changeLineChartToScatterChart(TabPane tabPane) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
-        customTabPane.getChartTab().setContent(lineChart);
-        LineChart newLineChart = (LineChart) customTabPane.getChartTab().getContent();
-        newLineChart.setAnimated(false);
-        newLineChart.setCreateSymbols(false);
-        newLineChart.setAnimated(false);
+        customTabPane.getChartTab().setContent(prepareScatterChart());
+    }
+
+    public static void changeScatterChartToLineChart(TabPane tabPane) {
+        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        customTabPane.getChartTab().setContent(prepareLineChart());
     }
 
     public static void fillLineChart(CustomTabPane customTabPane,

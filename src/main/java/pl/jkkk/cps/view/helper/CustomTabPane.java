@@ -11,37 +11,59 @@ public class CustomTabPane extends TabPane {
     private CustomTab chartTab;
     private CustomTab histogramTab;
     private CustomTab paramsTab;
+    private CustomTab ACConversionTab;
+    private CustomTab CAConversionTab;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public CustomTabPane(CustomTab chartTab, CustomTab histogramTab, CustomTab paramsTab) {
-        super(chartTab, histogramTab, paramsTab);
+    public CustomTabPane(CustomTab chartTab, CustomTab histogramTab,
+                         CustomTab paramsTab, CustomTab ACConversionTab,
+                         CustomTab CAConversionTab) {
+        super(chartTab, histogramTab, paramsTab, ACConversionTab, CAConversionTab);
         this.chartTab = chartTab;
         this.histogramTab = histogramTab;
         this.paramsTab = paramsTab;
+        this.ACConversionTab = ACConversionTab;
+        this.CAConversionTab = CAConversionTab;
     }
 
     public CustomTab getChartTab() {
         return chartTab;
     }
 
-    public CustomTab getHistogramTab() {
-        return histogramTab;
-    }
-
-    public CustomTab getParamsTab() {
-        return paramsTab;
-    }
-
     public void setChartTab(CustomTab chartTab) {
         this.chartTab = chartTab;
+    }
+
+    public CustomTab getHistogramTab() {
+        return histogramTab;
     }
 
     public void setHistogramTab(CustomTab histogramTab) {
         this.histogramTab = histogramTab;
     }
 
+    public CustomTab getParamsTab() {
+        return paramsTab;
+    }
+
     public void setParamsTab(CustomTab paramsTab) {
         this.paramsTab = paramsTab;
+    }
+
+    public CustomTab getACConversionTab() {
+        return ACConversionTab;
+    }
+
+    public void setACConversionTab(CustomTab ACConversionTab) {
+        this.ACConversionTab = ACConversionTab;
+    }
+
+    public CustomTab getCAConversionTab() {
+        return CAConversionTab;
+    }
+
+    public void setCAConversionTab(CustomTab CAConversionTab) {
+        this.CAConversionTab = CAConversionTab;
     }
 
     @Override
@@ -60,6 +82,8 @@ public class CustomTabPane extends TabPane {
                 .append(chartTab, that.chartTab)
                 .append(histogramTab, that.histogramTab)
                 .append(paramsTab, that.paramsTab)
+                .append(ACConversionTab, that.ACConversionTab)
+                .append(CAConversionTab, that.CAConversionTab)
                 .isEquals();
     }
 
@@ -69,6 +93,8 @@ public class CustomTabPane extends TabPane {
                 .append(chartTab)
                 .append(histogramTab)
                 .append(paramsTab)
+                .append(ACConversionTab)
+                .append(CAConversionTab)
                 .toHashCode();
     }
 
@@ -79,6 +105,8 @@ public class CustomTabPane extends TabPane {
                 .append("chartTab", chartTab)
                 .append("histogramTab", histogramTab)
                 .append("paramsTab", paramsTab)
+                .append("ACConversionTab", ACConversionTab)
+                .append("CAConversionTab", CAConversionTab)
                 .toString();
     }
 }
