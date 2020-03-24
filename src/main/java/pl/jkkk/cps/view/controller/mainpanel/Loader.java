@@ -27,8 +27,8 @@ import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.logic.reader.FileReader;
-import pl.jkkk.cps.view.helper.ChartRecord;
-import pl.jkkk.cps.view.helper.CustomTabPane;
+import pl.jkkk.cps.view.model.ChartRecord;
+import pl.jkkk.cps.view.model.CustomTabPane;
 import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
@@ -145,7 +145,9 @@ public class Loader {
         } else {
             data = signal.getData();
         }
+
         System.out.println("Wygenerowanu punktów: " + data.size());
+
         List<ChartRecord<Number, Number>> chartData = data.stream()
                 .map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
                 .collect(Collectors.toList());
@@ -188,24 +190,15 @@ public class Loader {
         String selectedSignal = comboBoxSignalTypes.getSelectionModel()
                 .getSelectedItem().toString();
 
-        Double amplitude = null;
-        Double rangeStart = null;
-        Double rangeLength = null;
-        Double term = null;
-        Double fulfillment = null;
-        Double jumpMoment = null;
-        Double probability = null;
-        Double sampleRate = null;
-
         try {
-            amplitude = Double.parseDouble(textFieldAmplitude.getText());
-            rangeStart = Double.parseDouble(textFieldStartTime.getText());
-            rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
-            term = Double.parseDouble(textFieldBasicPeriod.getText());
-            fulfillment = Double.parseDouble(textFieldFillFactor.getText());
-            jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
-            probability = Double.parseDouble(textFieldProbability.getText());
-            sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
+            Double amplitude = Double.parseDouble(textFieldAmplitude.getText());
+            Double rangeStart = Double.parseDouble(textFieldStartTime.getText());
+            Double rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
+            Double term = Double.parseDouble(textFieldBasicPeriod.getText());
+            Double fulfillment = Double.parseDouble(textFieldFillFactor.getText());
+            Double jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
+            Double probability = Double.parseDouble(textFieldProbability.getText());
+            Double sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
 
             Signal signal = null;
             isScatterChart = false;

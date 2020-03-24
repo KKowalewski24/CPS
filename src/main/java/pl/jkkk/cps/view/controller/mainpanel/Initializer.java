@@ -9,8 +9,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.SignalType;
-import pl.jkkk.cps.view.helper.CustomTab;
-import pl.jkkk.cps.view.helper.CustomTabPane;
+import pl.jkkk.cps.view.model.CustomTab;
+import pl.jkkk.cps.view.model.CustomTabPane;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,10 +205,16 @@ public class Initializer {
                         new CustomTab("Wykres", prepareLineChart(), false),
                         new CustomTab("Histogram", prepareBarChart(), false),
                         new CustomTab("Parametry", pane, false),
-                        new CustomTab("Konwersja A/C",
-                                new VBox(prepareLineChart(), prepareLineChart()), false),
-                        new CustomTab("Konwersja C/A",
-                                new VBox(prepareLineChart(), prepareLineChart()), false)
+
+                        new CustomTab("Konwersja A/C", new VBox(
+                                prepareLineChart("//TODO"),
+                                prepareLineChart("//TODO")
+                        ), false),
+
+                        new CustomTab("Konwersja C/A", new VBox(
+                                prepareLineChart("//TODO"),
+                                prepareLineChart("//TODO")
+                        ), false)
                 )));
     }
 }

@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.helper;
+package pl.jkkk.cps.view.model;
 
 import javafx.scene.control.TabPane;
 import org.apache.commons.lang3.builder.EqualsBuilder;

@@ -12,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import pl.jkkk.cps.view.model.ChartRecord;
+import pl.jkkk.cps.view.model.CustomTabPane;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +27,7 @@ public class ChartHelper {
     private ChartHelper() {
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public static XYChart.Data<Number, Number> prepareDataRecord(Number numberOne,
                                                                  Number numberTwo) {
         return new XYChart.Data(numberOne, numberTwo);
@@ -45,6 +48,7 @@ public class ChartHelper {
         return new XYChart.Data(stringOne, stringTwo);
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public static CustomTabPane castTabPaneToCustomTabPane(TabPane tabPane) {
         return (CustomTabPane) tabPane.getSelectionModel().getSelectedItem().getContent();
     }
@@ -94,28 +98,42 @@ public class ChartHelper {
         chart.getData().add(series);
     }
 
-    public static LineChart prepareLineChart() {
+    /*--------------------------------------------------------------------------------------------*/
+    public static LineChart prepareLineChart(String... title) {
         LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
         lineChart.setCreateSymbols(false);
         lineChart.setAnimated(false);
 
+        if (title.length == 1) {
+            lineChart.setTitle(title[0]);
+        }
+
         return lineChart;
     }
 
-    public static BarChart prepareBarChart() {
+    public static BarChart prepareBarChart(String... title) {
         BarChart barChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
         barChart.setAnimated(false);
+
+        if (title.length == 1) {
+            barChart.setTitle(title[0]);
+        }
 
         return barChart;
     }
 
-    public static ScatterChart prepareScatterChart() {
+    public static ScatterChart prepareScatterChart(String... title) {
         ScatterChart scatterChart = new ScatterChart(new NumberAxis(), new NumberAxis());
         scatterChart.setAnimated(false);
+
+        if (title.length == 1) {
+            scatterChart.setTitle(title[0]);
+        }
 
         return scatterChart;
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public static void changeLineChartToScatterChart(TabPane tabPane) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
         customTabPane.getChartTab().setContent(prepareScatterChart());
@@ -126,6 +144,7 @@ public class ChartHelper {
         customTabPane.getChartTab().setContent(prepareLineChart());
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public static void fillLineChart(CustomTabPane customTabPane,
                                      Collection<ChartRecord<Number, Number>> dataCollection) {
         LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
@@ -161,6 +180,4 @@ public class ChartHelper {
 
         clearAndAddNewDataToChart(barChart, series);
     }
-
 }
-    
