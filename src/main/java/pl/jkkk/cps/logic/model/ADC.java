@@ -27,7 +27,7 @@ public class ADC {
             int index = (int) Math.round(
                         (sample.getY() - levels.get(0)) /
                         (levels.get(levels.size() - 1) - levels.get(0)) *
-                        levels.size()
+                        (levels.size() - 1)
                     );
             data.add(new Data(sample.getX(), levels.get(index)));
         });
@@ -41,7 +41,7 @@ public class ADC {
             int index = (int) Math.floor(
                         (sample.getY() - levels.get(0)) /
                         (levels.get(levels.size() - 1) - levels.get(0)) *
-                        levels.size()
+                        (levels.size() - 1)
                     );
             data.add(new Data(sample.getX(), levels.get(index)));
         });
