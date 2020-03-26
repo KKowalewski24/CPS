@@ -1,5 +1,6 @@
 package pl.jkkk.cps.logic.model.signal;
 
+import pl.jkkk.cps.logic.exception.NotSameLengthException;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.Operation;
 
@@ -31,8 +32,5 @@ public class OperationResultSignal extends Signal {
                     operation.operation(s1.getData().get(i).getY(),
                             s2.getData().get(i).getY()));
         }
-    }
-
-    public class NotSameLengthException extends RuntimeException {
     }
 }

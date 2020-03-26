@@ -1,16 +1,8 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import javafx.scene.Node;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -18,8 +10,8 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.OperationType;
@@ -39,11 +31,20 @@ import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.logic.reader.FileReader;
-import pl.jkkk.cps.view.helper.ChartRecord;
-import pl.jkkk.cps.view.helper.CustomTabPane;
+import pl.jkkk.cps.view.model.ChartRecord;
+import pl.jkkk.cps.view.model.CustomTabPane;
 import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
 import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
 import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
@@ -113,30 +114,45 @@ public class Loader {
     }
 
     private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Collection<ChartRecord<Number, Number>> chartCollection,
-                                           Collection<ChartRecord<String, Number>> barChartCollection,
-                                           double[] signalParams) {
+                                           Collection<ChartRecord<Number, Number>> mainChartData,
+                                           Collection<ChartRecord<String, Number>> histogramData,
+                                           double[] signalParams,
+                                           Collection<ChartRecord<Number, Number>> lineChartAcFirst,
+                                           Collection<ChartRecord<Number, Number>> lineChartAcSecond,
+                                           Collection<ChartRecord<Number, Number>> lineChartCaFirst,
+                                           Collection<ChartRecord<Number, Number>> lineChartCaSecond) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
 
         if (isScatterChart) {
-            fillScatterChart(customTabPane, chartCollection);
+            fillScatterChart((ScatterChart) customTabPane.getChartTab()
+                    .getContent(), mainChartData);
         } else {
-            fillLineChart(customTabPane, chartCollection);
+            fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
         }
-        fillBarChart(customTabPane, barChartCollection);
+
+        fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
         fillParamsTab(customTabPane, signalParams);
+
+        VBox vBoxAcConversion = (VBox) customTabPane.getACConversionTab().getContent();
+        fillLineChart((LineChart) vBoxAcConversion.getChildren().get(0), lineChartAcFirst);
+        fillLineChart((LineChart) vBoxAcConversion.getChildren().get(1), lineChartAcSecond);
+
+        VBox vBoxCaConversion = (VBox) customTabPane.getCAConversionTab().getContent();
+        fillLineChart((LineChart) vBoxCaConversion.getChildren().get(0), lineChartCaFirst);
+        fillLineChart((LineChart) vBoxCaConversion.getChildren().get(1), lineChartCaSecond);
     }
 
     private void convertSignalToChart(Signal signal) {
         /* prepare line/point chart data */
         List<Data> data;
-        if(signal instanceof GaussianNoise || signal instanceof UniformNoise){
+        if (signal instanceof GaussianNoise || signal instanceof UniformNoise) {
             data = new ArrayList<>();
-            for(int i = 0; i < signal.getData().size(); i++){
-                if(i % (signal.getData().size() / 1000) == 0)
+            for (int i = 0; i < signal.getData().size(); i++) {
+                if (i % (signal.getData().size() / 1000) == 0) {
                     data.add(signal.getData().get(i));
+                }
             }
-        }else if(signal instanceof ContinuousSignal || signal instanceof OperationResultSignal){
+        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
             DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
             data = signal.getData();
             data = new ArrayList<>(douglasPeucker.calculate(
@@ -144,10 +160,12 @@ public class Loader {
                     (data.get(data.size() - 1).getX() - data.get(0).getX()) * 1.0 / 10000.0,
                     0,
                     data.size() - 1));
-        }else{
+        } else {
             data = signal.getData();
         }
+
         System.out.println("Wygenerowanu punktów: " + data.size());
+
         List<ChartRecord<Number, Number>> chartData = data.stream()
                 .map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
                 .collect(Collectors.toList());
@@ -170,8 +188,14 @@ public class Loader {
         signalParams[3] = signal.varianceValue();
         signalParams[4] = signal.meanPowerValue();
 
+        //        TODO FILL COLLECTIONS WITH DATA AND PASS TO METHOD BELOW
+
+
         /* render it all */
-        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
+        // TODO REPLACE WITH REAL COLLECTIONS
+        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData,
+                signalParams, new ArrayList<>(), new ArrayList<>(),
+                new ArrayList<>(), new ArrayList<>());
     }
 
     private void representSignal(Signal signal) {
@@ -190,29 +214,19 @@ public class Loader {
         String selectedSignal = comboBoxSignalTypes.getSelectionModel()
                 .getSelectedItem().toString();
 
-        Double amplitude = null;
-        Double rangeStart = null;
-        Double rangeLength = null;
-        Double term = null;
-        Double fulfillment = null;
-        Double jumpMoment = null;
-        Double probability = null;
-        Double sampleRate = null;
-
         try {
-            amplitude = Double.parseDouble(textFieldAmplitude.getText());
-            rangeStart = Double.parseDouble(textFieldStartTime.getText());
-            rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
-            term = Double.parseDouble(textFieldBasicPeriod.getText());
-            fulfillment = Double.parseDouble(textFieldFillFactor.getText());
-            jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
-            probability = Double.parseDouble(textFieldProbability.getText());
-            sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
+            Double amplitude = Double.parseDouble(textFieldAmplitude.getText());
+            Double rangeStart = Double.parseDouble(textFieldStartTime.getText());
+            Double rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
+            Double term = Double.parseDouble(textFieldBasicPeriod.getText());
+            Double fulfillment = Double.parseDouble(textFieldFillFactor.getText());
+            Double jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
+            Double probability = Double.parseDouble(textFieldProbability.getText());
+            Double sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
 
             Signal signal = null;
             isScatterChart = false;
-            changeScatterChartToLineChart(tabPaneResults,
-                    new LineChart<>(new NumberAxis(), new NumberAxis()));
+            changeScatterChartToLineChart(tabPaneResults);
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
 
@@ -258,8 +272,7 @@ public class Loader {
             } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
 
                 isScatterChart = true;
-                changeLineChartToScatterChart(tabPaneResults,
-                        new ScatterChart(new NumberAxis(), new NumberAxis()));
+                changeLineChartToScatterChart(tabPaneResults);
 
                 signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate,
                         amplitude, jumpMoment.intValue());
@@ -267,8 +280,7 @@ public class Loader {
             } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
 
                 isScatterChart = true;
-                changeLineChartToScatterChart(tabPaneResults,
-                        new ScatterChart(new NumberAxis(), new NumberAxis()));
+                changeLineChartToScatterChart(tabPaneResults);
 
                 signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
                         probability);
@@ -319,7 +331,6 @@ public class Loader {
             convertSignalToChart(signals.get(tabIndex));
 
         } catch (NullPointerException | FileOperationException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błąd Ładowania Pliku",
                     "Nie można załadować wybranego pliku", Alert.AlertType.WARNING);
         }
@@ -340,10 +351,8 @@ public class Loader {
                         "Sygnał nie został jeszcze wygenerowany", Alert.AlertType.WARNING);
             }
         } catch (NullPointerException | FileOperationException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
                     "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
         }
     }
 }
-    

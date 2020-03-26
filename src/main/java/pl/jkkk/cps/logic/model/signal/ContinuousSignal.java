@@ -9,5 +9,5 @@ public abstract class ContinuousSignal extends DiscreteSignal {
     }
 
     @Override
-    abstract public double value(double t);
+    public abstract double value(double t);
 }

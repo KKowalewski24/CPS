@@ -1,19 +1,16 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.SignalType;
-import pl.jkkk.cps.view.helper.CustomTab;
-import pl.jkkk.cps.view.helper.CustomTabPane;
+import pl.jkkk.cps.view.model.CustomTab;
+import pl.jkkk.cps.view.model.CustomTabPane;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +19,9 @@ import java.util.stream.Stream;
 
 import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
 import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
+import static pl.jkkk.cps.view.helper.ChartHelper.prepareBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareLabelWithPosition;
+import static pl.jkkk.cps.view.helper.ChartHelper.prepareLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.setTextFieldPosition;
 import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
 
@@ -186,37 +185,36 @@ public class Initializer {
     }
 
     public void prepareTabPaneResults(int index) {
-
-        LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
-        lineChart.setCreateSymbols(false);
-        lineChart.setAnimated(false);
-
-        BarChart barChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
-        barChart.setAnimated(false);
-
         Pane pane = new Pane(
                 prepareLabelWithPosition("Wartość średnia sygnału: ", 25, 40),
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
                 prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
                 prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
-                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
+                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200),
 
-         /* not for this task
                 prepareLabelWithPosition("Błąd średniokwadratowy: ", 25, 240),
                 prepareLabelWithPosition("Stosunek sygnał - szum: ", 25, 280),
                 prepareLabelWithPosition("Szczytowy stosunek sygnał - szum: ", 25, 320),
                 prepareLabelWithPosition("Maksymalna różnica: ", 25, 360),
                 prepareLabelWithPosition("Efektywna liczba bitów: ", 25, 400),
                 prepareLabelWithPosition("Czas transformacji: ", 25, 440)
-          */
         );
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
-                        new CustomTab("Wykres", lineChart, false),
-                        new CustomTab("Histogram", barChart, false),
-                        new CustomTab("Parametry", pane, false)
+                        new CustomTab("Wykres", prepareLineChart(), false),
+                        new CustomTab("Histogram", prepareBarChart(), false),
+                        new CustomTab("Parametry", pane, false),
+
+                        new CustomTab("Konwersja A/C", new VBox(
+                                prepareLineChart("//TODO"),
+                                prepareLineChart("//TODO")
+                        ), false),
+
+                        new CustomTab("Konwersja C/A", new VBox(
+                                prepareLineChart("//TODO"),
+                                prepareLineChart("//TODO")
+                        ), false)
                 )));
     }
 }
-    

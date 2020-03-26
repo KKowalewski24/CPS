@@ -2,7 +2,9 @@ package pl.jkkk.cps.view.helper;
 
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
@@ -10,6 +12,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import pl.jkkk.cps.view.model.ChartRecord;
+import pl.jkkk.cps.view.model.CustomTabPane;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +27,7 @@ public class ChartHelper {
     private ChartHelper() {
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public static XYChart.Data<Number, Number> prepareDataRecord(Number numberOne,
                                                                  Number numberTwo) {
         return new XYChart.Data(numberOne, numberTwo);
@@ -43,6 +48,7 @@ public class ChartHelper {
         return new XYChart.Data(stringOne, stringTwo);
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public static CustomTabPane castTabPaneToCustomTabPane(TabPane tabPane) {
         return (CustomTabPane) tabPane.getSelectionModel().getSelectedItem().getContent();
     }
@@ -92,25 +98,55 @@ public class ChartHelper {
         chart.getData().add(series);
     }
 
-    public static void changeLineChartToScatterChart(TabPane tabPane, ScatterChart scatterChart) {
-        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
-        customTabPane.getChartTab().setContent(scatterChart);
-        ScatterChart newScatterChart = (ScatterChart) customTabPane.getChartTab().getContent();
-        newScatterChart.setAnimated(false);
+    /*--------------------------------------------------------------------------------------------*/
+    public static LineChart prepareLineChart(String... title) {
+        LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
+        lineChart.setCreateSymbols(false);
+        lineChart.setAnimated(false);
+
+        if (title.length == 1) {
+            lineChart.setTitle(title[0]);
+        }
+
+        return lineChart;
     }
 
-    public static void changeScatterChartToLineChart(TabPane tabPane, LineChart lineChart) {
-        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
-        customTabPane.getChartTab().setContent(lineChart);
-        LineChart newLineChart = (LineChart) customTabPane.getChartTab().getContent();
-        newLineChart.setAnimated(false);
-        newLineChart.setCreateSymbols(false);
-        newLineChart.setAnimated(false);
+    public static BarChart prepareBarChart(String... title) {
+        BarChart barChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
+        barChart.setAnimated(false);
+
+        if (title.length == 1) {
+            barChart.setTitle(title[0]);
+        }
+
+        return barChart;
     }
 
-    public static void fillLineChart(CustomTabPane customTabPane,
+    public static ScatterChart prepareScatterChart(String... title) {
+        ScatterChart scatterChart = new ScatterChart(new NumberAxis(), new NumberAxis());
+        scatterChart.setAnimated(false);
+
+        if (title.length == 1) {
+            scatterChart.setTitle(title[0]);
+        }
+
+        return scatterChart;
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    public static void changeLineChartToScatterChart(TabPane tabPane) {
+        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        customTabPane.getChartTab().setContent(prepareScatterChart());
+    }
+
+    public static void changeScatterChartToLineChart(TabPane tabPane) {
+        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        customTabPane.getChartTab().setContent(prepareLineChart());
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    public static void fillLineChart(LineChart lineChart,
                                      Collection<ChartRecord<Number, Number>> dataCollection) {
-        LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {
@@ -120,9 +156,8 @@ public class ChartHelper {
         clearAndAddNewDataToChart(lineChart, series);
     }
 
-    public static void fillScatterChart(CustomTabPane customTabPane,
+    public static void fillScatterChart(ScatterChart scatterChart,
                                         Collection<ChartRecord<Number, Number>> dataCollection) {
-        ScatterChart scatterChart = (ScatterChart) customTabPane.getChartTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {
@@ -132,9 +167,8 @@ public class ChartHelper {
         clearAndAddNewDataToChart(scatterChart, series);
     }
 
-    public static void fillBarChart(CustomTabPane customTabPane,
+    public static void fillBarChart(BarChart barChart,
                                     Collection<ChartRecord<String, Number>> dataCollection) {
-        BarChart barChart = (BarChart) customTabPane.getHistogramTab().getContent();
         XYChart.Series series = new XYChart.Series<>();
 
         dataCollection.forEach((it) -> {
@@ -143,6 +177,4 @@ public class ChartHelper {
 
         clearAndAddNewDataToChart(barChart, series);
     }
-
 }
-    
