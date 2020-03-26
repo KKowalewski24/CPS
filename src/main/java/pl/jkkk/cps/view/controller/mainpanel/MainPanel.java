@@ -99,8 +99,14 @@ public class MainPanel implements Initializable {
     @FXML
     private void onActionButtonAddNewTab(ActionEvent actionEvent) {
         initializer.prepareTabPaneResults(tabPaneResults.getTabs().size());
+
         fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
         fillComboBox(comboBoxSecondSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+
+        fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
+
+        fillComboBox(comboBoxComparisonFirstSignal, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxComparisonSecondSignal, getTabNameList(tabPaneResults.getTabs()));
     }
 
     @FXML

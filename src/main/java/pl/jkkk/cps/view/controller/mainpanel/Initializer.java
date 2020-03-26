@@ -6,8 +6,9 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import pl.jkkk.cps.logic.model.TwoArgsOperationType;
-import pl.jkkk.cps.logic.model.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
 
@@ -28,9 +29,9 @@ public class Initializer {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private ComboBox comboBoxSignalTypes;
-    private ComboBox comboBoxOperationTypes;
-    private ComboBox comboBoxFirstSignal;
-    private ComboBox comboBoxSecondSignal;
+    private ComboBox comboBoxOperationTypesTwoArgs;
+    private ComboBox comboBoxFirstSignalTwoArgs;
+    private ComboBox comboBoxSecondSignalTwoArgs;
     private Pane chooseParamsTab;
 
     private TextField textFieldAmplitude;
@@ -50,8 +51,8 @@ public class Initializer {
     private ComboBox comboBoxComparisonSecondSignal;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypes,
-                       ComboBox comboBoxFirstSignal, ComboBox comboBoxSecondSignal,
+    public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
+                       ComboBox comboBoxFirstSignalTwoArgs, ComboBox comboBoxSecondSignalTwoArgs,
                        Pane chooseParamsTab, TextField textFieldAmplitude,
                        TextField textFieldStartTime, TextField textFieldSignalDuration,
                        TextField textFieldBasicPeriod, TextField textFieldFillFactor,
@@ -61,9 +62,9 @@ public class Initializer {
                        ComboBox comboBoxComparisonFirstSignal,
                        ComboBox comboBoxComparisonSecondSignal) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
-        this.comboBoxOperationTypes = comboBoxOperationTypes;
-        this.comboBoxFirstSignal = comboBoxFirstSignal;
-        this.comboBoxSecondSignal = comboBoxSecondSignal;
+        this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
+        this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
+        this.comboBoxSecondSignalTwoArgs = comboBoxSecondSignalTwoArgs;
         this.chooseParamsTab = chooseParamsTab;
         this.textFieldAmplitude = textFieldAmplitude;
         this.textFieldStartTime = textFieldStartTime;
@@ -80,7 +81,7 @@ public class Initializer {
         this.comboBoxComparisonSecondSignal = comboBoxComparisonSecondSignal;
     }
 
-    private void fillTextFields() {
+    private void fillGenerationTab() {
         textFieldSetValue(textFieldAmplitude, String.valueOf(1));
         textFieldSetValue(textFieldStartTime, String.valueOf(0));
         textFieldSetValue(textFieldSignalDuration, String.valueOf(5));
@@ -89,9 +90,7 @@ public class Initializer {
         textFieldSetValue(textFieldJumpTime, String.valueOf(2));
         textFieldSetValue(textFieldProbability, String.valueOf(0.5));
         textFieldSetValue(textFieldSamplingFrequency, String.valueOf(16));
-    }
 
-    private void fillComboBoxes() {
         fillComboBox(comboBoxSignalTypes, Stream.of(
                 SignalType.UNIFORM_NOISE.getName(),
                 SignalType.GAUSSIAN_NOISE.getName(),
@@ -105,19 +104,6 @@ public class Initializer {
                 SignalType.UNIT_IMPULSE.getName(),
                 SignalType.IMPULSE_NOISE.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
-
-        fillComboBox(comboBoxOperationTypes, Stream.of(
-                TwoArgsOperationType.ADDITION.getName(),
-                TwoArgsOperationType.SUBTRACTION.getName(),
-                TwoArgsOperationType.MULTIPLICATION.getName(),
-                TwoArgsOperationType.DIVISION.getName()
-        ).collect(Collectors.toCollection(ArrayList::new)));
-
-        fillComboBox(comboBoxFirstSignal, getTabNameList(tabPaneResults.getTabs()));
-        fillComboBox(comboBoxSecondSignal, getTabNameList(tabPaneResults.getTabs()));
-    }
-
-    private void fillChooseParamsTab() {
 
         List<Node> basicInputs = Stream.of(
                 prepareLabelWithPosition("Wybierz Parametry", 168, 14),
@@ -189,10 +175,37 @@ public class Initializer {
         }));
     }
 
+    private void fillOneArgsTab() {
+        fillComboBox(comboBoxOperationTypesOneArgs, Stream.of(
+                OneArgsOperationType.SAMPLING.getName(),
+                OneArgsOperationType.QUANTIZATION.getName(),
+                OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName()
+        ).collect(Collectors.toCollection(ArrayList::new)));
+        fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
+    }
+
+    private void fillTwoArgsTab() {
+        fillComboBox(comboBoxOperationTypesTwoArgs, Stream.of(
+                TwoArgsOperationType.ADDITION.getName(),
+                TwoArgsOperationType.SUBTRACTION.getName(),
+                TwoArgsOperationType.MULTIPLICATION.getName(),
+                TwoArgsOperationType.DIVISION.getName()
+        ).collect(Collectors.toCollection(ArrayList::new)));
+
+        fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxSecondSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+    }
+
+    private void fillComparisonTab() {
+        fillComboBox(comboBoxComparisonFirstSignal, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxComparisonSecondSignal, getTabNameList(tabPaneResults.getTabs()));
+    }
+
     public void prepareTabPaneInputs() {
-        fillComboBoxes();
-        fillTextFields();
-        fillChooseParamsTab();
+        fillGenerationTab();
+        fillOneArgsTab();
+        fillTwoArgsTab();
+        fillComparisonTab();
     }
 
     public void prepareTabPaneResults(int index) {

@@ -1,4 +1,4 @@
-package pl.jkkk.cps.logic.model;
+package pl.jkkk.cps.logic.model.enumtype;
 
 public enum TwoArgsOperationType {
 

@@ -13,8 +13,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.TwoArgsOperationType;
-import pl.jkkk.cps.logic.model.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -56,9 +56,9 @@ public class Loader {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private ComboBox comboBoxSignalTypes;
-    private ComboBox comboBoxOperationTypes;
-    private ComboBox comboBoxFirstSignal;
-    private ComboBox comboBoxSecondSignal;
+    private ComboBox comboBoxOperationTypesTwoArgs;
+    private ComboBox comboBoxFirstSignalTwoArgs;
+    private ComboBox comboBoxSecondSignalTwoArgs;
 
     private TextField textFieldAmplitude;
     private TextField textFieldStartTime;
@@ -82,8 +82,8 @@ public class Loader {
     private boolean isScatterChart;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public Loader(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypes,
-                  ComboBox comboBoxFirstSignal, ComboBox comboBoxSecondSignal,
+    public Loader(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
+                  ComboBox comboBoxFirstSignalTwoArgs, ComboBox comboBoxSecondSignalTwoArgs,
                   TextField textFieldAmplitude, TextField textFieldStartTime,
                   TextField textFieldSignalDuration, TextField textFieldBasicPeriod,
                   TextField textFieldFillFactor, TextField textFieldJumpTime,
@@ -93,9 +93,9 @@ public class Loader {
                   ComboBox comboBoxComparisonFirstSignal,
                   ComboBox comboBoxComparisonSecondSignal) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
-        this.comboBoxOperationTypes = comboBoxOperationTypes;
-        this.comboBoxFirstSignal = comboBoxFirstSignal;
-        this.comboBoxSecondSignal = comboBoxSecondSignal;
+        this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
+        this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
+        this.comboBoxSecondSignalTwoArgs = comboBoxSecondSignalTwoArgs;
         this.textFieldAmplitude = textFieldAmplitude;
         this.textFieldStartTime = textFieldStartTime;
         this.textFieldSignalDuration = textFieldSignalDuration;
@@ -294,10 +294,10 @@ public class Loader {
     }
 
     public void performTwoArgsOperationOnCharts() {
-        String selectedOperation = comboBoxOperationTypes.getSelectionModel()
+        String selectedOperation = comboBoxOperationTypesTwoArgs.getSelectionModel()
                 .getSelectedItem().toString();
-        int s1Index = comboBoxFirstSignal.getSelectionModel().getSelectedIndex();
-        int s2Index = comboBoxSecondSignal.getSelectionModel().getSelectedIndex();
+        int s1Index = comboBoxFirstSignalTwoArgs.getSelectionModel().getSelectedIndex();
+        int s2Index = comboBoxSecondSignalTwoArgs.getSelectionModel().getSelectedIndex();
 
         Signal s1 = signals.get(s1Index);
         Signal s2 = signals.get(s2Index);
