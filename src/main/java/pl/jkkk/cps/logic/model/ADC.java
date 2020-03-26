@@ -1,72 +1,70 @@
 package pl.jkkk.cps.logic.model;
 
-import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.FixedSignal;
+import pl.jkkk.cps.logic.model.signal.Signal;
+
 public class ADC {
 
-    public List<Double> sampling(ContinuousSignal signal, int sampleRate) {
+    public Signal sampling(ContinuousSignal signal, int sampleRate) {
         int numberOfSamples = (int) (signal.getRangeLength() * sampleRate);
-        List<Double> data = new ArrayList<>();
+        List<Data> data = new ArrayList<>();
         Double step = signal.getRangeLength() / (numberOfSamples - 1);
         for (int i = 0; i < numberOfSamples; i++) {
-            data.add(signal.value(i * step + signal.getRangeStart()));
+            double x = i * step + signal.getRangeStart();
+            double y = signal.value(x);
+            data.add(new Data(x, y));
         }
-        return data;
+        return new FixedSignal(data);
     }
 
-    public List<Double> roundingQuantization(List<Double> samples, int numberOfLevels) {
-        final List<Double> levels = new ArrayList<>();
-        double min = samples.stream().mapToDouble(x -> x.doubleValue()).min().getAsDouble();
-        double max = samples.stream().mapToDouble(x -> x.doubleValue()).max().getAsDouble();
+    public Signal roundingQuantization(Signal signal, int numberOfLevels) {
+        List<Double> levels = calculateLevels(signal, numberOfLevels);
+        List<Data> data = new ArrayList<>();
+        signal.getData().forEach(sample -> {
+            data.add(new Data(
+                        sample.getX(),
+                        levels.stream().sorted((level1, level2) -> 
+                            Double.compare(Math.abs(sample.getY() - level1), 
+                                Math.abs(sample.getY() - level2))).findFirst().get()
+                    ));
+        });
+        return new FixedSignal(data);
+    }
+
+    public Signal truncatingQuantization(Signal signal, int numberOfLevels) {
+        List<Double> levels = calculateLevels(signal, numberOfLevels);
+        List<Data> data = new ArrayList<>();
+        signal.getData().forEach(sample -> {
+            data.add(new Data(
+                        sample.getX(),
+                        levels.stream().sorted((level1, level2) -> {
+                            /* first lower, second not */
+                            if(level1 < sample.getY() && level2 >= sample.getY()) return 1;
+                            /* second lower, first not */
+                            else if(level1 >= sample.getY() && level2 < sample.getY()) return -1;
+                            /* both the same */
+                            else return Double.compare(Math.abs(sample.getY() - level1), 
+                                Math.abs(sample.getY() - level2));
+                        }).findFirst().get()
+                    ));
+        });
+        return new FixedSignal(data);
+    } 
+
+    private List<Double> calculateLevels(Signal signal, int numberOfLevels) {
+        List<Double> levels = new ArrayList<>();
+        double min = signal.getData().stream()
+            .mapToDouble(sample -> sample.getY()).min().getAsDouble();
+        double max = signal.getData().stream()
+            .mapToDouble(sample -> sample.getY()).max().getAsDouble();
         double step = (max - min) / (numberOfLevels - 1);
         for (int i = 0; i < numberOfLevels; i++) {
-            levels.add(step * i);
+            levels.add(step * i + min);
         }
-
-        final List<Double> data = new ArrayList<>();
-        samples.forEach(sample -> {
-            data.add(levels.stream().sorted((level1, level2) -> {
-                double d1 = Math.abs(sample - level1);
-                double d2 = Math.abs(sample - level2);
-                if (d1 < d2) {
-                    return 1;
-                } else if (d1 > d2) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }).findFirst().get());
-        });
-        return data;
+        return levels;
     }
-
-    public List<Double> truncatingQuantization(List<Double> samples, int numberOfLevels) {
-        final List<Double> levels = new ArrayList<>();
-        double min = samples.stream().mapToDouble(x -> x.doubleValue()).min().getAsDouble();
-        double max = samples.stream().mapToDouble(x -> x.doubleValue()).max().getAsDouble();
-        double step = (max - min) / (numberOfLevels - 1);
-        for(int i = 0; i < numberOfLevels; i++){
-            levels.add(step * i);
-        }
-
-        final List<Double> data = new ArrayList<>();
-        samples.forEach(sample -> {
-            data.add(levels.stream().sorted((level1, level2) -> {
-                if(level1 == sample && level2 == sample) return 0;
-                else if(level1 >= sample && level2 < sample) return -1;
-                else{
-                    
-                }
-                double d1 = Math.abs(sample - level1);
-                double d2 = Math.abs(sample - level2);
-                if(d1 < d2) return 1;
-                else if(d1 > d2) return -1;
-                else return 0;
-            }).findFirst().get());
-        });
-        return data;
-    } 
 }
