@@ -90,6 +90,14 @@ public class ChartHelper {
         return comboBox.getSelectionModel().getSelectedItem().toString();
     }
 
+    public static Integer getIndexFromComboBox(ComboBox comboBox) {
+        return comboBox.getSelectionModel().getSelectedIndex();
+    }
+
+    public static Integer getSelectedTabIndex(TabPane tabPane) {
+        return tabPane.getSelectionModel().getSelectedIndex();
+    }
+
     public static List<String> getTabNameList(List<Tab> tabList) {
         List<String> names = new ArrayList<>();
         tabList.forEach((it) -> names.add(it.getText()));

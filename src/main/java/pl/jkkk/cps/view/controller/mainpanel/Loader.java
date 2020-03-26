@@ -52,6 +52,9 @@ import static pl.jkkk.cps.view.helper.ChartHelper.changeScatterChartToLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillScatterChart;
+import static pl.jkkk.cps.view.helper.ChartHelper.getIndexFromComboBox;
+import static pl.jkkk.cps.view.helper.ChartHelper.getSelectedTabIndex;
+import static pl.jkkk.cps.view.helper.ChartHelper.getValueFromComboBox;
 
 public class Loader {
 
@@ -203,7 +206,7 @@ public class Loader {
     private void representSignal(Signal signal) {
 
         /* remember signal */
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
         signals.put(tabIndex, signal);
 
         /* generate signal */
@@ -213,8 +216,7 @@ public class Loader {
     }
 
     public void computeCharts() {
-        String selectedSignal = comboBoxSignalTypes.getSelectionModel()
-                .getSelectedItem().toString();
+        String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
 
         try {
             Double amplitude = Double.parseDouble(textFieldAmplitude.getText());
@@ -303,10 +305,10 @@ public class Loader {
     }
 
     public void performTwoArgsOperationOnCharts() {
-        String selectedOperation = comboBoxOperationTypesTwoArgs.getSelectionModel()
-                .getSelectedItem().toString();
-        int s1Index = comboBoxFirstSignalTwoArgs.getSelectionModel().getSelectedIndex();
-        int s2Index = comboBoxSecondSignalTwoArgs.getSelectionModel().getSelectedIndex();
+        String selectedOperation = getValueFromComboBox(comboBoxOperationTypesTwoArgs);
+
+        int s1Index = getIndexFromComboBox(comboBoxFirstSignalTwoArgs);
+        int s2Index = getIndexFromComboBox(comboBoxSecondSignalTwoArgs);
 
         Signal s1 = signals.get(s1Index);
         Signal s2 = signals.get(s2Index);
@@ -332,7 +334,7 @@ public class Loader {
     }
 
     public void loadChart() {
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
 
         try {
             signalFileReader = new FileReader<>(new FileChooser()
@@ -349,7 +351,7 @@ public class Loader {
     }
 
     public void saveChart() {
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
 
         try {
             if (signals.get(tabIndex) != null) {

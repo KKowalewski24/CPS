@@ -18,6 +18,7 @@ import java.util.ResourceBundle;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
+import static pl.jkkk.cps.view.helper.ChartHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
 
 public class MainPanel implements Initializable {
@@ -79,7 +80,7 @@ public class MainPanel implements Initializable {
                 textFieldSamplingFrequency, tabPaneResults,
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
-                comparisonPane, oneArgsPane,textFieldQuantizationLevels
+                comparisonPane, oneArgsPane, textFieldQuantizationLevels
         );
 
         loader = new Loader(
@@ -90,7 +91,7 @@ public class MainPanel implements Initializable {
                 tabPaneResults, spinnerHistogramRange,
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
-                comparisonPane, oneArgsPane,textFieldQuantizationLevels
+                comparisonPane, oneArgsPane, textFieldQuantizationLevels
         );
 
         initializer.prepareTabPaneResults(0);
@@ -135,7 +136,7 @@ public class MainPanel implements Initializable {
     /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
-        Integer selectedTab = tabPaneInputs.getSelectionModel().getSelectedIndex();
+        Integer selectedTab = getSelectedTabIndex(tabPaneInputs);
 
         switch (selectedTab) {
             case 0: {

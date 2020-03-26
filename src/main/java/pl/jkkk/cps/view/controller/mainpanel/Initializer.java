@@ -130,8 +130,7 @@ public class Initializer {
         chooseParamsTab.getChildren().setAll(basicInputs);
 
         comboBoxSignalTypes.setOnAction((event -> {
-            String selectedSignal = comboBoxSignalTypes.getSelectionModel()
-                    .getSelectedItem().toString();
+            String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())
                     || selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
