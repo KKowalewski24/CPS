@@ -1,6 +1,6 @@
 package pl.jkkk.cps.logic.model;
 
-public enum OperationType {
+public enum TwoArgsOperationType {
 
     ADDITION("dodawanie"),
     SUBTRACTION("odejmowanie"),
@@ -9,7 +9,7 @@ public enum OperationType {
 
     private final String name;
 
-    OperationType(String name) {
+    TwoArgsOperationType(String name) {
         this.name = name;
     }
 

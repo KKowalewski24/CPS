@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.OperationType;
+import pl.jkkk.cps.logic.model.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
@@ -72,6 +72,11 @@ public class Loader {
     private TabPane tabPaneResults;
     private Spinner spinnerHistogramRange;
 
+    private ComboBox comboBoxOperationTypesOneArgs;
+    private ComboBox comboBoxSignalOneArgs;
+    private ComboBox comboBoxComparisonFirstSignal;
+    private ComboBox comboBoxComparisonSecondSignal;
+
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReader<Signal> signalFileReader;
     private boolean isScatterChart;
@@ -83,7 +88,10 @@ public class Loader {
                   TextField textFieldSignalDuration, TextField textFieldBasicPeriod,
                   TextField textFieldFillFactor, TextField textFieldJumpTime,
                   TextField textFieldProbability, TextField textFieldSamplingFrequency,
-                  TabPane tabPaneResults, Spinner spinnerHistogramRange) {
+                  TabPane tabPaneResults, Spinner spinnerHistogramRange,
+                  ComboBox comboBoxOperationTypesOneArgs, ComboBox comboBoxSignalOneArgs,
+                  ComboBox comboBoxComparisonFirstSignal,
+                  ComboBox comboBoxComparisonSecondSignal) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypes = comboBoxOperationTypes;
         this.comboBoxFirstSignal = comboBoxFirstSignal;
@@ -98,6 +106,10 @@ public class Loader {
         this.textFieldSamplingFrequency = textFieldSamplingFrequency;
         this.tabPaneResults = tabPaneResults;
         this.spinnerHistogramRange = spinnerHistogramRange;
+        this.comboBoxOperationTypesOneArgs = comboBoxOperationTypesOneArgs;
+        this.comboBoxSignalOneArgs = comboBoxSignalOneArgs;
+        this.comboBoxComparisonFirstSignal = comboBoxComparisonFirstSignal;
+        this.comboBoxComparisonSecondSignal = comboBoxComparisonSecondSignal;
     }
 
     private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
@@ -277,7 +289,11 @@ public class Loader {
         }
     }
 
-    public void performOperationOnCharts() {
+    public void performOneArgsOperationOnCharts() {
+        //        TODO ADD IMPL
+    }
+
+    public void performTwoArgsOperationOnCharts() {
         String selectedOperation = comboBoxOperationTypes.getSelectionModel()
                 .getSelectedItem().toString();
         int s1Index = comboBoxFirstSignal.getSelectionModel().getSelectedIndex();
@@ -287,17 +303,21 @@ public class Loader {
         Signal s2 = signals.get(s2Index);
         Signal resultSignal = null;
 
-        if (selectedOperation.equals(OperationType.ADDITION.getName())) {
+        if (selectedOperation.equals(TwoArgsOperationType.ADDITION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
-        } else if (selectedOperation.equals(OperationType.SUBTRACTION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.SUBTRACTION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
-        } else if (selectedOperation.equals(OperationType.MULTIPLICATION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.MULTIPLICATION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
-        } else if (selectedOperation.equals(OperationType.DIVISION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.DIVISION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
         }
 
         representSignal(resultSignal);
+    }
+
+    public void generateComparison() {
+        //        TODO ADD IMPL
     }
 
     public void loadChart() {

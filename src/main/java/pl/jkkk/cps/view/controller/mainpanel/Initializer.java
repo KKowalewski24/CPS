@@ -6,7 +6,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import pl.jkkk.cps.logic.model.OperationType;
+import pl.jkkk.cps.logic.model.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
@@ -44,6 +44,11 @@ public class Initializer {
 
     private TabPane tabPaneResults;
 
+    private ComboBox comboBoxOperationTypesOneArgs;
+    private ComboBox comboBoxSignalOneArgs;
+    private ComboBox comboBoxComparisonFirstSignal;
+    private ComboBox comboBoxComparisonSecondSignal;
+
     /*------------------------ METHODS REGION ------------------------*/
     public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypes,
                        ComboBox comboBoxFirstSignal, ComboBox comboBoxSecondSignal,
@@ -51,7 +56,10 @@ public class Initializer {
                        TextField textFieldStartTime, TextField textFieldSignalDuration,
                        TextField textFieldBasicPeriod, TextField textFieldFillFactor,
                        TextField textFieldJumpTime, TextField textFieldProbability,
-                       TextField textFieldSamplingFrequency, TabPane tabPaneResults) {
+                       TextField textFieldSamplingFrequency, TabPane tabPaneResults,
+                       ComboBox comboBoxOperationTypesOneArgs, ComboBox comboBoxSignalOneArgs,
+                       ComboBox comboBoxComparisonFirstSignal,
+                       ComboBox comboBoxComparisonSecondSignal) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypes = comboBoxOperationTypes;
         this.comboBoxFirstSignal = comboBoxFirstSignal;
@@ -66,6 +74,10 @@ public class Initializer {
         this.textFieldProbability = textFieldProbability;
         this.textFieldSamplingFrequency = textFieldSamplingFrequency;
         this.tabPaneResults = tabPaneResults;
+        this.comboBoxOperationTypesOneArgs = comboBoxOperationTypesOneArgs;
+        this.comboBoxSignalOneArgs = comboBoxSignalOneArgs;
+        this.comboBoxComparisonFirstSignal = comboBoxComparisonFirstSignal;
+        this.comboBoxComparisonSecondSignal = comboBoxComparisonSecondSignal;
     }
 
     private void fillTextFields() {
@@ -95,10 +107,10 @@ public class Initializer {
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         fillComboBox(comboBoxOperationTypes, Stream.of(
-                OperationType.ADDITION.getName(),
-                OperationType.SUBTRACTION.getName(),
-                OperationType.MULTIPLICATION.getName(),
-                OperationType.DIVISION.getName()
+                TwoArgsOperationType.ADDITION.getName(),
+                TwoArgsOperationType.SUBTRACTION.getName(),
+                TwoArgsOperationType.MULTIPLICATION.getName(),
+                TwoArgsOperationType.DIVISION.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         fillComboBox(comboBoxFirstSignal, getTabNameList(tabPaneResults.getTabs()));

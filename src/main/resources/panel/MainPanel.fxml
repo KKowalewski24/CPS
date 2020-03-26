@@ -40,25 +40,51 @@
                         <ComboBox fx:id="comboBoxSignalTypes" layoutX="46.0" layoutY="56.0"
                                   prefHeight="29.0" prefWidth="402.0"/>
                         <Pane fx:id="chooseParamsTab" layoutX="19.0" layoutY="134.0"
-                              prefHeight="392.0"
-                              prefWidth="402.0"/>
+                              prefHeight="392.0" prefWidth="402.0"/>
 
                     </AnchorPane>
                 </Tab>
 
-                <Tab text="Operacje">
+                <Tab text="Operacje Jednoargumentowe">
+                    <AnchorPane>
+                        <Label layoutX="191.0" layoutY="22.0" prefHeight="28.0" prefWidth="108.0"
+                               text="Wybierz Operacje"/>
+                        <ComboBox fx:id="comboBoxOperationTypesOneArgs" layoutX="46.0"
+                                  layoutY="50.0" prefHeight="29.0" prefWidth="402.0"/>
+                        <Label layoutX="178.0" layoutY="134.0" prefHeight="19.0" prefWidth="135.0"
+                               text="Wybierz Sygnał z Karty"/>
+                        <ComboBox fx:id="comboBoxSignalOneArgs" layoutX="170.0" layoutY="167.0"
+                                  prefWidth="150.0"/>
+                    </AnchorPane>
+                </Tab>
+
+                <Tab text="Operacje Dwuargumentowe">
                     <AnchorPane>
                         <Label layoutX="191.0" layoutY="22.0" prefHeight="28.0" prefWidth="108.0"
                                text="Wybierz Operacje"/>
 
-                        <ComboBox fx:id="comboBoxOperationTypes" layoutX="46.0" layoutY="50.0"
-                                  prefHeight="29.0" prefWidth="402.0"/>
+                        <ComboBox fx:id="comboBoxOperationTypesTwoArgs" layoutX="46.0"
+                                  layoutY="50.0" prefHeight="29.0" prefWidth="402.0"/>
                         <Label layoutX="76.0" layoutY="130.0" text="Pierwszy Sygnał"/>
-                        <ComboBox fx:id="comboBoxFirstSignal" layoutX="46.0" layoutY="165.0"
+                        <ComboBox fx:id="comboBoxFirstSignalTwoArgs" layoutX="46.0" layoutY="165.0"
                                   prefWidth="150.0"/>
                         <Label layoutX="320.0" layoutY="130.0" text="Drugi Sygnał"/>
-                        <ComboBox fx:id="comboBoxSecondSignal" layoutX="282.0" layoutY="165.0"
-                                  prefWidth="150.0"/>
+                        <ComboBox fx:id="comboBoxSecondSignalTwoArgs" layoutX="282.0"
+                                  layoutY="165.0" prefWidth="150.0"/>
+                    </AnchorPane>
+                </Tab>
+
+                <Tab text="Porównania">
+                    <AnchorPane>
+                        <Label layoutX="76.0" layoutY="38.0" text="Pierwszy Sygnał"/>
+                        <ComboBox fx:id="comboBoxComparisonFirstSignal" layoutX="47.0"
+                                  layoutY="71.0" prefWidth="150.0"/>
+                        <Label layoutX="320.0" layoutY="38.0" text="Drugi Sygnał"/>
+                        <ComboBox fx:id="comboBoxComparisonSecondSignal" layoutX="282.0"
+                                  layoutY="71.0" prefWidth="150.0"/>
+                        <Button layoutX="178.0" layoutY="120.0" minHeight="35.0" minWidth="100.0"
+                                mnemonicParsing="false" onAction="#onActionButtonGenerateComparison"
+                                prefHeight="35.0" prefWidth="138.0" text="Generuj Porównianie"/>
                     </AnchorPane>
                 </Tab>
 
