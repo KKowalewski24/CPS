@@ -9,13 +9,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.OperationType;
-import pl.jkkk.cps.logic.model.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -31,9 +31,9 @@ import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.logic.reader.FileReader;
+import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.model.ChartRecord;
 import pl.jkkk.cps.view.model.CustomTabPane;
-import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.util.PopOutWindow;
 import pl.jkkk.cps.view.util.StageController;
 
@@ -52,14 +52,17 @@ import static pl.jkkk.cps.view.helper.ChartHelper.changeScatterChartToLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillScatterChart;
+import static pl.jkkk.cps.view.helper.ChartHelper.getIndexFromComboBox;
+import static pl.jkkk.cps.view.helper.ChartHelper.getSelectedTabIndex;
+import static pl.jkkk.cps.view.helper.ChartHelper.getValueFromComboBox;
 
 public class Loader {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private ComboBox comboBoxSignalTypes;
-    private ComboBox comboBoxOperationTypes;
-    private ComboBox comboBoxFirstSignal;
-    private ComboBox comboBoxSecondSignal;
+    private ComboBox comboBoxOperationTypesTwoArgs;
+    private ComboBox comboBoxFirstSignalTwoArgs;
+    private ComboBox comboBoxSecondSignalTwoArgs;
 
     private TextField textFieldAmplitude;
     private TextField textFieldStartTime;
@@ -73,22 +76,35 @@ public class Loader {
     private TabPane tabPaneResults;
     private Spinner spinnerHistogramRange;
 
+    private ComboBox comboBoxOperationTypesOneArgs;
+    private ComboBox comboBoxSignalOneArgs;
+    private ComboBox comboBoxComparisonFirstSignal;
+    private ComboBox comboBoxComparisonSecondSignal;
+    private AnchorPane comparisonPane;
+    private AnchorPane oneArgsPane;
+    private TextField textFieldQuantizationLevels;
+
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReader<Signal> signalFileReader;
     private boolean isScatterChart;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public Loader(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypes,
-                  ComboBox comboBoxFirstSignal, ComboBox comboBoxSecondSignal,
+    public Loader(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
+                  ComboBox comboBoxFirstSignalTwoArgs, ComboBox comboBoxSecondSignalTwoArgs,
                   TextField textFieldAmplitude, TextField textFieldStartTime,
                   TextField textFieldSignalDuration, TextField textFieldBasicPeriod,
                   TextField textFieldFillFactor, TextField textFieldJumpTime,
                   TextField textFieldProbability, TextField textFieldSamplingFrequency,
-                  TabPane tabPaneResults, Spinner spinnerHistogramRange) {
+                  TabPane tabPaneResults, Spinner spinnerHistogramRange,
+                  ComboBox comboBoxOperationTypesOneArgs, ComboBox comboBoxSignalOneArgs,
+                  ComboBox comboBoxComparisonFirstSignal,
+                  ComboBox comboBoxComparisonSecondSignal,
+                  AnchorPane comparisonPane, AnchorPane oneArgsPane,
+                  TextField textFieldQuantizationLevels) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
-        this.comboBoxOperationTypes = comboBoxOperationTypes;
-        this.comboBoxFirstSignal = comboBoxFirstSignal;
-        this.comboBoxSecondSignal = comboBoxSecondSignal;
+        this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
+        this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
+        this.comboBoxSecondSignalTwoArgs = comboBoxSecondSignalTwoArgs;
         this.textFieldAmplitude = textFieldAmplitude;
         this.textFieldStartTime = textFieldStartTime;
         this.textFieldSignalDuration = textFieldSignalDuration;
@@ -99,6 +115,13 @@ public class Loader {
         this.textFieldSamplingFrequency = textFieldSamplingFrequency;
         this.tabPaneResults = tabPaneResults;
         this.spinnerHistogramRange = spinnerHistogramRange;
+        this.comboBoxOperationTypesOneArgs = comboBoxOperationTypesOneArgs;
+        this.comboBoxSignalOneArgs = comboBoxSignalOneArgs;
+        this.comboBoxComparisonFirstSignal = comboBoxComparisonFirstSignal;
+        this.comboBoxComparisonSecondSignal = comboBoxComparisonSecondSignal;
+        this.comparisonPane = comparisonPane;
+        this.oneArgsPane = oneArgsPane;
+        this.textFieldQuantizationLevels = textFieldQuantizationLevels;
     }
 
     private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
@@ -116,11 +139,7 @@ public class Loader {
     private void fillCustomTabPaneWithData(TabPane tabPane,
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
-                                           double[] signalParams,
-                                           Collection<ChartRecord<Number, Number>> lineChartAcFirst,
-                                           Collection<ChartRecord<Number, Number>> lineChartAcSecond,
-                                           Collection<ChartRecord<Number, Number>> lineChartCaFirst,
-                                           Collection<ChartRecord<Number, Number>> lineChartCaSecond) {
+                                           double[] signalParams) {
         CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
 
         if (isScatterChart) {
@@ -132,14 +151,6 @@ public class Loader {
 
         fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
         fillParamsTab(customTabPane, signalParams);
-
-        VBox vBoxAcConversion = (VBox) customTabPane.getACConversionTab().getContent();
-        fillLineChart((LineChart) vBoxAcConversion.getChildren().get(0), lineChartAcFirst);
-        fillLineChart((LineChart) vBoxAcConversion.getChildren().get(1), lineChartAcSecond);
-
-        VBox vBoxCaConversion = (VBox) customTabPane.getCAConversionTab().getContent();
-        fillLineChart((LineChart) vBoxCaConversion.getChildren().get(0), lineChartCaFirst);
-        fillLineChart((LineChart) vBoxCaConversion.getChildren().get(1), lineChartCaSecond);
     }
 
     private void convertSignalToChart(Signal signal) {
@@ -188,20 +199,14 @@ public class Loader {
         signalParams[3] = signal.varianceValue();
         signalParams[4] = signal.meanPowerValue();
 
-        //        TODO FILL COLLECTIONS WITH DATA AND PASS TO METHOD BELOW
-
-
         /* render it all */
-        // TODO REPLACE WITH REAL COLLECTIONS
-        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData,
-                signalParams, new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(), new ArrayList<>());
+        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
     }
 
     private void representSignal(Signal signal) {
 
         /* remember signal */
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
         signals.put(tabIndex, signal);
 
         /* generate signal */
@@ -211,8 +216,7 @@ public class Loader {
     }
 
     public void computeCharts() {
-        String selectedSignal = comboBoxSignalTypes.getSelectionModel()
-                .getSelectedItem().toString();
+        String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
 
         try {
             Double amplitude = Double.parseDouble(textFieldAmplitude.getText());
@@ -296,31 +300,41 @@ public class Loader {
         }
     }
 
-    public void performOperationOnCharts() {
-        String selectedOperation = comboBoxOperationTypes.getSelectionModel()
-                .getSelectedItem().toString();
-        int s1Index = comboBoxFirstSignal.getSelectionModel().getSelectedIndex();
-        int s2Index = comboBoxSecondSignal.getSelectionModel().getSelectedIndex();
+    public void performOneArgsOperationOnCharts() {
+        //        TODO ADD IMPL
+    }
+
+    public void performTwoArgsOperationOnCharts() {
+        String selectedOperation = getValueFromComboBox(comboBoxOperationTypesTwoArgs);
+
+        int s1Index = getIndexFromComboBox(comboBoxFirstSignalTwoArgs);
+        int s2Index = getIndexFromComboBox(comboBoxSecondSignalTwoArgs);
 
         Signal s1 = signals.get(s1Index);
         Signal s2 = signals.get(s2Index);
         Signal resultSignal = null;
 
-        if (selectedOperation.equals(OperationType.ADDITION.getName())) {
+        if (selectedOperation.equals(TwoArgsOperationType.ADDITION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
-        } else if (selectedOperation.equals(OperationType.SUBTRACTION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.SUBTRACTION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
-        } else if (selectedOperation.equals(OperationType.MULTIPLICATION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.MULTIPLICATION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
-        } else if (selectedOperation.equals(OperationType.DIVISION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.DIVISION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
         }
 
         representSignal(resultSignal);
     }
 
+    public void generateComparison() {
+        //        TODO ADD IMPL
+        List<Node> paneChildren = comparisonPane.getChildren();
+        appendLabelText(paneChildren.get(0), "");
+    }
+
     public void loadChart() {
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
 
         try {
             signalFileReader = new FileReader<>(new FileChooser()
@@ -337,7 +351,7 @@ public class Loader {
     }
 
     public void saveChart() {
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
 
         try {
             if (signals.get(tabIndex) != null) {
