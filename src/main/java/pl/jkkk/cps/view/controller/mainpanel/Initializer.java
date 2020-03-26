@@ -6,7 +6,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import pl.jkkk.cps.logic.model.OperationType;
 import pl.jkkk.cps.logic.model.SignalType;
 import pl.jkkk.cps.view.model.CustomTab;
@@ -204,17 +203,7 @@ public class Initializer {
                 new CustomTabPane(
                         new CustomTab("Wykres", prepareLineChart(), false),
                         new CustomTab("Histogram", prepareBarChart(), false),
-                        new CustomTab("Parametry", pane, false),
-
-                        new CustomTab("Konwersja A/C", new VBox(
-                                prepareLineChart("//TODO"),
-                                prepareLineChart("//TODO")
-                        ), false),
-
-                        new CustomTab("Konwersja C/A", new VBox(
-                                prepareLineChart("//TODO"),
-                                prepareLineChart("//TODO")
-                        ), false)
+                        new CustomTab("Parametry", pane, false)
                 )));
     }
 }
