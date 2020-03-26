@@ -9,12 +9,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -76,6 +77,9 @@ public class Loader {
     private ComboBox comboBoxSignalOneArgs;
     private ComboBox comboBoxComparisonFirstSignal;
     private ComboBox comboBoxComparisonSecondSignal;
+    private AnchorPane comparisonPane;
+    private AnchorPane oneArgsPane;
+    private TextField textFieldQuantizationLevels;
 
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReader<Signal> signalFileReader;
@@ -91,7 +95,9 @@ public class Loader {
                   TabPane tabPaneResults, Spinner spinnerHistogramRange,
                   ComboBox comboBoxOperationTypesOneArgs, ComboBox comboBoxSignalOneArgs,
                   ComboBox comboBoxComparisonFirstSignal,
-                  ComboBox comboBoxComparisonSecondSignal) {
+                  ComboBox comboBoxComparisonSecondSignal,
+                  AnchorPane comparisonPane, AnchorPane oneArgsPane,
+                  TextField textFieldQuantizationLevels) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -110,6 +116,9 @@ public class Loader {
         this.comboBoxSignalOneArgs = comboBoxSignalOneArgs;
         this.comboBoxComparisonFirstSignal = comboBoxComparisonFirstSignal;
         this.comboBoxComparisonSecondSignal = comboBoxComparisonSecondSignal;
+        this.comparisonPane = comparisonPane;
+        this.oneArgsPane = oneArgsPane;
+        this.textFieldQuantizationLevels = textFieldQuantizationLevels;
     }
 
     private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
@@ -318,6 +327,8 @@ public class Loader {
 
     public void generateComparison() {
         //        TODO ADD IMPL
+        List<Node> paneChildren = comparisonPane.getChildren();
+        appendLabelText(paneChildren.get(0), "");
     }
 
     public void loadChart() {

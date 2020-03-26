@@ -5,8 +5,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
+import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.view.model.CustomTab;
@@ -19,6 +22,7 @@ import java.util.stream.Stream;
 
 import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
 import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
+import static pl.jkkk.cps.view.helper.ChartHelper.getValueFromComboBox;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareLabelWithPosition;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareLineChart;
@@ -49,6 +53,9 @@ public class Initializer {
     private ComboBox comboBoxSignalOneArgs;
     private ComboBox comboBoxComparisonFirstSignal;
     private ComboBox comboBoxComparisonSecondSignal;
+    private AnchorPane comparisonPane;
+    private AnchorPane oneArgsPane;
+    private TextField textFieldQuantizationLevels;
 
     /*------------------------ METHODS REGION ------------------------*/
     public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
@@ -60,7 +67,8 @@ public class Initializer {
                        TextField textFieldSamplingFrequency, TabPane tabPaneResults,
                        ComboBox comboBoxOperationTypesOneArgs, ComboBox comboBoxSignalOneArgs,
                        ComboBox comboBoxComparisonFirstSignal,
-                       ComboBox comboBoxComparisonSecondSignal) {
+                       ComboBox comboBoxComparisonSecondSignal, AnchorPane comparisonPane,
+                       AnchorPane oneArgsPane, TextField textFieldQuantizationLevels) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -79,8 +87,12 @@ public class Initializer {
         this.comboBoxSignalOneArgs = comboBoxSignalOneArgs;
         this.comboBoxComparisonFirstSignal = comboBoxComparisonFirstSignal;
         this.comboBoxComparisonSecondSignal = comboBoxComparisonSecondSignal;
+        this.comparisonPane = comparisonPane;
+        this.oneArgsPane = oneArgsPane;
+        this.textFieldQuantizationLevels = textFieldQuantizationLevels;
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     private void fillGenerationTab() {
         textFieldSetValue(textFieldAmplitude, String.valueOf(1));
         textFieldSetValue(textFieldStartTime, String.valueOf(0));
@@ -175,15 +187,61 @@ public class Initializer {
         }));
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     private void fillOneArgsTab() {
         fillComboBox(comboBoxOperationTypesOneArgs, Stream.of(
                 OneArgsOperationType.SAMPLING.getName(),
                 OneArgsOperationType.QUANTIZATION.getName(),
                 OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
+
+        textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
         fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
+        oneArgsPane.setVisible(false);
+
+        /*-----  -----*/
+        comboBoxOperationTypesOneArgs.setOnAction((event -> {
+            String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
+
+            if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
+                oneArgsPane.setVisible(false);
+            } else {
+                oneArgsPane.setVisible(true);
+
+                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
+
+                Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
+                bottomPane.setVisible(false);
+
+                if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+
+                    fillComboBox(comboBoxMethod, Stream.of(
+                            QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName(),
+                            QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName()
+                    ).collect(Collectors.toCollection(ArrayList::new)));
+
+                    bottomPane.setVisible(true);
+
+                    if (bottomPane.getChildren().size() == 1) {
+                        bottomPane.getChildren()
+                                .add(setTextFieldPosition(textFieldQuantizationLevels, 250, 30));
+                    }
+
+                } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+
+                    fillComboBox(comboBoxMethod, Stream.of(
+                            SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName(),
+                            SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName(),
+                            SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC.getName()
+                    ).collect(Collectors.toCollection(ArrayList::new)));
+
+                }
+            }
+        }));
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     private void fillTwoArgsTab() {
         fillComboBox(comboBoxOperationTypesTwoArgs, Stream.of(
                 TwoArgsOperationType.ADDITION.getName(),
@@ -196,11 +254,22 @@ public class Initializer {
         fillComboBox(comboBoxSecondSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     private void fillComparisonTab() {
         fillComboBox(comboBoxComparisonFirstSignal, getTabNameList(tabPaneResults.getTabs()));
         fillComboBox(comboBoxComparisonSecondSignal, getTabNameList(tabPaneResults.getTabs()));
+
+        comparisonPane.getChildren().addAll(
+                prepareLabelWithPosition("Błąd średniokwadratowy: ", 25, 20),
+                prepareLabelWithPosition("Stosunek sygnał - szum: ", 25, 60),
+                prepareLabelWithPosition("Szczytowy stosunek sygnał - szum: ", 25, 100),
+                prepareLabelWithPosition("Maksymalna różnica: ", 25, 140),
+                prepareLabelWithPosition("Efektywna liczba bitów: ", 25, 180),
+                prepareLabelWithPosition("Czas transformacji: ", 25, 220)
+        );
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public void prepareTabPaneInputs() {
         fillGenerationTab();
         fillOneArgsTab();
@@ -214,14 +283,7 @@ public class Initializer {
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
                 prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
                 prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
-                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200),
-
-                prepareLabelWithPosition("Błąd średniokwadratowy: ", 25, 240),
-                prepareLabelWithPosition("Stosunek sygnał - szum: ", 25, 280),
-                prepareLabelWithPosition("Szczytowy stosunek sygnał - szum: ", 25, 320),
-                prepareLabelWithPosition("Maksymalna różnica: ", 25, 360),
-                prepareLabelWithPosition("Efektywna liczba bitów: ", 25, 400),
-                prepareLabelWithPosition("Czas transformacji: ", 25, 440)
+                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
         );
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,

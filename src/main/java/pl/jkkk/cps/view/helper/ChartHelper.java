@@ -86,6 +86,10 @@ public class ChartHelper {
         comboBox.getSelectionModel().selectFirst();
     }
 
+    public static String getValueFromComboBox(ComboBox comboBox) {
+        return comboBox.getSelectionModel().getSelectedItem().toString();
+    }
+
     public static List<String> getTabNameList(List<Tab> tabList) {
         List<String> names = new ArrayList<>();
         tabList.forEach((it) -> names.add(it.getText()));

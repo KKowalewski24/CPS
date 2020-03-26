@@ -8,6 +8,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import pl.jkkk.cps.view.util.StageController;
 
@@ -21,6 +22,7 @@ import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
 
 public class MainPanel implements Initializable {
 
+    public AnchorPane oneArgsPane;
     /*------------------------ FIELDS REGION ------------------------*/
     @FXML
     private TabPane tabPaneInputs;
@@ -47,6 +49,8 @@ public class MainPanel implements Initializable {
     private ComboBox comboBoxComparisonFirstSignal;
     @FXML
     private ComboBox comboBoxComparisonSecondSignal;
+    @FXML
+    private AnchorPane comparisonPane;
 
     private TextField textFieldAmplitude = new TextField();
     private TextField textFieldStartTime = new TextField();
@@ -56,6 +60,7 @@ public class MainPanel implements Initializable {
     private TextField textFieldJumpTime = new TextField();
     private TextField textFieldProbability = new TextField();
     private TextField textFieldSamplingFrequency = new TextField();
+    private TextField textFieldQuantizationLevels = new TextField();
 
     private Initializer initializer;
     private Loader loader;
@@ -73,7 +78,8 @@ public class MainPanel implements Initializable {
                 textFieldFillFactor, textFieldJumpTime, textFieldProbability,
                 textFieldSamplingFrequency, tabPaneResults,
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
-                comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal
+                comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
+                comparisonPane, oneArgsPane,textFieldQuantizationLevels
         );
 
         loader = new Loader(
@@ -83,7 +89,8 @@ public class MainPanel implements Initializable {
                 textFieldJumpTime, textFieldProbability, textFieldSamplingFrequency,
                 tabPaneResults, spinnerHistogramRange,
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
-                comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal
+                comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
+                comparisonPane, oneArgsPane,textFieldQuantizationLevels
         );
 
         initializer.prepareTabPaneResults(0);
