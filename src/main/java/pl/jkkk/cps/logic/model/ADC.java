@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
-import pl.jkkk.cps.logic.model.signal.FixedSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
 
 public class ADC {
@@ -18,42 +17,47 @@ public class ADC {
             double y = signal.value(x);
             data.add(new Data(x, y));
         }
-        return new FixedSignal(data);
+        return createSignalBasingOnExistingData(data);
     }
 
     public Signal roundingQuantization(Signal signal, int numberOfLevels) {
         List<Double> levels = calculateLevels(signal, numberOfLevels);
         List<Data> data = new ArrayList<>();
         signal.getData().forEach(sample -> {
-            data.add(new Data(
-                        sample.getX(),
-                        levels.stream().sorted((level1, level2) -> 
-                            Double.compare(Math.abs(sample.getY() - level1), 
-                                Math.abs(sample.getY() - level2))).findFirst().get()
-                    ));
+            int index = (int) Math.round(
+                        (sample.getY() - levels.get(0)) /
+                        (levels.get(levels.size() - 1) - levels.get(0)) *
+                        levels.size()
+                    );
+            data.add(new Data(sample.getX(), levels.get(index)));
         });
-        return new FixedSignal(data);
+        return createSignalBasingOnExistingData(data);
     }
 
     public Signal truncatingQuantization(Signal signal, int numberOfLevels) {
         List<Double> levels = calculateLevels(signal, numberOfLevels);
         List<Data> data = new ArrayList<>();
         signal.getData().forEach(sample -> {
-            data.add(new Data(
-                        sample.getX(),
-                        levels.stream().sorted((level1, level2) -> {
-                            /* first lower, second not */
-                            if(level1 < sample.getY() && level2 >= sample.getY()) return 1;
-                            /* second lower, first not */
-                            else if(level1 >= sample.getY() && level2 < sample.getY()) return -1;
-                            /* both the same */
-                            else return Double.compare(Math.abs(sample.getY() - level1), 
-                                Math.abs(sample.getY() - level2));
-                        }).findFirst().get()
-                    ));
+            int index = (int) Math.floor(
+                        (sample.getY() - levels.get(0)) /
+                        (levels.get(levels.size() - 1) - levels.get(0)) *
+                        levels.size()
+                    );
+            data.add(new Data(sample.getX(), levels.get(index)));
         });
-        return new FixedSignal(data);
+        return createSignalBasingOnExistingData(data);
     } 
+
+    private Signal createSignalBasingOnExistingData(List<Data> existingData){
+        return new Signal(existingData.size()){
+            @Override
+            public void generate(){
+                for(int i = 0; i < existingData.size(); i++){
+                    this.data[i] = existingData.get(i);
+                }
+            }
+        };
+    }
 
     private List<Double> calculateLevels(Signal signal, int numberOfLevels) {
         List<Double> levels = new ArrayList<>();
