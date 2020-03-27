@@ -13,6 +13,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.exception.FileOperationException;
+import pl.jkkk.cps.logic.model.ADC;
+import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
@@ -20,6 +22,7 @@ import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
@@ -303,27 +306,31 @@ public class Loader {
     }
 
     public void performOneArgsOperationOnCharts() {
-        //        TODO ADD IMPL
         Signal signal = null;
         String selectedOperationOneArgs = getValueFromComboBox(comboBoxOperationTypesOneArgs);
         Integer selectedSignalIndex = getIndexFromComboBox(comboBoxSignalOneArgs);
+        Signal selectedSignal = signals.get(selectedSignalIndex);
 
         try {
             if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
-                //            signal =
+                //                TODO CHANGE FOR REACT SAMPLE RATE
+                if (selectedSignal instanceof ContinuousSignal) {
+                    signal = new ADC().sampling((ContinuousSignal) selectedSignal, 10);
+                }
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
 
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
                 ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
 
-                Double quantizationLevels = Double
-                        .parseDouble(textFieldQuantizationLevels.getText());
+                Integer quantizationLevels = Integer.valueOf(textFieldQuantizationLevels.getText());
                 String method = getValueFromComboBox(comboBoxMethod);
 
                 if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION)) {
-                    //                signal=
+                    signal = new ADC().truncatingQuantization(
+                            selectedSignal, quantizationLevels);
+
                 } else if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING)) {
-                    //                signal =
+                    signal = new ADC().roundingQuantization(selectedSignal, quantizationLevels);
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
@@ -333,18 +340,26 @@ public class Loader {
                 String method = getValueFromComboBox(comboBoxMethod);
 
                 if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
-                    //                signal =
+
+                    if (selectedSignal instanceof DiscreteSignal) {
+                        signal = new DAC().zeroOrderHold((DiscreteSignal) selectedSignal);
+                    }
+
                 } else if (method.equals(SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName())) {
-                    //                signal =
-                } else if (method.equals(SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC
-                        .getName())) {
+
+                    if (selectedSignal instanceof DiscreteSignal) {
+                        signal = new DAC().firstOrderHold((DiscreteSignal) selectedSignal);
+                    }
+
+                } else if (method.equals(SignalReconstructionType
+                        .RECONSTRUCTION_BASED_FUNCTION_SINC.getName())) {
                     //                signal =
                 }
             }
 
-            //        representSignal(signal);
+            representSignal(signal);
 
-        } catch (NumberFormatException e) {
+        } catch (NullPointerException | NumberFormatException e) {
             PopOutWindow.messageBox("Błędne Dane",
                     "Wprowadzono błędne dane", Alert.AlertType.WARNING);
         }
