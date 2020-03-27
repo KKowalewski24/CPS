@@ -14,6 +14,9 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
+import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
@@ -296,12 +299,55 @@ public class Loader {
         } catch (NumberFormatException e) {
             PopOutWindow.messageBox("Błędne Dane",
                     "Wprowadzono błędne dane", Alert.AlertType.WARNING);
-
         }
     }
 
     public void performOneArgsOperationOnCharts() {
         //        TODO ADD IMPL
+        Signal signal = null;
+        String selectedOperationOneArgs = getValueFromComboBox(comboBoxOperationTypesOneArgs);
+        Integer selectedSignalIndex = getIndexFromComboBox(comboBoxSignalOneArgs);
+
+        try {
+            if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
+                //            signal =
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+
+                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
+
+                Double quantizationLevels = Double
+                        .parseDouble(textFieldQuantizationLevels.getText());
+                String method = getValueFromComboBox(comboBoxMethod);
+
+                if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION)) {
+                    //                signal=
+                } else if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING)) {
+                    //                signal =
+                }
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
+
+                String method = getValueFromComboBox(comboBoxMethod);
+
+                if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
+                    //                signal =
+                } else if (method.equals(SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName())) {
+                    //                signal =
+                } else if (method.equals(SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC
+                        .getName())) {
+                    //                signal =
+                }
+            }
+
+            //        representSignal(signal);
+
+        } catch (NumberFormatException e) {
+            PopOutWindow.messageBox("Błędne Dane",
+                    "Wprowadzono błędne dane", Alert.AlertType.WARNING);
+        }
     }
 
     public void performTwoArgsOperationOnCharts() {
@@ -329,7 +375,10 @@ public class Loader {
 
     public void generateComparison() {
         //        TODO ADD IMPL
+        Integer selectedTab1Index = getIndexFromComboBox(comboBoxComparisonFirstSignal);
+        Integer selectedTab2Index = getIndexFromComboBox(comboBoxComparisonSecondSignal);
         List<Node> paneChildren = comparisonPane.getChildren();
+
         appendLabelText(paneChildren.get(0), "");
     }
 
