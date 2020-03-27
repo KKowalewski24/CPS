@@ -2,10 +2,10 @@ package pl.jkkk.cps.logic.model.enumtype;
 
 public enum TwoArgsOperationType {
 
-    ADDITION("dodawanie"),
-    SUBTRACTION("odejmowanie"),
-    MULTIPLICATION("mnożenie"),
-    DIVISION("dzielenie");
+    ADDITION("Dodawanie"),
+    SUBTRACTION("Ddejmowanie"),
+    MULTIPLICATION("Mnożenie"),
+    DIVISION("Dzielenie");
 
     private final String name;
 

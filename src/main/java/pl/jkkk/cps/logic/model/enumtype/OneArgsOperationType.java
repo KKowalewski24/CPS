@@ -2,9 +2,9 @@ package pl.jkkk.cps.logic.model.enumtype;
 
 public enum OneArgsOperationType {
 
-    SAMPLING("próbkowanie"),
-    QUANTIZATION("kwantyzacja"),
-    SIGNAL_RECONSTRUCTION("rekonstrukcja sygnału");
+    SAMPLING("Próbkowanie"),
+    QUANTIZATION("Kwantyzacja"),
+    SIGNAL_RECONSTRUCTION("Rekonstrukcja sygnału");
     private final String name;
 
     OneArgsOperationType(String name) {
