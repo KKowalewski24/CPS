@@ -425,9 +425,8 @@ public class Loader {
             appendLabelText(paneChildren.get(3),
                     "" + df.format(signalComparator.maximumDifference(secondSignal, firstSignal)));
 
-            //        TODO
-            //        appendLabelText(paneChildren.get(4),
-            //                "" + df.format(signalComparator.(secondSignal, firstSignal)));
+            appendLabelText(paneChildren.get(4),
+                    "" + df.format(signalComparator.effectiveNumberOfBits(secondSignal, firstSignal)));
             appendLabelText(paneChildren.get(5), "" + df.format(overallTime));
         } catch (NotSameLengthException e) {
             PopOutWindow.messageBox("Błednie wybrane wykresy",

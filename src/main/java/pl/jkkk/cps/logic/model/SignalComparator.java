@@ -63,4 +63,8 @@ public class SignalComparator {
 
         return maxDiff;
     }
+
+    public double effectiveNumberOfBits(Signal result, Signal origin){
+        return (signalToNoiseRatio(result, origin) - 1.76) / 6.02;       
+    }
 }
