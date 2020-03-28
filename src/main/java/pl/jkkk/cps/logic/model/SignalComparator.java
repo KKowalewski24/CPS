@@ -46,7 +46,7 @@ public class SignalComparator {
                     origin.getData().get(i).getY(), 2.0);
         }
 
-        return 10.0 * Math.log10(resultMax / diffSquaredSum);
+        return 10.0 * Math.log10(resultMax / (diffSquaredSum / result.getData().size()));
     }
 
     public double maximumDifference(Signal result, Signal origin){
