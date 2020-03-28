@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import pl.jkkk.cps.view.model.ChartRecord;
 import pl.jkkk.cps.view.model.CustomTabPane;
 
@@ -49,8 +50,13 @@ public class ChartHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
-    public static CustomTabPane castTabPaneToCustomTabPane(TabPane tabPane) {
+    public static CustomTabPane getCurrentCustomTabPaneFromTabPane(TabPane tabPane) {
         return (CustomTabPane) tabPane.getSelectionModel().getSelectedItem().getContent();
+    }
+
+    public static void removeAndAddNewPaneChildren(Pane pane, Node... nodes) {
+        pane.getChildren().clear();
+        pane.getChildren().addAll(nodes);
     }
 
     public static void textFieldSetValue(TextField textField, String string) {
@@ -147,12 +153,12 @@ public class ChartHelper {
 
     /*--------------------------------------------------------------------------------------------*/
     public static void changeLineChartToScatterChart(TabPane tabPane) {
-        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
         customTabPane.getChartTab().setContent(prepareScatterChart());
     }
 
     public static void changeScatterChartToLineChart(TabPane tabPane) {
-        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
         customTabPane.getChartTab().setContent(prepareLineChart());
     }
 

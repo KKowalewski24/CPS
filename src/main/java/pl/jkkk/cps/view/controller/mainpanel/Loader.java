@@ -52,7 +52,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
-import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
+import static pl.jkkk.cps.view.helper.ChartHelper.getCurrentCustomTabPaneFromTabPane;
 import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.changeScatterChartToLineChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
@@ -89,6 +89,7 @@ public class Loader {
     private AnchorPane comparisonPane;
     private AnchorPane oneArgsPane;
     private TextField textFieldQuantizationLevels;
+    private TextField textFieldSampleRate;
 
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReader<Signal> signalFileReader;
@@ -106,7 +107,7 @@ public class Loader {
                   ComboBox comboBoxComparisonFirstSignal,
                   ComboBox comboBoxComparisonSecondSignal,
                   AnchorPane comparisonPane, AnchorPane oneArgsPane,
-                  TextField textFieldQuantizationLevels) {
+                  TextField textFieldQuantizationLevels, TextField textFieldSampleRate) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -128,6 +129,7 @@ public class Loader {
         this.comparisonPane = comparisonPane;
         this.oneArgsPane = oneArgsPane;
         this.textFieldQuantizationLevels = textFieldQuantizationLevels;
+        this.textFieldSampleRate = textFieldSampleRate;
     }
 
     private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
@@ -146,7 +148,7 @@ public class Loader {
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
                                            double[] signalParams) {
-        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
         if (isScatterChart) {
             fillScatterChart((ScatterChart) customTabPane.getChartTab()
@@ -313,10 +315,12 @@ public class Loader {
 
         try {
             if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
-                //                TODO CHANGE FOR REACT SAMPLE RATE
+                Integer sampleRate = Integer.valueOf(textFieldSampleRate.getText());
+
                 if (selectedSignal instanceof ContinuousSignal) {
-                    signal = new ADC().sampling((ContinuousSignal) selectedSignal, 10);
+                    signal = new ADC().sampling((ContinuousSignal) selectedSignal, sampleRate);
                 }
+
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
 
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
@@ -326,8 +330,7 @@ public class Loader {
                 String method = getValueFromComboBox(comboBoxMethod);
 
                 if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION)) {
-                    signal = new ADC().truncatingQuantization(
-                            selectedSignal, quantizationLevels);
+                    signal = new ADC().truncatingQuantization(selectedSignal, quantizationLevels);
 
                 } else if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING)) {
                     signal = new ADC().roundingQuantization(selectedSignal, quantizationLevels);

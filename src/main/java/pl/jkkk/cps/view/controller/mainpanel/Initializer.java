@@ -26,6 +26,7 @@ import static pl.jkkk.cps.view.helper.ChartHelper.getValueFromComboBox;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareBarChart;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareLabelWithPosition;
 import static pl.jkkk.cps.view.helper.ChartHelper.prepareLineChart;
+import static pl.jkkk.cps.view.helper.ChartHelper.removeAndAddNewPaneChildren;
 import static pl.jkkk.cps.view.helper.ChartHelper.setTextFieldPosition;
 import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
 
@@ -56,6 +57,7 @@ public class Initializer {
     private AnchorPane comparisonPane;
     private AnchorPane oneArgsPane;
     private TextField textFieldQuantizationLevels;
+    private TextField textFieldSampleRate;
 
     /*------------------------ METHODS REGION ------------------------*/
     public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
@@ -68,7 +70,8 @@ public class Initializer {
                        ComboBox comboBoxOperationTypesOneArgs, ComboBox comboBoxSignalOneArgs,
                        ComboBox comboBoxComparisonFirstSignal,
                        ComboBox comboBoxComparisonSecondSignal, AnchorPane comparisonPane,
-                       AnchorPane oneArgsPane, TextField textFieldQuantizationLevels) {
+                       AnchorPane oneArgsPane, TextField textFieldQuantizationLevels,
+                       TextField textFieldSampleRate) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -90,6 +93,7 @@ public class Initializer {
         this.comparisonPane = comparisonPane;
         this.oneArgsPane = oneArgsPane;
         this.textFieldQuantizationLevels = textFieldQuantizationLevels;
+        this.textFieldSampleRate = textFieldSampleRate;
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -195,37 +199,45 @@ public class Initializer {
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
+        textFieldSetValue(textFieldSampleRate, String.valueOf(10));
         fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
-        oneArgsPane.setVisible(false);
+
+        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
+        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
+        topPane.setVisible(false);
+        removeAndAddNewPaneChildren(bottomPane,
+                prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
+                setTextFieldPosition(textFieldSampleRate, 250, 30)
+        );
 
         /*-----  -----*/
         comboBoxOperationTypesOneArgs.setOnAction((event -> {
             String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
+            topPane.setVisible(false);
 
             if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
-                oneArgsPane.setVisible(false);
+                bottomPane.setVisible(true);
+
+                removeAndAddNewPaneChildren(bottomPane,
+                        prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
+                        setTextFieldPosition(textFieldSampleRate, 250, 30)
+                );
+
             } else {
-                oneArgsPane.setVisible(true);
-
-                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-
-                Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
-                bottomPane.setVisible(false);
-
                 if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-
                     fillComboBox(comboBoxMethod, Stream.of(
                             QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName(),
                             QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName()
                     ).collect(Collectors.toCollection(ArrayList::new)));
 
+                    topPane.setVisible(true);
                     bottomPane.setVisible(true);
 
-                    if (bottomPane.getChildren().size() == 1) {
-                        bottomPane.getChildren()
-                                .add(setTextFieldPosition(textFieldQuantizationLevels, 250, 30));
-                    }
+                    removeAndAddNewPaneChildren(bottomPane,
+                            prepareLabelWithPosition("Liczba Poziomów Kwantyzacji", 14, 33),
+                            setTextFieldPosition(textFieldQuantizationLevels, 250, 30)
+                    );
 
                 } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
 
@@ -235,6 +247,8 @@ public class Initializer {
                             SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC.getName()
                     ).collect(Collectors.toCollection(ArrayList::new)));
 
+                    topPane.setVisible(true);
+                    bottomPane.setVisible(false);
                 }
             }
         }));
