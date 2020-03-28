@@ -1,11 +1,11 @@
 package pl.jkkk.cps.logic.model;
 
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
-import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
+import pl.jkkk.cps.logic.model.signal.Signal;
 
 public class DAC {
 
-    public ContinuousSignal zeroOrderHold(DiscreteSignal signal) {
+    public ContinuousSignal zeroOrderHold(Signal signal) {
         return new ContinuousSignal(signal.getRangeStart(), signal.getRangeLength()) {
             @Override
             public double value(double t) {
@@ -17,7 +17,7 @@ public class DAC {
         };
     }
 
-    public ContinuousSignal firstOrderHold(DiscreteSignal signal) {
+    public ContinuousSignal firstOrderHold(Signal signal) {
         return new ContinuousSignal(signal.getRangeStart(), signal.getRangeLength()) {
             @Override
             public double value(double t) {
