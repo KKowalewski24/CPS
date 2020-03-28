@@ -345,17 +345,9 @@ public class Loader {
                 String method = getValueFromComboBox(comboBoxMethod);
 
                 if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
-
-                    if (selectedSignal instanceof DiscreteSignal) {
-                        signal = new DAC().zeroOrderHold((DiscreteSignal) selectedSignal);
-                    }
-
+                    signal = new DAC().zeroOrderHold(selectedSignal);
                 } else if (method.equals(SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName())) {
-
-                    if (selectedSignal instanceof DiscreteSignal) {
-                        signal = new DAC().firstOrderHold((DiscreteSignal) selectedSignal);
-                    }
-
+                    signal = new DAC().firstOrderHold(selectedSignal);
                 } else if (method.equals(SignalReconstructionType
                         .RECONSTRUCTION_BASED_FUNCTION_SINC.getName())) {
                     //                signal =
