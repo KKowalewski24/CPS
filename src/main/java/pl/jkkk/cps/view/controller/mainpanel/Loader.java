@@ -325,11 +325,11 @@ public class Loader {
                 Integer quantizationLevels = Integer.valueOf(textFieldQuantizationLevels.getText());
                 String method = getValueFromComboBox(comboBoxMethod);
 
-                if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION)) {
+                if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName())) {
                     signal = new ADC().truncatingQuantization(
                             selectedSignal, quantizationLevels);
 
-                } else if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING)) {
+                } else if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName())) {
                     signal = new ADC().roundingQuantization(selectedSignal, quantizationLevels);
                 }
 
@@ -360,6 +360,7 @@ public class Loader {
             representSignal(signal);
 
         } catch (NullPointerException | NumberFormatException e) {
+            e.printStackTrace();
             PopOutWindow.messageBox("Błędne Dane",
                     "Wprowadzono błędne dane", Alert.AlertType.WARNING);
         }
