@@ -367,8 +367,7 @@ public class Loader {
                         .RECONSTRUCTION_BASED_FUNCTION_SINC.getName())) {
 
                     Integer sincParam = Integer.valueOf(textFieldReconstructionSincParam.getText());
-                    //                    todo
-                    //                signal =
+                    signal = new DAC().sincBasic(selectedSignal, sincParam);
                 }
             }
 
