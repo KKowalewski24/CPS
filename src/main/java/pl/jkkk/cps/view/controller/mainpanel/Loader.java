@@ -13,9 +13,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.logic.exception.FileOperationException;
+import pl.jkkk.cps.logic.exception.NotSameLengthException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.SignalComparator;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
@@ -94,6 +96,7 @@ public class Loader {
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReader<Signal> signalFileReader;
     private boolean isScatterChart;
+    private SignalComparator signalComparator = new SignalComparator();
 
     /*------------------------ METHODS REGION ------------------------*/
     public Loader(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
@@ -392,12 +395,34 @@ public class Loader {
     }
 
     public void generateComparison() {
-        //        TODO ADD IMPL
         Integer selectedTab1Index = getIndexFromComboBox(comboBoxComparisonFirstSignal);
         Integer selectedTab2Index = getIndexFromComboBox(comboBoxComparisonSecondSignal);
         List<Node> paneChildren = comparisonPane.getChildren();
 
-        appendLabelText(paneChildren.get(0), "");
+        Signal firstSignal = signals.get(selectedTab1Index);
+        Signal secondSignal = signals.get(selectedTab2Index);
+        DecimalFormat df = new DecimalFormat("##.####");
+
+        try {
+            appendLabelText(paneChildren.get(0),
+                    "" + df.format(signalComparator.meanSquaredError(secondSignal, firstSignal)));
+            appendLabelText(paneChildren.get(1),
+                    "" + df.format(signalComparator.signalToNoiseRatio(secondSignal, firstSignal)));
+            appendLabelText(paneChildren.get(2),
+                    "" + df.format(signalComparator.peakSignalToNoiseRatio(secondSignal,
+                            firstSignal)));
+            appendLabelText(paneChildren.get(3),
+                    "" + df.format(signalComparator.maximumDifference(secondSignal, firstSignal)));
+
+            //        TODO
+            //        appendLabelText(paneChildren.get(4),
+            //                "" + df.format(signalComparator.(secondSignal, firstSignal)));
+            //        appendLabelText(paneChildren.get(5),
+            //                "" + df.format(signalComparator.(secondSignal, firstSignal)));
+        } catch (NotSameLengthException e) {
+            PopOutWindow.messageBox("Błednie wybrane wykresy",
+                    "Wykresy mają błędnie dobraną długość", Alert.AlertType.WARNING);
+        }
     }
 
     public void loadChart() {
