@@ -97,6 +97,7 @@ public class Loader {
     private FileReader<Signal> signalFileReader;
     private boolean isScatterChart;
     private SignalComparator signalComparator = new SignalComparator();
+    private double overallTime = 0;
 
     /*------------------------ METHODS REGION ------------------------*/
     public Loader(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
@@ -319,19 +320,25 @@ public class Loader {
         Signal selectedSignal = signals.get(selectedSignalIndex);
 
         try {
-            //            todo obliczanie czasu
+            long startTime = System.currentTimeMillis();
+
             if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
+                isScatterChart = true;
+                changeLineChartToScatterChart(tabPaneResults);
                 Integer sampleRate = Integer.valueOf(textFieldSampleRate.getText());
-                //todo wykres punktowy
+
                 if (selectedSignal instanceof ContinuousSignal) {
-                    signal = new ADC().sampling((ContinuousSignal) selectedSignal, sampleRate);
+
+                    signal = new ADC().sampling((ContinuousSignal) selectedSignal,
+                            sampleRate);
+
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-                //todo wykres punktowy
+                isScatterChart = true;
+                changeLineChartToScatterChart(tabPaneResults);
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
                 ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-
                 Integer quantizationLevels = Integer.valueOf(textFieldQuantizationLevels.getText());
                 String method = getValueFromComboBox(comboBoxMethod);
 
@@ -342,11 +349,12 @@ public class Loader {
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+                isScatterChart = false;
+                changeScatterChartToLineChart(tabPaneResults);
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
                 ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-
                 String method = getValueFromComboBox(comboBoxMethod);
-                //todo wykres liniowy
+
                 if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
 
                     signal = new DAC().zeroOrderHold(selectedSignal);
@@ -363,6 +371,8 @@ public class Loader {
                     //                signal =
                 }
             }
+
+            overallTime += ((System.currentTimeMillis() - startTime) / 1000.0);
 
             representSignal(signal);
 
@@ -419,8 +429,7 @@ public class Loader {
             //        TODO
             //        appendLabelText(paneChildren.get(4),
             //                "" + df.format(signalComparator.(secondSignal, firstSignal)));
-            //        appendLabelText(paneChildren.get(5),
-            //                "" + df.format(signalComparator.(secondSignal, firstSignal)));
+            appendLabelText(paneChildren.get(5), "" + df.format(overallTime));
         } catch (NotSameLengthException e) {
             PopOutWindow.messageBox("Błednie wybrane wykresy",
                     "Wykresy mają błędnie dobraną długość", Alert.AlertType.WARNING);
