@@ -69,10 +69,6 @@
                                 </AnchorPane>
                                 <AnchorPane layoutX="13.0" layoutY="128.0" prefHeight="84.0"
                                             prefWidth="411.0">
-                                    <children>
-                                        <Label layoutX="14.0" layoutY="33.0"
-                                               text="Liczba Poziomów Kwantyzacji"/>
-                                    </children>
                                 </AnchorPane>
                             </children>
                         </AnchorPane>

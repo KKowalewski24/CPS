@@ -62,6 +62,7 @@ public class MainPanel implements Initializable {
     private TextField textFieldProbability = new TextField();
     private TextField textFieldSamplingFrequency = new TextField();
     private TextField textFieldQuantizationLevels = new TextField();
+    private TextField textFieldSampleRate = new TextField();
 
     private Initializer initializer;
     private Loader loader;
@@ -80,7 +81,8 @@ public class MainPanel implements Initializable {
                 textFieldSamplingFrequency, tabPaneResults,
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
-                comparisonPane, oneArgsPane, textFieldQuantizationLevels
+                comparisonPane, oneArgsPane, textFieldQuantizationLevels,
+                textFieldSampleRate
         );
 
         loader = new Loader(
@@ -91,7 +93,8 @@ public class MainPanel implements Initializable {
                 tabPaneResults, spinnerHistogramRange,
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
-                comparisonPane, oneArgsPane, textFieldQuantizationLevels
+                comparisonPane, oneArgsPane, textFieldQuantizationLevels,
+                textFieldSampleRate
         );
 
         initializer.prepareTabPaneResults(0);
