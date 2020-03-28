@@ -24,7 +24,6 @@ import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
-import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
@@ -53,16 +52,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
-import static pl.jkkk.cps.view.helper.ChartHelper.getCurrentCustomTabPaneFromTabPane;
-import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.changeScatterChartToLineChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.fillScatterChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.getIndexFromComboBox;
-import static pl.jkkk.cps.view.helper.ChartHelper.getSelectedTabIndex;
-import static pl.jkkk.cps.view.helper.ChartHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.helper.FxHelper.appendLabelText;
+import static pl.jkkk.cps.view.helper.FxHelper.getCurrentCustomTabPaneFromTabPane;
+import static pl.jkkk.cps.view.helper.FxHelper.changeLineChartToScatterChart;
+import static pl.jkkk.cps.view.helper.FxHelper.changeScatterChartToLineChart;
+import static pl.jkkk.cps.view.helper.FxHelper.fillBarChart;
+import static pl.jkkk.cps.view.helper.FxHelper.fillLineChart;
+import static pl.jkkk.cps.view.helper.FxHelper.fillScatterChart;
+import static pl.jkkk.cps.view.helper.FxHelper.getIndexFromComboBox;
+import static pl.jkkk.cps.view.helper.FxHelper.getSelectedTabIndex;
+import static pl.jkkk.cps.view.helper.FxHelper.getValueFromComboBox;
 
 public class Loader {
 
@@ -92,6 +91,7 @@ public class Loader {
     private AnchorPane oneArgsPane;
     private TextField textFieldQuantizationLevels;
     private TextField textFieldSampleRate;
+    private TextField textFieldReconstructionSincParam;
 
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReader<Signal> signalFileReader;
@@ -110,7 +110,8 @@ public class Loader {
                   ComboBox comboBoxComparisonFirstSignal,
                   ComboBox comboBoxComparisonSecondSignal,
                   AnchorPane comparisonPane, AnchorPane oneArgsPane,
-                  TextField textFieldQuantizationLevels, TextField textFieldSampleRate) {
+                  TextField textFieldQuantizationLevels, TextField textFieldSampleRate,
+                  TextField textFieldReconstructionSincParam) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -133,6 +134,7 @@ public class Loader {
         this.oneArgsPane = oneArgsPane;
         this.textFieldQuantizationLevels = textFieldQuantizationLevels;
         this.textFieldSampleRate = textFieldSampleRate;
+        this.textFieldReconstructionSincParam = textFieldReconstructionSincParam;
     }
 
     private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
@@ -317,15 +319,16 @@ public class Loader {
         Signal selectedSignal = signals.get(selectedSignalIndex);
 
         try {
+            //            todo obliczanie czasu
             if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
                 Integer sampleRate = Integer.valueOf(textFieldSampleRate.getText());
-
+                //todo wykres punktowy
                 if (selectedSignal instanceof ContinuousSignal) {
                     signal = new ADC().sampling((ContinuousSignal) selectedSignal, sampleRate);
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-
+                //todo wykres punktowy
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
                 ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
 
@@ -343,13 +346,20 @@ public class Loader {
                 ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
 
                 String method = getValueFromComboBox(comboBoxMethod);
-
+                //todo wykres liniowy
                 if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
+
                     signal = new DAC().zeroOrderHold(selectedSignal);
+
                 } else if (method.equals(SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName())) {
+
                     signal = new DAC().firstOrderHold(selectedSignal);
+
                 } else if (method.equals(SignalReconstructionType
                         .RECONSTRUCTION_BASED_FUNCTION_SINC.getName())) {
+
+                    Integer sincParam = Integer.valueOf(textFieldReconstructionSincParam.getText());
+                    //                    todo
                     //                signal =
                 }
             }

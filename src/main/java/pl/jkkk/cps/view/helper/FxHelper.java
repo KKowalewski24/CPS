@@ -20,12 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ChartHelper {
+public class FxHelper {
 
     /*------------------------ FIELDS REGION ------------------------*/
 
     /*------------------------ METHODS REGION ------------------------*/
-    private ChartHelper() {
+    private FxHelper() {
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -86,9 +86,8 @@ public class ChartHelper {
     }
 
     public static void fillComboBox(ComboBox comboBox, Collection collection) {
-        List items = comboBox.getItems();
-        items.clear();
-        collection.forEach((it) -> items.add(it));
+        comboBox.getItems().clear();
+        collection.forEach((it) -> comboBox.getItems().add(it));
         comboBox.getSelectionModel().selectFirst();
     }
 

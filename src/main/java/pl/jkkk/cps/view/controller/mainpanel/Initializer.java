@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
-import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
-import static pl.jkkk.cps.view.helper.ChartHelper.getValueFromComboBox;
-import static pl.jkkk.cps.view.helper.ChartHelper.prepareBarChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.prepareLabelWithPosition;
-import static pl.jkkk.cps.view.helper.ChartHelper.prepareLineChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.removeAndAddNewPaneChildren;
-import static pl.jkkk.cps.view.helper.ChartHelper.setTextFieldPosition;
-import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
+import static pl.jkkk.cps.view.helper.FxHelper.fillComboBox;
+import static pl.jkkk.cps.view.helper.FxHelper.getTabNameList;
+import static pl.jkkk.cps.view.helper.FxHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.helper.FxHelper.prepareBarChart;
+import static pl.jkkk.cps.view.helper.FxHelper.prepareLabelWithPosition;
+import static pl.jkkk.cps.view.helper.FxHelper.prepareLineChart;
+import static pl.jkkk.cps.view.helper.FxHelper.removeAndAddNewPaneChildren;
+import static pl.jkkk.cps.view.helper.FxHelper.setTextFieldPosition;
+import static pl.jkkk.cps.view.helper.FxHelper.textFieldSetValue;
 
 public class Initializer {
 
@@ -58,6 +58,7 @@ public class Initializer {
     private AnchorPane oneArgsPane;
     private TextField textFieldQuantizationLevels;
     private TextField textFieldSampleRate;
+    private TextField textFieldReconstructionSincParam;
 
     /*------------------------ METHODS REGION ------------------------*/
     public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
@@ -71,7 +72,7 @@ public class Initializer {
                        ComboBox comboBoxComparisonFirstSignal,
                        ComboBox comboBoxComparisonSecondSignal, AnchorPane comparisonPane,
                        AnchorPane oneArgsPane, TextField textFieldQuantizationLevels,
-                       TextField textFieldSampleRate) {
+                       TextField textFieldSampleRate, TextField textFieldReconstructionSincParam) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -94,6 +95,7 @@ public class Initializer {
         this.oneArgsPane = oneArgsPane;
         this.textFieldQuantizationLevels = textFieldQuantizationLevels;
         this.textFieldSampleRate = textFieldSampleRate;
+        this.textFieldReconstructionSincParam = textFieldReconstructionSincParam;
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -191,6 +193,57 @@ public class Initializer {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    private void actionComboBoxOperationTypesOneArgs() {
+        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
+        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
+
+        String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
+        topPane.setVisible(false);
+
+        if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
+            bottomPane.setVisible(true);
+
+            removeAndAddNewPaneChildren(bottomPane,
+                    prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
+                    setTextFieldPosition(textFieldSampleRate, 250, 30)
+            );
+
+        } else {
+            if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+                fillComboBox(comboBoxMethod, Stream.of(
+                        QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName(),
+                        QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName()
+                ).collect(Collectors.toCollection(ArrayList::new)));
+
+                topPane.setVisible(true);
+                bottomPane.setVisible(true);
+
+                removeAndAddNewPaneChildren(bottomPane,
+                        prepareLabelWithPosition("Liczba Poziomów Kwantyzacji", 14, 33),
+                        setTextFieldPosition(textFieldQuantizationLevels, 250, 30)
+                );
+
+            } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+
+                fillComboBox(comboBoxMethod, Stream.of(
+                        SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName(),
+                        SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName(),
+                        SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC.getName()
+                ).collect(Collectors.toCollection(ArrayList::new)));
+
+                topPane.setVisible(true);
+                bottomPane.setVisible(true);
+
+                removeAndAddNewPaneChildren(bottomPane,
+                        prepareLabelWithPosition("Parametr funkcji sinc", 14, 33),
+                        setTextFieldPosition(textFieldReconstructionSincParam,
+                                250, 30)
+                );
+            }
+        }
+    }
+
     private void fillOneArgsTab() {
         fillComboBox(comboBoxOperationTypesOneArgs, Stream.of(
                 OneArgsOperationType.SAMPLING.getName(),
@@ -200,10 +253,10 @@ public class Initializer {
 
         textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
         textFieldSetValue(textFieldSampleRate, String.valueOf(10));
+        textFieldSetValue(textFieldReconstructionSincParam, String.valueOf(1));
         fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
 
         Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
         Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
         topPane.setVisible(false);
         removeAndAddNewPaneChildren(bottomPane,
@@ -211,46 +264,8 @@ public class Initializer {
                 setTextFieldPosition(textFieldSampleRate, 250, 30)
         );
 
-        /*-----  -----*/
         comboBoxOperationTypesOneArgs.setOnAction((event -> {
-            String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
-            topPane.setVisible(false);
-
-            if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
-                bottomPane.setVisible(true);
-
-                removeAndAddNewPaneChildren(bottomPane,
-                        prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
-                        setTextFieldPosition(textFieldSampleRate, 250, 30)
-                );
-
-            } else {
-                if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-                    fillComboBox(comboBoxMethod, Stream.of(
-                            QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName(),
-                            QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName()
-                    ).collect(Collectors.toCollection(ArrayList::new)));
-
-                    topPane.setVisible(true);
-                    bottomPane.setVisible(true);
-
-                    removeAndAddNewPaneChildren(bottomPane,
-                            prepareLabelWithPosition("Liczba Poziomów Kwantyzacji", 14, 33),
-                            setTextFieldPosition(textFieldQuantizationLevels, 250, 30)
-                    );
-
-                } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
-
-                    fillComboBox(comboBoxMethod, Stream.of(
-                            SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName(),
-                            SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName(),
-                            SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC.getName()
-                    ).collect(Collectors.toCollection(ArrayList::new)));
-
-                    topPane.setVisible(true);
-                    bottomPane.setVisible(false);
-                }
-            }
+            actionComboBoxOperationTypesOneArgs();
         }));
     }
 

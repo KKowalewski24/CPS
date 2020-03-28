@@ -17,9 +17,9 @@ import java.util.ResourceBundle;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
-import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
-import static pl.jkkk.cps.view.helper.ChartHelper.getSelectedTabIndex;
-import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
+import static pl.jkkk.cps.view.helper.FxHelper.fillComboBox;
+import static pl.jkkk.cps.view.helper.FxHelper.getSelectedTabIndex;
+import static pl.jkkk.cps.view.helper.FxHelper.getTabNameList;
 
 public class MainPanel implements Initializable {
 
@@ -63,6 +63,7 @@ public class MainPanel implements Initializable {
     private TextField textFieldSamplingFrequency = new TextField();
     private TextField textFieldQuantizationLevels = new TextField();
     private TextField textFieldSampleRate = new TextField();
+    private TextField textFieldReconstructionSincParam = new TextField();
 
     private Initializer initializer;
     private Loader loader;
@@ -82,7 +83,7 @@ public class MainPanel implements Initializable {
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
                 comparisonPane, oneArgsPane, textFieldQuantizationLevels,
-                textFieldSampleRate
+                textFieldSampleRate, textFieldReconstructionSincParam
         );
 
         loader = new Loader(
@@ -94,7 +95,7 @@ public class MainPanel implements Initializable {
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
                 comparisonPane, oneArgsPane, textFieldQuantizationLevels,
-                textFieldSampleRate
+                textFieldSampleRate, textFieldReconstructionSincParam
         );
 
         initializer.prepareTabPaneResults(0);
