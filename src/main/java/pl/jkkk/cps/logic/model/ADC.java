@@ -49,7 +49,9 @@ public class ADC {
     }
 
     private Signal createSignalBasingOnExistingData(List<Data> existingData) {
-        return new Signal(existingData.size()) {
+        double rangeStart = existingData.get(0).getX();
+        double rangeLength = existingData.get(existingData.size() - 1).getX() - rangeStart;
+        return new Signal(existingData.size(), rangeStart, rangeLength) {
             @Override
             public void generate() {
                 for (int i = 0; i < existingData.size(); i++) {

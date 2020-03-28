@@ -12,15 +12,27 @@ import java.util.stream.IntStream;
 public abstract class Signal implements Serializable {
 
     protected final Data[] data;
+    protected final double rangeStart;
+    protected final double rangeLength;
 
-    public Signal(int length) {
+    public Signal(int length, double rangeStart, double rangeLength) {
         this.data = new Data[length];
+        this.rangeStart = rangeStart;
+        this.rangeLength = rangeLength;
     }
 
     public abstract void generate();
 
     public List<Data> getData() {
         return Arrays.asList(data);
+    }
+
+    public double getRangeStart() {
+        return rangeStart;
+    }
+
+    public double getRangeLength() {
+        return rangeLength;
     }
 
     public List<Range> generateHistogram(int numberOfRanges) {

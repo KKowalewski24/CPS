@@ -11,7 +11,7 @@ public class OperationResultSignal extends Signal {
     private final Operation operation;
 
     public OperationResultSignal(Signal s1, Signal s2, Operation operation) {
-        super(s1.getData().size());
+        super(s1.getData().size(), s1.getRangeStart(), s1.getRangeLength());
 
         if (s1.getData().size() != s2.getData().size()) {
             throw new NotSameLengthException();
