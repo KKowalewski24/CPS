@@ -67,6 +67,7 @@ import static pl.jkkk.cps.view.helper.FxHelper.fillScatterChart;
 import static pl.jkkk.cps.view.helper.FxHelper.getIndexFromComboBox;
 import static pl.jkkk.cps.view.helper.FxHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.helper.FxHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.helper.FxHelper.switchTabToAnother;
 
 public class Loader {
 
@@ -100,7 +101,7 @@ public class Loader {
 
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReaderWriter<Signal> signalFileReaderWriter;
-    private ImageWriter<Chart> imageWriter = new ImageWriter<>();
+    private ImageWriter<Node> imageWriter = new ImageWriter<>();
     private boolean isScatterChart;
     private SignalComparator signalComparator = new SignalComparator();
     private double overallTime = 0;
@@ -163,22 +164,24 @@ public class Loader {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
         try {
+            fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
+            switchTabToAnother(customTabPane, 1);
+            imageWriter.writeFxChart(BarChart.class, tabPane);
+
             if (isScatterChart) {
-                ScatterChart scatterChart = (ScatterChart) customTabPane.getChartTab().getContent();
-                fillScatterChart(scatterChart, mainChartData);
-                imageWriter.writeFxChart(ScatterChart.class, scatterChart);
+                fillScatterChart((ScatterChart) customTabPane
+                        .getChartTab().getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                imageWriter.writeFxChart(ScatterChart.class, tabPane);
 
             } else {
-                LineChart lineChart = (LineChart) customTabPane.getChartTab().getContent();
-                fillLineChart(lineChart, mainChartData);
-                imageWriter.writeFxChart(LineChart.class, lineChart);
+                fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                imageWriter.writeFxChart(LineChart.class, tabPane);
             }
 
-            BarChart barChart = (BarChart) customTabPane.getHistogramTab().getContent();
-            fillBarChart(barChart, histogramData);
-            imageWriter.writeFxChart(BarChart.class, barChart);
-
             fillParamsTab(customTabPane, signalParams);
+
         } catch (FileOperationException e) {
             e.printStackTrace();
         }

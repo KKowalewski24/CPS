@@ -1,8 +1,8 @@
 package pl.jkkk.cps.logic.readerwriter;
 
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.chart.Chart;
 import javafx.scene.image.WritableImage;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 
@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalTime;
 
-public class ImageWriter<T extends Chart> {
+public class ImageWriter<T extends Node> {
 
     /*------------------------ FIELDS REGION ------------------------*/
 
@@ -33,10 +33,7 @@ public class ImageWriter<T extends Chart> {
 
     public void writeFxChart(Class<?> type, T object) throws FileOperationException {
         File file = new File(generateFilename(type.getSimpleName()));
-
-        SnapshotParameters parameters = new SnapshotParameters();
-        //        TODO SET PARAMETERS TO EXTEND AREA OF SNAPSHOT
-        WritableImage image = object.snapshot(parameters, null);
+        WritableImage image = object.snapshot(new SnapshotParameters(), null);
 
         try {
             ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
