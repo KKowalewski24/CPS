@@ -1,4 +1,4 @@
-package pl.jkkk.cps.logic.reader;
+package pl.jkkk.cps.logic.readerwriter;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -14,11 +14,11 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class FileReaderTest {
+class FileReaderWriterTest {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private static final String filePath = "xxx.txt";
-    private FileReader<InnerTestClass> fileReader = new FileReader<>(filePath);
+    private FileReaderWriter<InnerTestClass> fileReaderWriter = new FileReaderWriter<>(filePath);
     private InnerTestClass innerTestClass;
 
     static class InnerTestClass implements Serializable {
@@ -62,8 +62,8 @@ class FileReaderTest {
 
     @Test
     void writeReadTest() throws IOException {
-        fileReader.write(innerTestClass);
-        assertEquals(fileReader.read(), innerTestClass);
+        fileReaderWriter.write(innerTestClass);
+        assertEquals(fileReaderWriter.read(), innerTestClass);
 
         Files.deleteIfExists(Paths.get(filePath));
     }
@@ -72,6 +72,6 @@ class FileReaderTest {
     void writeReadExceptionTest() throws IOException {
         Files.deleteIfExists(Paths.get(filePath));
 
-        assertThrows(FileOperationException.class, () -> fileReader.read());
+        assertThrows(FileOperationException.class, () -> fileReaderWriter.read());
     }
 }
