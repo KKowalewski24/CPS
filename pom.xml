@@ -31,11 +31,11 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.kerner1000</groupId>
-            <artifactId>javafx-chart-zooming</artifactId>
-            <version>0.0.8</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>11</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>

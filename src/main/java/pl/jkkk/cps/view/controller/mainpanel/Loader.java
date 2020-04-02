@@ -1,7 +1,9 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
@@ -9,6 +11,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -37,7 +41,8 @@ import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
-import pl.jkkk.cps.logic.reader.FileReader;
+import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
+import pl.jkkk.cps.logic.readerwriter.ImageWriter;
 import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.model.ChartRecord;
 import pl.jkkk.cps.view.model.CustomTabPane;
@@ -62,6 +67,7 @@ import static pl.jkkk.cps.view.helper.FxHelper.fillScatterChart;
 import static pl.jkkk.cps.view.helper.FxHelper.getIndexFromComboBox;
 import static pl.jkkk.cps.view.helper.FxHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.helper.FxHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.helper.FxHelper.switchTabToAnother;
 
 public class Loader {
 
@@ -94,7 +100,8 @@ public class Loader {
     private TextField textFieldReconstructionSincParam;
 
     private Map<Integer, Signal> signals = new HashMap<>();
-    private FileReader<Signal> signalFileReader;
+    private FileReaderWriter<Signal> signalFileReaderWriter;
+    private ImageWriter<Node> imageWriter = new ImageWriter<>();
     private boolean isScatterChart;
     private SignalComparator signalComparator = new SignalComparator();
     private double overallTime = 0;
@@ -156,15 +163,28 @@ public class Loader {
                                            double[] signalParams) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
-        if (isScatterChart) {
-            fillScatterChart((ScatterChart) customTabPane.getChartTab()
-                    .getContent(), mainChartData);
-        } else {
-            fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
-        }
+        try {
+            fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
+            switchTabToAnother(customTabPane, 1);
+            imageWriter.writeFxChart(BarChart.class, tabPane);
 
-        fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
-        fillParamsTab(customTabPane, signalParams);
+            if (isScatterChart) {
+                fillScatterChart((ScatterChart) customTabPane
+                        .getChartTab().getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                imageWriter.writeFxChart(ScatterChart.class, tabPane);
+
+            } else {
+                fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                imageWriter.writeFxChart(LineChart.class, tabPane);
+            }
+
+            fillParamsTab(customTabPane, signalParams);
+
+        } catch (FileOperationException e) {
+            e.printStackTrace();
+        }
     }
 
     private void convertSignalToChart(Signal signal) {
@@ -426,7 +446,8 @@ public class Loader {
                     "" + df.format(signalComparator.maximumDifference(secondSignal, firstSignal)));
 
             appendLabelText(paneChildren.get(4),
-                    "" + df.format(signalComparator.effectiveNumberOfBits(secondSignal, firstSignal)));
+                    "" + df.format(signalComparator.effectiveNumberOfBits(secondSignal,
+                            firstSignal)));
             appendLabelText(paneChildren.get(5), "" + df.format(overallTime));
         } catch (NotSameLengthException e) {
             PopOutWindow.messageBox("Błednie wybrane wykresy",
@@ -438,11 +459,11 @@ public class Loader {
         int tabIndex = getSelectedTabIndex(tabPaneResults);
 
         try {
-            signalFileReader = new FileReader<>(new FileChooser()
+            signalFileReaderWriter = new FileReaderWriter<>(new FileChooser()
                     .showOpenDialog(StageController.getApplicationStage())
                     .getName());
 
-            signals.put(tabIndex, signalFileReader.read());
+            signals.put(tabIndex, signalFileReaderWriter.read());
             convertSignalToChart(signals.get(tabIndex));
 
         } catch (NullPointerException | FileOperationException e) {
@@ -456,11 +477,11 @@ public class Loader {
 
         try {
             if (signals.get(tabIndex) != null) {
-                signalFileReader = new FileReader<>(new FileChooser()
+                signalFileReaderWriter = new FileReaderWriter<>(new FileChooser()
                         .showSaveDialog(StageController.getApplicationStage())
                         .getName());
 
-                signalFileReader.write(signals.get(tabIndex));
+                signalFileReaderWriter.write(signals.get(tabIndex));
             } else {
                 PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
                         "Sygnał nie został jeszcze wygenerowany", Alert.AlertType.WARNING);

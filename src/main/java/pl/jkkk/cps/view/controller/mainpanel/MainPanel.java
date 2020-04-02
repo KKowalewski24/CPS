@@ -15,6 +15,7 @@ import pl.jkkk.cps.view.util.StageController;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
 import static pl.jkkk.cps.view.helper.FxHelper.fillComboBox;
@@ -161,5 +162,16 @@ public class MainPanel implements Initializable {
     @FXML
     private void onActionButtonGenerateComparison(ActionEvent actionEvent) {
         loader.generateComparison();
+    }
+
+    @FXML
+    private void onActionButtonChangeTheme(ActionEvent actionEvent) {
+        if (StageController.getGlobalCssStyling() != null) {
+            StageController.setGlobalCssStyling(null);
+            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+        } else {
+            StageController.setGlobalCssStyling(PATH_CSS_STYLING);
+            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+        }
     }
 }

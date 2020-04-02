@@ -151,6 +151,10 @@ public class FxHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    public static void switchTabToAnother(TabPane tabPane, int index) {
+        tabPane.getSelectionModel().select(index);
+    }
+
     public static void changeLineChartToScatterChart(TabPane tabPane) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
         customTabPane.getChartTab().setContent(prepareScatterChart());

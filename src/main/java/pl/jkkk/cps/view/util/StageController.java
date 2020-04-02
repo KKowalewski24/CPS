@@ -24,6 +24,10 @@ public class StageController {
         return FxmlStageSetup.getGlobalCssStyling();
     }
 
+    public static void setGlobalCssStyling(String globalCssStyling) {
+        FxmlStageSetup.setGlobalCssStyling(globalCssStyling);
+    }
+
     public static void buildStage(Stage stage, String filePath, String title,
                                   WindowDimensions dimensions, String cssFilePath) {
         try {
