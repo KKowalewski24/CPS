@@ -34,32 +34,34 @@ public class DAC {
             }
         };
     }
-    
+
     public ContinuousSignal sincBasic(Signal signal, int N) {
         return new ContinuousSignal(signal.getRangeStart(), signal.getRangeLength()) {
             @Override
             public double value(double t) {
                 /* find nearest sample */
                 int index = (int) Math.floor((t - signal.getRangeStart()) / signal.getRangeLength()
-                                * (signal.getData().size() - 1));
+                        * (signal.getData().size() - 1));
                 /* find range of N (or less) samples */
                 int firstSample = index - N / 2;
                 int lastSample = firstSample + N;
-                if(firstSample < 0){
+                if (firstSample < 0) {
                     lastSample = lastSample - firstSample;
                     firstSample = 0;
-                    if(lastSample > signal.getData().size())
+                    if (lastSample > signal.getData().size()) {
                         lastSample = signal.getData().size();
-                }else if(lastSample > signal.getData().size()){
+                    }
+                } else if (lastSample > signal.getData().size()) {
                     firstSample = firstSample - (lastSample - signal.getData().size());
                     lastSample = signal.getData().size();
-                    if(firstSample < 0)
+                    if (firstSample < 0) {
                         firstSample = 0;
+                    }
                 }
                 /* calculate value */
                 final double step = signal.getRangeLength() / (signal.getData().size() - 1);
                 double sum = 0.0;
-                for(int i = firstSample; i < lastSample; i++){
+                for (int i = firstSample; i < lastSample; i++) {
                     sum += signal.getData().get(i).getY() * sinc(t / step - i);
                 }
                 return sum;
@@ -67,10 +69,11 @@ public class DAC {
         };
     }
 
-    private double sinc(double t){
-        if (t == 0.0)
+    private double sinc(double t) {
+        if (t == 0.0) {
             return 1.0;
-        else
+        } else {
             return Math.sin(Math.PI * t) / (Math.PI * t);
+        }
     }
 }

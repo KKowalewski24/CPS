@@ -1,9 +1,7 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.chart.BarChart;
-import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
@@ -11,8 +9,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -58,12 +54,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static pl.jkkk.cps.view.helper.FxHelper.appendLabelText;
-import static pl.jkkk.cps.view.helper.FxHelper.getCurrentCustomTabPaneFromTabPane;
 import static pl.jkkk.cps.view.helper.FxHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.helper.FxHelper.changeScatterChartToLineChart;
 import static pl.jkkk.cps.view.helper.FxHelper.fillBarChart;
 import static pl.jkkk.cps.view.helper.FxHelper.fillLineChart;
 import static pl.jkkk.cps.view.helper.FxHelper.fillScatterChart;
+import static pl.jkkk.cps.view.helper.FxHelper.getCurrentCustomTabPaneFromTabPane;
 import static pl.jkkk.cps.view.helper.FxHelper.getIndexFromComboBox;
 import static pl.jkkk.cps.view.helper.FxHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.helper.FxHelper.getValueFromComboBox;
