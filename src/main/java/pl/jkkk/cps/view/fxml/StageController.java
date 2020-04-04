@@ -1,9 +1,9 @@
-package pl.jkkk.cps.view.util;
+package pl.jkkk.cps.view.fxml;
 
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import pl.jkkk.cps.view.util.core.FxmlStageSetup;
-import pl.jkkk.cps.view.util.core.WindowDimensions;
+import pl.jkkk.cps.view.fxml.core.FxmlStageSetup;
+import pl.jkkk.cps.view.fxml.core.WindowDimensions;
 
 import java.io.IOException;
 

@@ -10,7 +10,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import pl.jkkk.cps.view.util.StageController;
+import pl.jkkk.cps.view.fxml.StageController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -18,9 +18,9 @@ import java.util.ResourceBundle;
 import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
-import static pl.jkkk.cps.view.helper.FxHelper.fillComboBox;
-import static pl.jkkk.cps.view.helper.FxHelper.getSelectedTabIndex;
-import static pl.jkkk.cps.view.helper.FxHelper.getTabNameList;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
+import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
 
 public class MainPanel implements Initializable {
 

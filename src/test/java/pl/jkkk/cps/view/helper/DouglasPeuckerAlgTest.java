@@ -3,6 +3,7 @@ package pl.jkkk.cps.view.helper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.view.fxml.DouglasPeuckerAlg;
 
 public class DouglasPeuckerAlgTest {
 

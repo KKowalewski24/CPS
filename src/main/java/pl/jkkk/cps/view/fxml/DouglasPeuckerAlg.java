@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.helper;
+package pl.jkkk.cps.view.fxml;
 
 import pl.jkkk.cps.logic.model.Data;
 

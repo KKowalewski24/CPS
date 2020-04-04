@@ -2,8 +2,8 @@ package pl.jkkk.cps;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import pl.jkkk.cps.view.util.StageController;
-import pl.jkkk.cps.view.util.core.WindowDimensions;
+import pl.jkkk.cps.view.fxml.StageController;
+import pl.jkkk.cps.view.fxml.core.WindowDimensions;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;

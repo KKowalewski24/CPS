@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static pl.jkkk.cps.view.helper.FxHelper.fillComboBox;
-import static pl.jkkk.cps.view.helper.FxHelper.getTabNameList;
-import static pl.jkkk.cps.view.helper.FxHelper.getValueFromComboBox;
-import static pl.jkkk.cps.view.helper.FxHelper.prepareBarChart;
-import static pl.jkkk.cps.view.helper.FxHelper.prepareLabelWithPosition;
-import static pl.jkkk.cps.view.helper.FxHelper.prepareLineChart;
-import static pl.jkkk.cps.view.helper.FxHelper.removeAndAddNewPaneChildren;
-import static pl.jkkk.cps.view.helper.FxHelper.setTextFieldPosition;
-import static pl.jkkk.cps.view.helper.FxHelper.textFieldSetValue;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
+import static pl.jkkk.cps.view.fxml.FxHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareLabelWithPosition;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.removeAndAddNewPaneChildren;
+import static pl.jkkk.cps.view.fxml.FxHelper.setTextFieldPosition;
+import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
 
 public class Initializer {
 

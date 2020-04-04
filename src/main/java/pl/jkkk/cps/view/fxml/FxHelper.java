@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.helper;
+package pl.jkkk.cps.view.fxml;
 
 import javafx.scene.Node;
 import javafx.scene.chart.BarChart;

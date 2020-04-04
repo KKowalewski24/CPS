@@ -38,12 +38,12 @@ import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
-import pl.jkkk.cps.logic.readerwriter.ImageWriter;
-import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
+import pl.jkkk.cps.logic.readerwriter.ReportWriter;
+import pl.jkkk.cps.view.fxml.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.model.ChartRecord;
 import pl.jkkk.cps.view.model.CustomTabPane;
-import pl.jkkk.cps.view.util.PopOutWindow;
-import pl.jkkk.cps.view.util.StageController;
+import pl.jkkk.cps.view.fxml.PopOutWindow;
+import pl.jkkk.cps.view.fxml.StageController;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -53,17 +53,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static pl.jkkk.cps.view.helper.FxHelper.appendLabelText;
-import static pl.jkkk.cps.view.helper.FxHelper.changeLineChartToScatterChart;
-import static pl.jkkk.cps.view.helper.FxHelper.changeScatterChartToLineChart;
-import static pl.jkkk.cps.view.helper.FxHelper.fillBarChart;
-import static pl.jkkk.cps.view.helper.FxHelper.fillLineChart;
-import static pl.jkkk.cps.view.helper.FxHelper.fillScatterChart;
-import static pl.jkkk.cps.view.helper.FxHelper.getCurrentCustomTabPaneFromTabPane;
-import static pl.jkkk.cps.view.helper.FxHelper.getIndexFromComboBox;
-import static pl.jkkk.cps.view.helper.FxHelper.getSelectedTabIndex;
-import static pl.jkkk.cps.view.helper.FxHelper.getValueFromComboBox;
-import static pl.jkkk.cps.view.helper.FxHelper.switchTabToAnother;
+import static pl.jkkk.cps.view.fxml.FxHelper.appendLabelText;
+import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.changeScatterChartToLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillScatterChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.getCurrentCustomTabPaneFromTabPane;
+import static pl.jkkk.cps.view.fxml.FxHelper.getIndexFromComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
+import static pl.jkkk.cps.view.fxml.FxHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.switchTabToAnother;
 
 public class Loader {
 
@@ -97,7 +97,7 @@ public class Loader {
 
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReaderWriter<Signal> signalFileReaderWriter;
-    private ImageWriter<Node> imageWriter = new ImageWriter<>();
+    private ReportWriter reportWriter = new ReportWriter();
     private boolean isScatterChart;
     private SignalComparator signalComparator = new SignalComparator();
     private double overallTime = 0;
@@ -162,18 +162,18 @@ public class Loader {
         try {
             fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
             switchTabToAnother(customTabPane, 1);
-            imageWriter.writeFxChart(BarChart.class, tabPane);
+            reportWriter.writeFxChart(BarChart.class, tabPane);
 
             if (isScatterChart) {
                 fillScatterChart((ScatterChart) customTabPane
                         .getChartTab().getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
-                imageWriter.writeFxChart(ScatterChart.class, tabPane);
+                reportWriter.writeFxChart(ScatterChart.class, tabPane);
 
             } else {
                 fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
-                imageWriter.writeFxChart(LineChart.class, tabPane);
+                reportWriter.writeFxChart(LineChart.class, tabPane);
             }
 
             fillParamsTab(customTabPane, signalParams);
