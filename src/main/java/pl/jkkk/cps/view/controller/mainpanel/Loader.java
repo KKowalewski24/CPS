@@ -39,6 +39,8 @@ import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
+import pl.jkkk.cps.logic.report.LatexGenerator;
+import pl.jkkk.cps.logic.report.ReportType;
 import pl.jkkk.cps.view.fxml.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.model.ChartRecord;
 import pl.jkkk.cps.view.model.CustomTabPane;
@@ -98,6 +100,7 @@ public class Loader {
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReaderWriter<Signal> signalFileReaderWriter;
     private ReportWriter reportWriter = new ReportWriter();
+    private LatexGenerator latexGenerator;
     private boolean isScatterChart;
     private SignalComparator signalComparator = new SignalComparator();
     private double overallTime = 0;
@@ -153,6 +156,7 @@ public class Loader {
         appendLabelText(paneChildren.get(4), "" + df.format(signalParams[4]));
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     private void fillCustomTabPaneWithData(TabPane tabPane,
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
@@ -177,6 +181,10 @@ public class Loader {
             }
 
             fillParamsTab(customTabPane, signalParams);
+            latexGenerator = new LatexGenerator("Signal_Params");
+            latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
+                    signalParams[2], signalParams[3], signalParams[4]);
+            latexGenerator.generate(ReportType.SIGNAL);
 
         } catch (FileOperationException e) {
             e.printStackTrace();
@@ -245,6 +253,7 @@ public class Loader {
         convertSignalToChart(signal);
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public void computeCharts() {
         String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
 
@@ -431,26 +440,36 @@ public class Loader {
         DecimalFormat df = new DecimalFormat("##.####");
 
         try {
-            appendLabelText(paneChildren.get(0),
-                    "" + df.format(signalComparator.meanSquaredError(secondSignal, firstSignal)));
-            appendLabelText(paneChildren.get(1),
-                    "" + df.format(signalComparator.signalToNoiseRatio(secondSignal, firstSignal)));
-            appendLabelText(paneChildren.get(2),
-                    "" + df.format(signalComparator.peakSignalToNoiseRatio(secondSignal,
-                            firstSignal)));
-            appendLabelText(paneChildren.get(3),
-                    "" + df.format(signalComparator.maximumDifference(secondSignal, firstSignal)));
+            double meanSquaredError = signalComparator
+                    .meanSquaredError(secondSignal, firstSignal);
+            double signalToNoiseRatio = signalComparator
+                    .signalToNoiseRatio(secondSignal, firstSignal);
+            double peakSignalToNoiseRatio = signalComparator.
+                    peakSignalToNoiseRatio(secondSignal, firstSignal);
+            double maximumDifference = signalComparator
+                    .maximumDifference(secondSignal, firstSignal);
+            double effectiveNumberOfBits = signalComparator
+                    .effectiveNumberOfBits(secondSignal, firstSignal);
 
-            appendLabelText(paneChildren.get(4),
-                    "" + df.format(signalComparator.effectiveNumberOfBits(secondSignal,
-                            firstSignal)));
+            appendLabelText(paneChildren.get(0), "" + df.format(meanSquaredError));
+            appendLabelText(paneChildren.get(1), "" + df.format(signalToNoiseRatio));
+            appendLabelText(paneChildren.get(2), "" + df.format(peakSignalToNoiseRatio));
+            appendLabelText(paneChildren.get(3), "" + df.format(maximumDifference));
+            appendLabelText(paneChildren.get(4), "" + df.format(effectiveNumberOfBits));
             appendLabelText(paneChildren.get(5), "" + df.format(overallTime));
+
+            latexGenerator = new LatexGenerator("Comparison");
+            latexGenerator.createSummaryForComparison(meanSquaredError, signalToNoiseRatio,
+                    peakSignalToNoiseRatio, maximumDifference, effectiveNumberOfBits, overallTime);
+            latexGenerator.generate(ReportType.COMPARISON);
+
         } catch (NotSameLengthException e) {
             PopOutWindow.messageBox("Błednie wybrane wykresy",
                     "Wykresy mają błędnie dobraną długość", Alert.AlertType.WARNING);
         }
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     public void loadChart() {
         int tabIndex = getSelectedTabIndex(tabPaneResults);
 
