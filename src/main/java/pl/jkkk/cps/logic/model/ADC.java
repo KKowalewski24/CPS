@@ -11,7 +11,7 @@ public class ADC {
     public Signal sampling(ContinuousSignal signal, int sampleRate) {
         int numberOfSamples = (int) (signal.getRangeLength() * sampleRate);
         List<Data> data = new ArrayList<>();
-        Double step = signal.getRangeLength() / (numberOfSamples - 1);
+        Double step = signal.getRangeLength() / numberOfSamples;
         for (int i = 0; i < numberOfSamples; i++) {
             double x = i * step + signal.getRangeStart();
             double y = signal.value(x);
