@@ -11,13 +11,13 @@ public class ADC {
     public Signal sampling(ContinuousSignal signal, int sampleRate) {
         int numberOfSamples = (int) (signal.getRangeLength() * sampleRate);
         List<Data> data = new ArrayList<>();
-        Double step = signal.getRangeLength() / numberOfSamples;
+        Double step = 1.0 / sampleRate;
         for (int i = 0; i < numberOfSamples; i++) {
             double x = i * step + signal.getRangeStart();
             double y = signal.value(x);
             data.add(new Data(x, y));
         }
-        return createSignalBasingOnExistingData(data);
+        return createSignalBasingOnExistingData(data, signal.getRangeStart(), signal.getRangeLength());
     }
 
     public Signal roundingQuantization(Signal signal, int numberOfLevels) {
@@ -31,7 +31,7 @@ public class ADC {
             );
             data.add(new Data(sample.getX(), levels.get(index)));
         });
-        return createSignalBasingOnExistingData(data);
+        return createSignalBasingOnExistingData(data, signal.getRangeStart(), signal.getRangeLength());
     }
 
     public Signal truncatingQuantization(Signal signal, int numberOfLevels) {
@@ -45,12 +45,11 @@ public class ADC {
             );
             data.add(new Data(sample.getX(), levels.get(index)));
         });
-        return createSignalBasingOnExistingData(data);
+        return createSignalBasingOnExistingData(data, signal.getRangeStart(), signal.getRangeLength());
     }
 
-    private Signal createSignalBasingOnExistingData(List<Data> existingData) {
-        double rangeStart = existingData.get(0).getX();
-        double rangeLength = existingData.get(existingData.size() - 1).getX() - rangeStart;
+    private Signal createSignalBasingOnExistingData(List<Data> existingData, double rangeStart,
+            double rangeLength) {
         return new Signal(existingData.size(), rangeStart, rangeLength) {
             @Override
             public void generate() {
