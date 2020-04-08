@@ -15,7 +15,7 @@ public class ReconstructedSignalFirstOrderHold extends ContinuousSignal{
 
     @Override
     public double value(double t) {
-        int index = (int) Math.floor((t - rangeStart) / rangeLength * (sourceData.size() - 1));
+        int index = (int) Math.floor((t - rangeStart) / rangeLength * sourceData.size());
         Data A = sourceData.get(index);
         if (index < sourceData.size() - 1) {
             Data B = sourceData.get(index + 1);

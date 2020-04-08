@@ -19,7 +19,7 @@ public class ReconstructedSignalSincBasic extends ContinuousSignal{
     public double value(double t) {
 
         /* find nearest sample */
-        int index = (int) Math.floor((t - rangeStart) / rangeLength * (sourceData.size() - 1));
+        int index = (int) Math.floor((t - rangeStart) / rangeLength * sourceData.size());
         
         /* find range of N (or less) samples */
         int firstSample = index - N / 2;
@@ -39,7 +39,7 @@ public class ReconstructedSignalSincBasic extends ContinuousSignal{
         }
         
         /* calculate value */
-        final double step = rangeLength / (sourceData.size() - 1);
+        final double step = rangeLength / sourceData.size();
         double sum = 0.0;
         for (int i = firstSample; i < lastSample; i++) {
             sum += sourceData.get(i).getY() * sinc(t / step - i);
