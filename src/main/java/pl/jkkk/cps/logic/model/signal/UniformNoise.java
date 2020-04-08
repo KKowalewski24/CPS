@@ -10,7 +10,7 @@ public class UniformNoise extends ContinuousSignal {
     public UniformNoise(double rangeStart, double rangeLength, double amplitude) {
         super(rangeStart, rangeLength);
         this.amplitude = amplitude;
-        this.rand = new Random();
+        this.rand = new Random(47);
     }
 
     @Override

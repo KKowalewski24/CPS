@@ -1,30 +1,22 @@
 package pl.jkkk.cps.logic.model.signal;
 
-import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.Range;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import pl.jkkk.cps.logic.exception.NotSameLengthException;
+import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.Range;
+
 public abstract class Signal implements Serializable {
 
-    protected final Data[] data;
-    protected final double rangeStart;
-    protected final double rangeLength;
+    private final double rangeStart;
+    private final double rangeLength;
 
-    public Signal(int length, double rangeStart, double rangeLength) {
-        this.data = new Data[length];
+    public Signal(double rangeStart, double rangeLength) {
         this.rangeStart = rangeStart;
         this.rangeLength = rangeLength;
-    }
-
-    public abstract void generate();
-
-    public List<Data> getData() {
-        return Arrays.asList(data);
     }
 
     public double getRangeStart() {
@@ -35,57 +27,136 @@ public abstract class Signal implements Serializable {
         return rangeLength;
     }
 
-    public List<Range> generateHistogram(int numberOfRanges) {
-        final double min = Arrays.asList(data).stream()
-                .mapToDouble(data -> data.getY()).min().getAsDouble();
-        final double max = Arrays.asList(data).stream()
-                .mapToDouble(data -> data.getY()).max().getAsDouble();
+    /**
+     * This method returns discrete representation of
+     * signal (every kind of signal, also continuous one),
+     * this representation can be used to render chart,
+     * compute some signal params and compare signals
+     *
+     * @return list of data (2D-point) objects representing this signal in discrete way
+     */
+    public abstract List<Data> generateDiscreteRepresentation();
+
+    /* compute histogram */
+
+    public static List<Range> generateHistogram(int numberOfRanges, List<Data> discreteRepresentation) {
+        final double min = discreteRepresentation.stream().mapToDouble(data -> data.getY()).min().getAsDouble();
+        final double max = discreteRepresentation.stream().mapToDouble(data -> data.getY()).max().getAsDouble();
         final List<Range> ranges = new ArrayList<>();
         IntStream.range(0, numberOfRanges).forEach(i -> {
             double begin = min + (max - min) / numberOfRanges * i;
             double end = min + (max - min) / numberOfRanges * (i + 1);
-            int quantity = (int) Arrays.asList(data).stream()
-                    .filter(data -> data.getY() >= begin && data.getY() <= end)
-                    .count();
+            int quantity =
+                    (int) discreteRepresentation.stream().filter(data -> data.getY() >= begin && data.getY() <= end)
+                            .count();
             ranges.add(new Range(begin, end, quantity));
         });
         return ranges;
     }
 
-    public double meanValue() {
+    /* compute params */
+
+    public static double meanValue(List<Data> discreteRepresentation) {
         double sum = 0;
-        for (int i = 0; i < data.length; i++) {
-            sum += data[i].getY();
+        for (int i = 0; i < discreteRepresentation.size(); i++) {
+            sum += discreteRepresentation.get(i).getY();
         }
-        return sum / data.length;
+        return sum / discreteRepresentation.size();
     }
 
-    public double absMeanValue() {
+    public static double absMeanValue(List<Data> discreteRepresentation) {
         double sum = 0;
-        for (int i = 0; i < data.length; i++) {
-            sum += Math.abs(data[i].getY());
+        for (int i = 0; i < discreteRepresentation.size(); i++) {
+            sum += Math.abs(discreteRepresentation.get(i).getY());
         }
-        return sum / data.length;
+        return sum / discreteRepresentation.size();
     }
 
-    public double rmsValue() {
-        return Math.sqrt(meanPowerValue());
+    public static double rmsValue(List<Data> discreteRepresentation) {
+        return Math.sqrt(meanPowerValue(discreteRepresentation));
     }
 
-    public double varianceValue() {
-        double mean = meanValue();
+    public static double varianceValue(List<Data> discreteRepresentation) {
+        double mean = meanValue(discreteRepresentation);
         double sum = 0;
-        for (int i = 0; i < data.length; i++) {
-            sum += Math.pow(data[i].getY() - mean, 2.0);
+        for (int i = 0; i < discreteRepresentation.size(); i++) {
+            sum += Math.pow(discreteRepresentation.get(i).getY() - mean, 2.0);
         }
-        return sum / data.length;
+        return sum / discreteRepresentation.size();
     }
 
-    public double meanPowerValue() {
+    public static double meanPowerValue(List<Data> discreteRepresentation) {
         double sum = 0;
-        for (int i = 0; i < data.length; i++) {
-            sum += Math.pow(data[i].getY(), 2.0);
+        for (int i = 0; i < discreteRepresentation.size(); i++) {
+            sum += Math.pow(discreteRepresentation.get(i).getY(), 2.0);
         }
-        return sum / data.length;
+        return sum / discreteRepresentation.size();
+    }
+
+    /* compute differences */
+
+    public static double meanSquaredError(List<Data> result, List<Data> origin) {
+        if (result.size() != origin.size()) {
+            throw new NotSameLengthException();
+        }
+
+        double sum = 0.0;
+        for (int i = 0; i < result.size(); i++) {
+            sum += Math.pow(result.get(i).getY() - origin.get(i).getY(), 2.0);
+        }
+
+        return sum / result.size();
+    }
+
+    public static double signalToNoiseRatio(List<Data> result, List<Data> origin) {
+        if (result.size() != origin.size()) {
+            throw new NotSameLengthException();
+        }
+
+        double resultSquaredSum = 0.0;
+        double diffSquaredSum = 0.0;
+        for (int i = 0; i < result.size(); i++) {
+            resultSquaredSum += Math.pow(result.get(i).getY(), 2.0);
+            diffSquaredSum += Math.pow(result.get(i).getY() - origin.get(i).getY(), 2.0);
+        }
+
+        return 10.0 * Math.log10(resultSquaredSum / diffSquaredSum);
+    }
+
+    public static double peakSignalToNoiseRatio(List<Data> result, List<Data> origin) {
+        if (result.size() != origin.size()) {
+            throw new NotSameLengthException();
+        }
+
+        double resultMax = Double.MIN_VALUE;
+        double diffSquaredSum = 0.0;
+        for (int i = 0; i < result.size(); i++) {
+            if (result.get(i).getY() > resultMax) {
+                resultMax = result.get(i).getY();
+            }
+            diffSquaredSum += Math.pow(result.get(i).getY() - origin.get(i).getY(), 2.0);
+        }
+
+        return 10.0 * Math.log10(resultMax / (diffSquaredSum / result.size()));
+    }
+
+    public static double maximumDifference(List<Data> result, List<Data> origin) {
+        if (result.size() != origin.size()) {
+            throw new NotSameLengthException();
+        }
+
+        double maxDiff = Double.MIN_VALUE;
+        for (int i = 0; i < result.size(); i++) {
+            double diff = Math.abs(result.get(i).getY() - origin.get(i).getY());
+            if (diff > maxDiff) {
+                maxDiff = diff;
+            }
+        }
+
+        return maxDiff;
+    }
+
+    public static double effectiveNumberOfBits(List<Data> result, List<Data> origin) {
+        return (signalToNoiseRatio(result, origin) - 1.76) / 6.02;
     }
 }

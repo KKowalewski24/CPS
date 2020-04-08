@@ -1,27 +1,23 @@
 package pl.jkkk.cps.logic.model.signal;
 
-import java.util.List;
+public class ReconstructedSignalFirstOrderHold extends ContinuousSignal {
 
-import pl.jkkk.cps.logic.model.Data;
+    private final DiscreteSignal sourceSignal;
 
-public class ReconstructedSignalFirstOrderHold extends ContinuousSignal{
-    
-    private final List<Data> sourceData;
-
-    public ReconstructedSignalFirstOrderHold(Signal sourceSignal) {
-       super(sourceSignal.getRangeStart(), sourceSignal.getRangeLength());
-       this.sourceData = sourceSignal.getData();
+    public ReconstructedSignalFirstOrderHold(DiscreteSignal sourceSignal) {
+        super(sourceSignal.getRangeStart(), sourceSignal.getRangeLength());
+        this.sourceSignal = sourceSignal;
     }
 
     @Override
     public double value(double t) {
-        int index = (int) Math.floor((t - rangeStart) / rangeLength * sourceData.size());
-        Data A = sourceData.get(index);
-        if (index < sourceData.size() - 1) {
-            Data B = sourceData.get(index + 1);
-            return (t - A.getX()) / (B.getX() - A.getX()) * (B.getY() - A.getY()) + A.getY();
+        int index = (int) Math.floor((t - getRangeStart()) / getRangeLength() * sourceSignal.getNumberOfSamples());
+        if (index < sourceSignal.getNumberOfSamples() - 1) {
+            return (t - sourceSignal.argument(index)) /
+                    (sourceSignal.argument(index + 1) - sourceSignal.argument(index)) *
+                    (sourceSignal.value(index + 1) - sourceSignal.value(index)) + sourceSignal.value(index);
         } else {
-            return A.getY();
+            return sourceSignal.value(index);
         }
     }
 }

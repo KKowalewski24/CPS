@@ -13,6 +13,6 @@ public class SinusoidalSignal extends ContinuousSignal {
 
     @Override
     public double value(double t) {
-        return amplitude * Math.sin((2.0 * Math.PI / term) * (t - rangeStart));
+        return amplitude * Math.sin((2.0 * Math.PI / term) * (t - getRangeStart()));
     }
 }

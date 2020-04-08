@@ -1,20 +1,16 @@
 package pl.jkkk.cps.logic.model.signal;
 
-import java.util.List;
-
-import pl.jkkk.cps.logic.model.Data;
-
 public class ReconstructedSignalZeroOrderHold extends ContinuousSignal {
 
-    private final List<Data> sourceData;
+    private final DiscreteSignal sourceSignal;
 
-    public ReconstructedSignalZeroOrderHold(Signal sourceSignal){
+    public ReconstructedSignalZeroOrderHold(DiscreteSignal sourceSignal) {
         super(sourceSignal.getRangeStart(), sourceSignal.getRangeLength());
-        sourceData = sourceSignal.getData();
+        this.sourceSignal = sourceSignal;
     }
 
     public double value(double t) {
-        int index = (int) Math.floor((t - rangeStart) / rangeLength * sourceData.size());
-        return sourceData.get(index).getY();
+        int index = (int) Math.floor((t - getRangeStart()) / getRangeLength() * sourceSignal.getNumberOfSamples());
+        return sourceSignal.value(index);
     }
 }

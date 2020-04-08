@@ -1,13 +1,21 @@
 package pl.jkkk.cps.logic.model.signal;
 
-public abstract class ContinuousSignal extends DiscreteSignal {
+import java.util.List;
 
-    private static final int NUMBER_OF_SAMPLES = 1000000;
+import pl.jkkk.cps.logic.model.Data;
+
+public abstract class ContinuousSignal extends Signal {
 
     public ContinuousSignal(double rangeStart, double rangeLength) {
-        super(rangeStart, rangeLength, NUMBER_OF_SAMPLES / rangeLength);
+        super(rangeStart, rangeLength);
     }
 
-    @Override
     public abstract double value(double t);
+
+    @Override
+    public List<Data> generateDiscreteRepresentation() {
+        return new DiscreteSignal(getRangeStart(), getRangeLength(),
+                    1000000.0 / getRangeLength(), this)
+                .generateDiscreteRepresentation();
+    }
 }
