@@ -20,18 +20,12 @@ public class ReportWriter {
 
     /*------------------------ METHODS REGION ------------------------*/
     public String generateFilename(String type, String fileExtension) {
-        StringBuilder result = new StringBuilder();
-        result.append(type)
-                .append("_")
-                .append(LocalTime.now().getHour())
-                .append("h_")
-                .append(LocalTime.now().getMinute())
-                .append("min_")
-                .append(LocalTime.now().getSecond())
-                .append("sek")
-                .append(fileExtension);
-
-        return result.toString();
+        return String.format("%s_%02d%02d%02d%s", 
+                    type,
+                    LocalTime.now().getHour(),
+                    LocalTime.now().getMinute(),
+                    LocalTime.now().getSecond(),
+                    fileExtension);
     }
 
     public void writeFxChart(Class<?> type, Node object) throws FileOperationException {
