@@ -1,5 +1,7 @@
 package pl.jkkk.cps.logic.model.enumtype;
 
+import java.util.Arrays;
+
 public enum SignalType {
 
     UNIFORM_NOISE("Szum o rozkładzie jednostajnym"),
@@ -22,5 +24,13 @@ public enum SignalType {
 
     public String getName() {
         return name;
+    }
+
+    public static SignalType fromString(String text) {
+        return Arrays.asList(SignalType.values())
+                .stream()
+                .filter((it) -> it.name.equals(text))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

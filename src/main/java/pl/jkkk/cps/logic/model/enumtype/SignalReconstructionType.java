@@ -1,5 +1,7 @@
 package pl.jkkk.cps.logic.model.enumtype;
 
+import java.util.Arrays;
+
 public enum SignalReconstructionType {
 
     ZERO_ORDER_EXTRAPOLATION("Ekstrapolacja zerowego rzędu"),
@@ -14,5 +16,13 @@ public enum SignalReconstructionType {
 
     public String getName() {
         return name;
+    }
+
+    public static SignalReconstructionType fromString(String text) {
+        return Arrays.asList(SignalReconstructionType.values())
+                .stream()
+                .filter((it) -> it.name.equals(text))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

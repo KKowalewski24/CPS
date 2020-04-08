@@ -55,6 +55,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType.QUANTIZATION;
+import static pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType.SAMPLING;
+import static pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType.SIGNAL_RECONSTRUCTION;
+import static pl.jkkk.cps.logic.model.enumtype.QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING;
+import static pl.jkkk.cps.logic.model.enumtype.QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION;
+import static pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType.FIRST_ORDER_INTERPOLATION;
+import static pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION;
+import static pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.GAUSSIAN_NOISE;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.IMPULSE_NOISE;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.RECTANGULAR_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.SINUSOIDAL_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.TRIANGULAR_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.UNIFORM_NOISE;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.UNIT_IMPULSE;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.UNIT_JUMP;
+import static pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType.ADDITION;
+import static pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType.DIVISION;
+import static pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType.MULTIPLICATION;
+import static pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType.SUBTRACTION;
 import static pl.jkkk.cps.view.fxml.FxHelper.appendLabelText;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeScatterChartToLineChart;
@@ -271,48 +294,48 @@ public class Loader {
             isScatterChart = false;
             changeScatterChartToLineChart(tabPaneResults);
 
-            if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
+            if (UNIFORM_NOISE == SignalType.fromString(selectedSignal)) {
 
                 signal = new UniformNoise(rangeStart, rangeLength, amplitude);
 
-            } else if (selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
+            } else if (GAUSSIAN_NOISE == SignalType.fromString(selectedSignal)) {
 
                 signal = new GaussianNoise(rangeStart, rangeLength, amplitude);
 
-            } else if (selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())) {
+            } else if (SINUSOIDAL_SIGNAL == SignalType.fromString(selectedSignal)) {
 
                 signal = new SinusoidalSignal(rangeStart, rangeLength, amplitude, term);
 
-            } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())) {
+            } else if (SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL == SignalType.fromString(selectedSignal)) {
 
                 signal = new SinusoidalRectifiedOneHalfSignal(rangeStart, rangeLength,
                         amplitude, term);
 
-            } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())) {
+            } else if (SINUSOIDAL_RECTIFIED_IN_TWO_HALVES == SignalType.fromString(selectedSignal)) {
 
                 signal = new SinusoidalRectifiedTwoHalfSignal(rangeStart, rangeLength,
                         amplitude, term);
 
-            } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())) {
+            } else if (RECTANGULAR_SIGNAL == SignalType.fromString(selectedSignal)) {
 
                 signal = new RectangularSignal(rangeStart, rangeLength, amplitude, term,
                         fulfillment);
 
-            } else if (selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())) {
+            } else if (SYMMETRICAL_RECTANGULAR_SIGNAL == SignalType.fromString(selectedSignal)) {
 
                 signal = new RectangularSymmetricSignal(rangeStart, rangeLength, amplitude,
                         term, fulfillment);
 
-            } else if (selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())) {
+            } else if (TRIANGULAR_SIGNAL == SignalType.fromString(selectedSignal)) {
 
                 signal = new TriangularSignal(rangeStart, rangeLength, amplitude, term,
                         fulfillment);
 
-            } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
+            } else if (UNIT_JUMP == SignalType.fromString(selectedSignal)) {
 
                 signal = new UnitJumpSignal(rangeStart, rangeLength, amplitude, jumpMoment);
 
-            } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
+            } else if (UNIT_IMPULSE == SignalType.fromString(selectedSignal)) {
 
                 isScatterChart = true;
                 changeLineChartToScatterChart(tabPaneResults);
@@ -320,7 +343,7 @@ public class Loader {
                 signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate,
                         amplitude, jumpMoment.intValue());
 
-            } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
+            } else if (IMPULSE_NOISE == SignalType.fromString(selectedSignal)) {
 
                 isScatterChart = true;
                 changeLineChartToScatterChart(tabPaneResults);
@@ -347,7 +370,7 @@ public class Loader {
         try {
             long startTime = System.currentTimeMillis();
 
-            if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
+            if (SAMPLING == OneArgsOperationType.fromString(selectedOperationOneArgs)) {
                 isScatterChart = true;
                 changeLineChartToScatterChart(tabPaneResults);
                 Integer sampleRate = Integer.valueOf(textFieldSampleRate.getText());
@@ -359,7 +382,7 @@ public class Loader {
 
                 }
 
-            } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+            } else if (QUANTIZATION == OneArgsOperationType.fromString(selectedOperationOneArgs)) {
                 isScatterChart = true;
                 changeLineChartToScatterChart(tabPaneResults);
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
@@ -367,29 +390,28 @@ public class Loader {
                 Integer quantizationLevels = Integer.valueOf(textFieldQuantizationLevels.getText());
                 String method = getValueFromComboBox(comboBoxMethod);
 
-                if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName())) {
+                if (EVEN_QUANTIZATION_WITH_TRUNCATION == QuantizationType.fromString(method)) {
                     signal = new ADC().truncatingQuantization(selectedSignal, quantizationLevels);
-                } else if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName())) {
+                } else if (EVEN_QUANTIZATION_WITH_ROUNDING == QuantizationType.fromString(method)) {
                     signal = new ADC().roundingQuantization(selectedSignal, quantizationLevels);
                 }
 
-            } else if (selectedOperationOneArgs.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+            } else if (SIGNAL_RECONSTRUCTION == OneArgsOperationType.fromString(selectedOperationOneArgs)) {
                 isScatterChart = false;
                 changeScatterChartToLineChart(tabPaneResults);
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
                 ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
                 String method = getValueFromComboBox(comboBoxMethod);
 
-                if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
+                if (ZERO_ORDER_EXTRAPOLATION == SignalReconstructionType.fromString(method)) {
 
                     signal = new DAC().zeroOrderHold(selectedSignal);
 
-                } else if (method.equals(SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName())) {
+                } else if (FIRST_ORDER_INTERPOLATION == SignalReconstructionType.fromString(method)) {
 
                     signal = new DAC().firstOrderHold(selectedSignal);
 
-                } else if (method.equals(SignalReconstructionType
-                        .RECONSTRUCTION_BASED_FUNCTION_SINC.getName())) {
+                } else if (RECONSTRUCTION_BASED_FUNCTION_SINC == SignalReconstructionType.fromString(method)) {
 
                     Integer sincParam = Integer.valueOf(textFieldReconstructionSincParam.getText());
                     signal = new DAC().sincBasic(selectedSignal, sincParam);
@@ -417,13 +439,13 @@ public class Loader {
         Signal s2 = signals.get(s2Index);
         Signal resultSignal = null;
 
-        if (selectedOperation.equals(TwoArgsOperationType.ADDITION.getName())) {
+        if (ADDITION == TwoArgsOperationType.fromString(selectedOperation)) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
-        } else if (selectedOperation.equals(TwoArgsOperationType.SUBTRACTION.getName())) {
+        } else if (SUBTRACTION == TwoArgsOperationType.fromString(selectedOperation)) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
-        } else if (selectedOperation.equals(TwoArgsOperationType.MULTIPLICATION.getName())) {
+        } else if (MULTIPLICATION == TwoArgsOperationType.fromString(selectedOperation)) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
-        } else if (selectedOperation.equals(TwoArgsOperationType.DIVISION.getName())) {
+        } else if (DIVISION == TwoArgsOperationType.fromString(selectedOperation)) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
         }
 

@@ -11,7 +11,6 @@ import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
-import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
 
@@ -20,6 +19,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType.QUANTIZATION;
+import static pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType.SAMPLING;
+import static pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType.SIGNAL_RECONSTRUCTION;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.GAUSSIAN_NOISE;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.IMPULSE_NOISE;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.RECTANGULAR_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.SINUSOIDAL_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.TRIANGULAR_SIGNAL;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.UNIFORM_NOISE;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.UNIT_IMPULSE;
+import static pl.jkkk.cps.logic.model.enumtype.SignalType.UNIT_JUMP;
+import static pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType.ADDITION;
+import static pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType.DIVISION;
+import static pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType.MULTIPLICATION;
+import static pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType.SUBTRACTION;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
 import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
 import static pl.jkkk.cps.view.fxml.FxHelper.getValueFromComboBox;
@@ -110,17 +127,17 @@ public class Initializer {
         textFieldSetValue(textFieldSamplingFrequency, String.valueOf(16));
 
         fillComboBox(comboBoxSignalTypes, Stream.of(
-                SignalType.UNIFORM_NOISE.getName(),
-                SignalType.GAUSSIAN_NOISE.getName(),
-                SignalType.SINUSOIDAL_SIGNAL.getName(),
-                SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName(),
-                SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName(),
-                SignalType.RECTANGULAR_SIGNAL.getName(),
-                SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName(),
-                SignalType.TRIANGULAR_SIGNAL.getName(),
-                SignalType.UNIT_JUMP.getName(),
-                SignalType.UNIT_IMPULSE.getName(),
-                SignalType.IMPULSE_NOISE.getName()
+                UNIFORM_NOISE.getName(),
+                GAUSSIAN_NOISE.getName(),
+                SINUSOIDAL_SIGNAL.getName(),
+                SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName(),
+                SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName(),
+                RECTANGULAR_SIGNAL.getName(),
+                SYMMETRICAL_RECTANGULAR_SIGNAL.getName(),
+                TRIANGULAR_SIGNAL.getName(),
+                UNIT_JUMP.getName(),
+                UNIT_IMPULSE.getName(),
+                IMPULSE_NOISE.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         List<Node> basicInputs = Stream.of(
@@ -138,23 +155,23 @@ public class Initializer {
         comboBoxSignalTypes.setOnAction((event -> {
             String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
 
-            if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())
-                    || selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
+            if (UNIFORM_NOISE == SignalType.fromString(selectedSignal)
+                    || GAUSSIAN_NOISE == SignalType.fromString(selectedSignal)) {
 
                 chooseParamsTab.getChildren().setAll(basicInputs);
 
-            } else if (selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())
-                    || selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())
-                    || selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())) {
+            } else if (SINUSOIDAL_SIGNAL == SignalType.fromString(selectedSignal)
+                    || SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL == SignalType.fromString(selectedSignal)
+                    || SINUSOIDAL_RECTIFIED_IN_TWO_HALVES == SignalType.fromString(selectedSignal)) {
 
                 chooseParamsTab.getChildren().setAll(basicInputs);
                 chooseParamsTab.getChildren().addAll(
                         prepareLabelWithPosition("Okres podstawowy", 50, 170),
                         setTextFieldPosition(textFieldBasicPeriod, 270, 170)
                 );
-            } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())
-                    || selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())
-                    || selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())) {
+            } else if (RECTANGULAR_SIGNAL == SignalType.fromString(selectedSignal)
+                    || SYMMETRICAL_RECTANGULAR_SIGNAL == SignalType.fromString(selectedSignal)
+                    || TRIANGULAR_SIGNAL == SignalType.fromString(selectedSignal)) {
 
                 chooseParamsTab.getChildren().setAll(basicInputs);
                 chooseParamsTab.getChildren().addAll(
@@ -163,14 +180,14 @@ public class Initializer {
                         prepareLabelWithPosition("Wspł wypełnienia", 50, 210),
                         setTextFieldPosition(textFieldFillFactor, 270, 210)
                 );
-            } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
+            } else if (UNIT_JUMP == SignalType.fromString(selectedSignal)) {
 
                 chooseParamsTab.getChildren().setAll(basicInputs);
                 chooseParamsTab.getChildren().addAll(
                         prepareLabelWithPosition("Czas skoku", 50, 170),
                         setTextFieldPosition(textFieldJumpTime, 270, 170)
                 );
-            } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
+            } else if (UNIT_IMPULSE == SignalType.fromString(selectedSignal)) {
 
                 chooseParamsTab.getChildren().setAll(basicInputs);
                 chooseParamsTab.getChildren().addAll(
@@ -179,7 +196,7 @@ public class Initializer {
                         setTextFieldPosition(textFieldSamplingFrequency, 270, 170),
                         setTextFieldPosition(textFieldJumpTime, 270, 210)
                 );
-            } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
+            } else if (IMPULSE_NOISE == SignalType.fromString(selectedSignal)) {
 
                 chooseParamsTab.getChildren().setAll(basicInputs);
                 chooseParamsTab.getChildren().addAll(
@@ -201,7 +218,7 @@ public class Initializer {
         String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
         topPane.setVisible(false);
 
-        if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
+        if (SAMPLING == OneArgsOperationType.fromString(selectedOperation)) {
             bottomPane.setVisible(true);
 
             removeAndAddNewPaneChildren(bottomPane,
@@ -210,7 +227,7 @@ public class Initializer {
             );
 
         } else {
-            if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+            if (QUANTIZATION == OneArgsOperationType.fromString(selectedOperation)) {
                 fillComboBox(comboBoxMethod, Stream.of(
                         QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName(),
                         QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName()
@@ -224,7 +241,7 @@ public class Initializer {
                         setTextFieldPosition(textFieldQuantizationLevels, 250, 30)
                 );
 
-            } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+            } else if (SIGNAL_RECONSTRUCTION == OneArgsOperationType.fromString(selectedOperation)) {
 
                 fillComboBox(comboBoxMethod, Stream.of(
                         SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName(),
@@ -246,9 +263,9 @@ public class Initializer {
 
     private void fillOneArgsTab() {
         fillComboBox(comboBoxOperationTypesOneArgs, Stream.of(
-                OneArgsOperationType.SAMPLING.getName(),
-                OneArgsOperationType.QUANTIZATION.getName(),
-                OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName()
+                SAMPLING.getName(),
+                QUANTIZATION.getName(),
+                SIGNAL_RECONSTRUCTION.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
@@ -272,10 +289,10 @@ public class Initializer {
     /*--------------------------------------------------------------------------------------------*/
     private void fillTwoArgsTab() {
         fillComboBox(comboBoxOperationTypesTwoArgs, Stream.of(
-                TwoArgsOperationType.ADDITION.getName(),
-                TwoArgsOperationType.SUBTRACTION.getName(),
-                TwoArgsOperationType.MULTIPLICATION.getName(),
-                TwoArgsOperationType.DIVISION.getName()
+                ADDITION.getName(),
+                SUBTRACTION.getName(),
+                MULTIPLICATION.getName(),
+                DIVISION.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
