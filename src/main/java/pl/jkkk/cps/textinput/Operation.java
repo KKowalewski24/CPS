@@ -20,7 +20,10 @@ public enum Operation {
     }
 
     public static Operation fromString(final String text) {
-        return Arrays.asList(Operation.values()).stream().filter(operation -> operation.abbreviation.equals(text))
-                .findFirst().orElseThrow(IllegalArgumentException::new);
+        return Arrays.asList(Operation.values())
+                .stream()
+                .filter(operation -> operation.abbreviation.equals(text))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

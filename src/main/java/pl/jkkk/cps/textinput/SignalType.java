@@ -22,7 +22,10 @@ public enum SignalType {
     }
 
     public static SignalType fromString(final String text) {
-        return Arrays.asList(SignalType.values()).stream().filter(signal -> signal.abbreviation.equals(text))
-                .findFirst().orElseThrow(IllegalArgumentException::new);
+        return Arrays.asList(SignalType.values())
+                .stream()
+                .filter(signal -> signal.abbreviation.equals(text))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
