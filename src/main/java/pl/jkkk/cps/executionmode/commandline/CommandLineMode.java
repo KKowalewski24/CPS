@@ -1,4 +1,4 @@
-package pl.jkkk.cps.textinput;
+package pl.jkkk.cps.executionmode.commandline;
 
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
@@ -18,8 +18,11 @@ import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import java.io.FileWriter;
 import java.util.List;
 
-public class MainText {
+public class CommandLineMode {
 
+    /*------------------------ FIELDS REGION ------------------------*/
+
+    /*------------------------ METHODS REGION ------------------------*/
     public void main(String[] args) throws Exception {
         final FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>("generated_signal");
 

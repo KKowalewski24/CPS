@@ -1,4 +1,4 @@
-package pl.jkkk.cps.textinput;
+package pl.jkkk.cps.executionmode.commandline;
 
 import java.util.Arrays;
 
