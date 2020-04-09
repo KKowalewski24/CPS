@@ -171,6 +171,7 @@ public class CommandLineMode extends Application {
             reportWriter.writeFxChart(BarChart.class, tabPane);
 
             if (isScatterChart) {
+                changeLineChartToScatterChart(tabPane);
                 fillScatterChart((ScatterChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
@@ -247,6 +248,7 @@ public class CommandLineMode extends Application {
         root.getChildren().addAll(tabPane);
         commandLineStage.setScene(new Scene(root, 700, 600));
         commandLineStage.show();
+
         fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams);
         System.exit(0);
     }
@@ -303,12 +305,11 @@ public class CommandLineMode extends Application {
                         firstSignalData);
 
                 latexGenerator = new LatexGenerator("Comparison");
-                //                TODO ADD overall time
-                //                latexGenerator.createSummaryForComparison(meanSquaredError,
-                //                signalToNoiseRatio,
-                //                        peakSignalToNoiseRatio, maximumDifference,
-                //                        effectiveNumberOfBits,
-                //                        overallTime);
+
+                latexGenerator.createSummaryForComparison(meanSquaredError,
+                        signalToNoiseRatio, peakSignalToNoiseRatio,
+                        maximumDifference, effectiveNumberOfBits,
+                        /*TODO ADD overall time*/0);
                 latexGenerator.generate(ReportType.COMPARISON);
                 break;
             }
@@ -316,11 +317,12 @@ public class CommandLineMode extends Application {
                 for (int i = 1; i < Main.getMainArgs().size(); i++) {
                     readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(i));
                     Signal signalInLoop = readerWriter.read();
+
                     if (signalInLoop instanceof UnitImpulseSignal || signalInLoop instanceof ImpulseNoise) {
                         isScatterChart = true;
-                        changeLineChartToScatterChart(tabPane);
-                        drawChart(signalInLoop);
                     }
+
+                    drawChart(signalInLoop);
                 }
 
                 break;
