@@ -11,12 +11,18 @@ public enum Operation {
     DIVIDE("div"),
     SAMPLING("sampl"),
     QUANTIZATION("quant"),
-    RECONSTRUCTION("recon");
+    RECONSTRUCTION("recon"),
+    COMPARISON("comp"),
+    DRAW_CHARTS("draw");
 
     private final String abbreviation;
 
     Operation(final String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
     }
 
     public static Operation fromString(final String text) {

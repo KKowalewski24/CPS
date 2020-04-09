@@ -12,6 +12,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;
+import pl.jkkk.cps.logic.model.ADC;
+import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
@@ -36,13 +38,13 @@ import pl.jkkk.cps.view.model.ChartRecord;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
 
-import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillScatterChart;
@@ -61,7 +63,8 @@ public class CommandLineMode extends Application {
     private ReportWriter reportWriter = new ReportWriter();
     private LatexGenerator latexGenerator;
     private boolean isScatterChart;
-    //            generate render- zmienna liczba
+    private final ADC adc = new ADC();
+    private final DAC dac = new DAC();
     //                generuj - zapamietaj nazwe pliku 0 jako args,
     //   probkowuj - przeyjumuje sygnał i parametruy probkkwania acd - jakie wymaga,
     //   rekonstukcja - plik z probkowania i odpowiednie parametry ADC,
@@ -70,92 +73,86 @@ public class CommandLineMode extends Application {
 
     /*------------------------ METHODS REGION ------------------------*/
     private Signal generate(String[] args) {
-        switch (SignalType.fromString(args[1])) {
+        switch (SignalType.fromString(args[2])) {
             case UNIFORM_NOISE: {
                 return new UniformNoise(
-                        Double.parseDouble(args[2]),
                         Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]));
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]));
             }
             case GAUSSIAN_NOISE: {
                 return new GaussianNoise(
-                        Double.parseDouble(args[2]),
                         Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]));
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]));
             }
             case SINUSOIDAL_SIGNAL: {
                 return new SinusoidalSignal(
-                        Double.parseDouble(args[2]),
                         Double.parseDouble(args[3]),
                         Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]));
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]));
             }
             case SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL: {
                 return new SinusoidalRectifiedOneHalfSignal(
-                        Double.parseDouble(args[2]),
                         Double.parseDouble(args[3]),
                         Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]));
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]));
             }
             case SINUSOIDAL_RECTIFIED_IN_TWO_HALVES: {
                 return new SinusoidalRectifiedTwoHalfSignal(
-                        Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]));
-            }
-            case RECTANGULAR_SIGNAL: {
-                return new RectangularSignal(Double.parseDouble(args[2]),
                         Double.parseDouble(args[3]),
                         Double.parseDouble(args[4]),
                         Double.parseDouble(args[5]),
                         Double.parseDouble(args[6]));
+            }
+            case RECTANGULAR_SIGNAL: {
+                return new RectangularSignal(
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]),
+                        Double.parseDouble(args[7]));
             }
             case SYMMETRICAL_RECTANGULAR_SIGNAL: {
                 return new RectangularSymmetricSignal(
-                        Double.parseDouble(args[2]),
                         Double.parseDouble(args[3]),
                         Double.parseDouble(args[4]),
                         Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
+                        Double.parseDouble(args[6]),
+                        Double.parseDouble(args[7]));
             }
             case TRIANGULAR_SIGNAL: {
                 return new TriangularSignal(
-                        Double.parseDouble(args[2]),
                         Double.parseDouble(args[3]),
                         Double.parseDouble(args[4]),
                         Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
+                        Double.parseDouble(args[6]),
+                        Double.parseDouble(args[7]));
             }
             case UNIT_JUMP: {
                 return new UnitJumpSignal(
-                        Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]));
-            }
-            case UNIT_IMPULSE: {
-                //                todo fix this
-                //                isScatterChart = true;
-                //                changeLineChartToScatterChart(tabPane);
-
-                return new UnitImpulseSignal(
-                        Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Integer.parseInt(args[6]));
-            }
-            case IMPULSE_NOISE: {
-                //                isScatterChart = true;
-                //                changeLineChartToScatterChart(tabPane);
-
-                return new ImpulseNoise(
-                        Double.parseDouble(args[2]),
                         Double.parseDouble(args[3]),
                         Double.parseDouble(args[4]),
                         Double.parseDouble(args[5]),
                         Double.parseDouble(args[6]));
+            }
+            case UNIT_IMPULSE: {
+                return new UnitImpulseSignal(
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]),
+                        Integer.parseInt(args[7]));
+            }
+            case IMPULSE_NOISE: {
+                return new ImpulseNoise(
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]),
+                        Double.parseDouble(args[7]));
             }
         }
 
@@ -251,38 +248,97 @@ public class CommandLineMode extends Application {
         commandLineStage.setScene(new Scene(root, 700, 600));
         commandLineStage.show();
         fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams);
-        //        System.exit(0);
+        System.exit(0);
     }
 
     @Override
     public void start(Stage stage) throws Exception {
         commandLineStage = stage;
 
-        final FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>("generated_signal");
-
         Operation operation = Operation.fromString(Main.getMainArgs().get(0));
         Signal signal;
+        FileReaderWriter<Signal> readerWriter;
         switch (operation) {
             case GENERATE: {
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
                 signal = generate(Main.getMainArgs().stream().toArray(String[]::new));
                 readerWriter.write(signal);
-                drawChart(signal);
                 break;
             }
-            case REPRESENT: {
+            case SAMPLING: {
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
                 signal = readerWriter.read();
-                List<Data> data = signal.generateDiscreteRepresentation();
-                FileWriter writer = new FileWriter("signal_data");
-                for (Data d : data) {
-                    writer.append(String.valueOf(d.getX()));
-                    writer.append("\t");
-                    writer.append(String.valueOf(d.getY()));
-                    writer.append("\n");
-                }
-                writer.close();
+                signal = adc.sampling((ContinuousSignal) signal,
+                        Double.valueOf(Main.getMainArgs().get(3)));
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+                readerWriter.write(signal);
+                break;
             }
-        }
+            case QUANTIZATION: {
+                //                TODO
+                break;
+            }
+            case RECONSTRUCTION: {
 
+                break;
+            }
+            case COMPARISON: {
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+                Signal signal1 = readerWriter.read();
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+                Signal signal2 = readerWriter.read();
+
+                List<Data> firstSignalData = signal1.generateDiscreteRepresentation();
+                List<Data> secondSignalData = signal2.generateDiscreteRepresentation();
+
+                double meanSquaredError = Signal.meanSquaredError(secondSignalData,
+                        firstSignalData);
+                double signalToNoiseRatio = Signal.signalToNoiseRatio(secondSignalData,
+                        firstSignalData);
+                double peakSignalToNoiseRatio = Signal.peakSignalToNoiseRatio(secondSignalData,
+                        firstSignalData);
+                double maximumDifference = Signal.maximumDifference(secondSignalData,
+                        firstSignalData);
+                double effectiveNumberOfBits = Signal.effectiveNumberOfBits(secondSignalData,
+                        firstSignalData);
+
+                latexGenerator = new LatexGenerator("Comparison");
+                //                TODO ADD overall time
+                //                latexGenerator.createSummaryForComparison(meanSquaredError,
+                //                signalToNoiseRatio,
+                //                        peakSignalToNoiseRatio, maximumDifference,
+                //                        effectiveNumberOfBits,
+                //                        overallTime);
+                latexGenerator.generate(ReportType.COMPARISON);
+                break;
+            }
+            case DRAW_CHARTS: {
+                for (int i = 1; i < Main.getMainArgs().size(); i++) {
+                    readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(i));
+                    Signal signalInLoop = readerWriter.read();
+                    if (signalInLoop instanceof UnitImpulseSignal || signalInLoop instanceof ImpulseNoise) {
+                        isScatterChart = true;
+                        changeLineChartToScatterChart(tabPane);
+                        drawChart(signalInLoop);
+                    }
+                }
+
+                break;
+            }
+            //            case REPRESENT: {
+            //                signal = readerWriter.read();
+            //                List<Data> data = signal.generateDiscreteRepresentation();
+            //                FileWriter writer = new FileWriter("signal_data");
+            //                for (Data d : data) {
+            //                    writer.append(String.valueOf(d.getX()));
+            //                    writer.append("\t");
+            //                    writer.append(String.valueOf(d.getY()));
+            //                    writer.append("\n");
+            //                }
+            //                writer.close();
+            //            }
+        }
+        System.exit(0);
     }
 
     public void main() throws Exception {

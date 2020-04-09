@@ -9,6 +9,15 @@ import java.util.List;
 
 public class Main {
 
+    /**
+     * Params for cmd mode
+     * Generate - generate, filename to save, signal type, params for signal
+     * Sampling - sampl, filename to read, filename to save, sampleRate
+     *
+     * Comparison - comp, first filename to read, second filename to read
+     * Draw charts - draw, filenames to read...
+     */
+
     /*------------------------ FIELDS REGION ------------------------*/
     private static List<String> mainArgs;
 
