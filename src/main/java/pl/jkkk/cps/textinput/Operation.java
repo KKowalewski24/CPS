@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public enum Operation {
     GENERATE("generate"),
+    REPRESENT("represent"),
     ADD("add"),
     SUBTRACT("sub"),
     MULTIPLY("mult"),

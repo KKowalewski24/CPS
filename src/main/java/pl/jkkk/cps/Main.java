@@ -12,12 +12,11 @@ import pl.jkkk.cps.view.fxml.core.WindowDimensions;
 
 public class Main {
 
-    public static class MyApplication extends Application{
+    public static class MyApplication extends Application {
         @Override
         public void start(final Stage stage) throws Exception {
-            StageController
-                    .buildStage(stage, PATH_MAIN_PANEL, TITLE_MAIN_PANEL, new WindowDimensions(1300, 700),
-                            PATH_CSS_STYLING);
+            StageController.buildStage(stage, PATH_MAIN_PANEL, TITLE_MAIN_PANEL, new WindowDimensions(1300, 700),
+                    PATH_CSS_STYLING);
             StageController.getApplicationStage().setResizable(false);
         }
     }
@@ -26,7 +25,11 @@ public class Main {
         if (args.length == 0) {
             MyApplication.launch(MyApplication.class);
         } else {
-            new MainText().main(args);
+            try {
+                new MainText().main(args);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
