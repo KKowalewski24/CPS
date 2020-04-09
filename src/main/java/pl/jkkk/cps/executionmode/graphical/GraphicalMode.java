@@ -22,8 +22,8 @@ public class GraphicalMode extends Application {
         StageController.getApplicationStage().setResizable(false);
     }
 
-    public void main(String[] args) {
-        launch(args);
+    public void main() {
+        launch();
     }
 }
     

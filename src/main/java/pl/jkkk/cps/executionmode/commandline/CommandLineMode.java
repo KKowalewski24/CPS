@@ -1,8 +1,22 @@
 package pl.jkkk.cps.executionmode.commandline;
 
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import pl.jkkk.cps.Main;
+import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
+import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
@@ -14,26 +28,248 @@ import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
+import pl.jkkk.cps.logic.readerwriter.ReportWriter;
+import pl.jkkk.cps.logic.report.LatexGenerator;
+import pl.jkkk.cps.logic.report.ReportType;
+import pl.jkkk.cps.view.fxml.DouglasPeuckerAlg;
+import pl.jkkk.cps.view.model.ChartRecord;
+import pl.jkkk.cps.view.model.CustomTab;
+import pl.jkkk.cps.view.model.CustomTabPane;
 
 import java.io.FileWriter;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class CommandLineMode {
+import static pl.jkkk.cps.view.fxml.FxHelper.fillBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillScatterChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.getCurrentCustomTabPaneFromTabPane;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.switchTabToAnother;
+
+public class CommandLineMode extends Application {
 
     /*------------------------ FIELDS REGION ------------------------*/
+    private static Stage commandLineStage;
+
+    private StackPane root;
+    private TabPane tabPane;
+    private ReportWriter reportWriter = new ReportWriter();
+    private LatexGenerator latexGenerator;
+    private boolean isScatterChart;
+    //            generate render- zmienna liczba
+    //                generuj - zapamietaj nazwe pliku 0 jako args,
+    //   probkowuj - przeyjumuje sygnał i parametruy probkkwania acd - jakie wymaga,
+    //   rekonstukcja - plik z probkowania i odpowiednie parametry ADC,
+    //   porownianie - dwa pliki z sygnałami
+    //                generuj wykresy
 
     /*------------------------ METHODS REGION ------------------------*/
-    public void main(String[] args) throws Exception {
+    private Signal generate(String[] args) {
+        switch (SignalType.fromString(args[1])) {
+            case UNIFORM_NOISE: {
+                return new UniformNoise(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]));
+            }
+            case GAUSSIAN_NOISE: {
+                return new GaussianNoise(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]));
+            }
+            case SINUSOIDAL_SIGNAL: {
+                return new SinusoidalSignal(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]));
+            }
+            case SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL: {
+                return new SinusoidalRectifiedOneHalfSignal(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]));
+            }
+            case SINUSOIDAL_RECTIFIED_IN_TWO_HALVES: {
+                return new SinusoidalRectifiedTwoHalfSignal(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]));
+            }
+            case RECTANGULAR_SIGNAL: {
+                return new RectangularSignal(Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]));
+            }
+            case SYMMETRICAL_RECTANGULAR_SIGNAL: {
+                return new RectangularSymmetricSignal(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]));
+            }
+            case TRIANGULAR_SIGNAL: {
+                return new TriangularSignal(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]));
+            }
+            case UNIT_JUMP: {
+                return new UnitJumpSignal(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]));
+            }
+            case UNIT_IMPULSE: {
+                //                todo fix this
+                //                isScatterChart = true;
+                //                changeLineChartToScatterChart(tabPane);
+
+                return new UnitImpulseSignal(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]),
+                        Integer.parseInt(args[6]));
+            }
+            case IMPULSE_NOISE: {
+                //                isScatterChart = true;
+                //                changeLineChartToScatterChart(tabPane);
+
+                return new ImpulseNoise(
+                        Double.parseDouble(args[2]),
+                        Double.parseDouble(args[3]),
+                        Double.parseDouble(args[4]),
+                        Double.parseDouble(args[5]),
+                        Double.parseDouble(args[6]));
+            }
+        }
+
+        return null;
+    }
+
+    private void fillCustomTabPaneWithData(TabPane tabPane,
+                                           Collection<ChartRecord<Number, Number>> mainChartData,
+                                           Collection<ChartRecord<String, Number>> histogramData,
+                                           double[] signalParams) {
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+
+        try {
+            fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
+            switchTabToAnother(customTabPane, 1);
+            reportWriter.writeFxChart(BarChart.class, tabPane);
+
+            if (isScatterChart) {
+                fillScatterChart((ScatterChart) customTabPane.getChartTab()
+                        .getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                reportWriter.writeFxChart(ScatterChart.class, tabPane);
+
+            } else {
+                fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                reportWriter.writeFxChart(LineChart.class, tabPane);
+            }
+
+            latexGenerator = new LatexGenerator("Signal_Params");
+            latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
+                    signalParams[2], signalParams[3], signalParams[4]);
+            latexGenerator.generate(ReportType.SIGNAL);
+
+        } catch (FileOperationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void drawChart(Signal signal) {
+        root = new StackPane();
+        tabPane = new TabPane();
+
+        tabPane.getTabs().add(new Tab("Karta ",
+                new CustomTabPane(
+                        new CustomTab("Wykres", prepareLineChart(), false),
+                        new CustomTab("Histogram", prepareBarChart(), false),
+                        new CustomTab("Parametry", new Pane(), false)
+                )));
+
+        List<Data> signalData = signal.generateDiscreteRepresentation();
+
+        List<Data> data;
+        if (signal instanceof GaussianNoise || signal instanceof UniformNoise) {
+            data = new ArrayList<>();
+            for (int i = 0; i < signalData.size(); i++) {
+                if (i % (signalData.size() / 1000) == 0) {
+                    data.add(signalData.get(i));
+                }
+            }
+        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
+            DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
+            data = signalData;
+            data = new ArrayList<>(douglasPeucker
+                    .calculate(data, (data.get(data.size() - 1).getX() - data.get(0)
+                            .getX()) * 1.0 / 10000.0, 0, data.size() - 1));
+        } else {
+            data = signalData;
+        }
+
+        List<ChartRecord<Number, Number>> chartData = data
+                .stream()
+                .map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
+                .collect(Collectors.toList());
+
+        DecimalFormat df = new DecimalFormat("#.##");
+        List<ChartRecord<String, Number>> histogramData = Signal
+                .generateHistogram(10, signalData)
+                .stream()
+                .map(range -> new ChartRecord<String, Number>(
+                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
+                        range.getQuantity()))
+                .collect(Collectors.toList());
+
+        double[] signalParams = new double[5];
+        signalParams[0] = Signal.meanValue(signalData);
+        signalParams[1] = Signal.absMeanValue(signalData);
+        signalParams[2] = Signal.rmsValue(signalData);
+        signalParams[3] = Signal.varianceValue(signalData);
+        signalParams[4] = Signal.meanPowerValue(signalData);
+
+        root.getChildren().addAll(tabPane);
+        commandLineStage.setScene(new Scene(root, 700, 600));
+        commandLineStage.show();
+        fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams);
+        //        System.exit(0);
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        commandLineStage = stage;
+
         final FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>("generated_signal");
 
-        Operation operation = Operation.fromString(args[0]);
+        Operation operation = Operation.fromString(Main.getMainArgs().get(0));
         Signal signal;
         switch (operation) {
-            case GENERATE:
-                signal = generate(args);
+            case GENERATE: {
+                signal = generate(Main.getMainArgs().stream().toArray(String[]::new));
                 readerWriter.write(signal);
+                drawChart(signal);
                 break;
-            case REPRESENT:
+            }
+            case REPRESENT: {
                 signal = readerWriter.read();
                 List<Data> data = signal.generateDiscreteRepresentation();
                 FileWriter writer = new FileWriter("signal_data");
@@ -44,57 +280,12 @@ public class CommandLineMode {
                     writer.append("\n");
                 }
                 writer.close();
+            }
         }
+
     }
 
-    private static Signal generate(String[] args) {
-        switch (SignalType.fromString(args[1])) {
-            case UNIFORM_NOISE:
-                return new UniformNoise(Double.parseDouble(args[2]), Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]));
-            case GAUSSIAN_NOISE:
-                return new GaussianNoise(Double.parseDouble(args[2]), Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]));
-            case SINUSOIDAL_SIGNAL:
-                return new SinusoidalSignal(Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]));
-            case SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL:
-                return new SinusoidalRectifiedOneHalfSignal(Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]));
-            case SINUSOIDAL_RECTIFIED_IN_TWO_HALVES:
-                return new SinusoidalRectifiedTwoHalfSignal(Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]));
-            case RECTANGULAR_SIGNAL:
-                return new RectangularSignal(Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
-            case SYMMETRICAL_RECTANGULAR_SIGNAL:
-                return new RectangularSymmetricSignal(Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
-            case TRIANGULAR_SIGNAL:
-                return new TriangularSignal(Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
-            case UNIT_JUMP:
-                return new UnitJumpSignal(Double.parseDouble(args[2]), Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]));
-            case UNIT_IMPULSE:
-                return new UnitImpulseSignal(Double.parseDouble(args[2]),
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]),
-                        Integer.parseInt(args[6]));
-            case IMPULSE_NOISE:
-                return new ImpulseNoise(Double.parseDouble(args[2]), Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]), Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
-        }
-        return null;
+    public void main() throws Exception {
+        launch();
     }
 }
