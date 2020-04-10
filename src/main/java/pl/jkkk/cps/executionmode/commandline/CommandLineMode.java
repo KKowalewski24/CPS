@@ -47,12 +47,13 @@ import java.util.stream.Collectors;
 
 import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeScatterChartToLineChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillBarChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillLineChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillScatterChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.getCurrentCustomTabPaneFromTabPane;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.switchTabToAnother;
 
 public class CommandLineMode extends Application {
@@ -60,18 +61,17 @@ public class CommandLineMode extends Application {
     /*------------------------ FIELDS REGION ------------------------*/
     private static Stage commandLineStage;
 
-    private StackPane root;
-    private TabPane tabPane;
-    private ReportWriter reportWriter = new ReportWriter();
-    private LatexGenerator latexGenerator;
-    private boolean isScatterChart;
     private final ADC adc = new ADC();
     private final DAC dac = new DAC();
-    //                generuj - zapamietaj nazwe pliku 0 jako args,
-    //   probkowuj - przeyjumuje sygnał i parametruy probkkwania acd - jakie wymaga,
-    //   rekonstukcja - plik z probkowania i odpowiednie parametry ADC,
-    //   porownianie - dwa pliki z sygnałami
-    //                generuj wykresy
+    private ReportWriter reportWriter = new ReportWriter();
+    private LatexGenerator latexGenerator;
+
+    private StackPane root;
+    private TabPane tabPane;
+    private LineChart lineChart;
+    private ScatterChart scatterChart;
+    private BarChart barChart;
+    private boolean isScatterChart;
 
     /*------------------------ METHODS REGION ------------------------*/
     private Signal generate(String[] args) {
@@ -167,48 +167,27 @@ public class CommandLineMode extends Application {
                                            double[] signalParams) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
-        try {
-            clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
-                    .getContent(), histogramData);
-            switchTabToAnother(customTabPane, 1);
-            reportWriter.writeFxChart(BarChart.class, tabPane);
+        fillBarChart((BarChart) customTabPane.getHistogramTab()
+                .getContent(), histogramData);
 
-            if (isScatterChart) {
-                changeLineChartToScatterChart(tabPane);
-                clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
-                        .getContent(), mainChartData);
-                switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart(ScatterChart.class, tabPane);
+        if (isScatterChart) {
+            changeLineChartToScatterChart(tabPane);
+            fillScatterChart((ScatterChart) customTabPane.getChartTab()
+                    .getContent(), mainChartData);
 
-            } else {
-                changeScatterChartToLineChart(tabPane);
-                clearAndFillLineChart((LineChart) customTabPane.getChartTab()
-                        .getContent(), mainChartData);
-                switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart(LineChart.class, tabPane);
-            }
-
-            latexGenerator = new LatexGenerator("Signal_Params");
-            latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
-                    signalParams[2], signalParams[3], signalParams[4]);
-            latexGenerator.generate(ReportType.SIGNAL);
-
-        } catch (FileOperationException e) {
-            e.printStackTrace();
+        } else {
+            changeScatterChartToLineChart(tabPane);
+            fillLineChart((LineChart) customTabPane.getChartTab()
+                    .getContent(), mainChartData);
         }
+
+        latexGenerator = new LatexGenerator("Signal_Params");
+        latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
+                signalParams[2], signalParams[3], signalParams[4]);
+        latexGenerator.generate(ReportType.SIGNAL);
     }
 
     private void drawChart(Signal signal) {
-        root = new StackPane();
-        tabPane = new TabPane();
-
-        tabPane.getTabs().add(new Tab("Karta ",
-                new CustomTabPane(
-                        new CustomTab("Wykres", prepareLineChart(), false),
-                        new CustomTab("Histogram", prepareBarChart(), false),
-                        new CustomTab("Parametry", new Pane(), false)
-                )));
-
         List<Data> signalData = signal.generateDiscreteRepresentation();
 
         List<Data> data;
@@ -250,12 +229,7 @@ public class CommandLineMode extends Application {
         signalParams[3] = Signal.varianceValue(signalData);
         signalParams[4] = Signal.meanPowerValue(signalData);
 
-        root.getChildren().addAll(tabPane);
-        commandLineStage.setScene(new Scene(root, 700, 600));
-        commandLineStage.show();
-
         fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams);
-        System.exit(0);
     }
 
     @Override
@@ -354,6 +328,23 @@ public class CommandLineMode extends Application {
                 break;
             }
             case DRAW_CHARTS: {
+                root = new StackPane();
+                tabPane = new TabPane();
+                lineChart = prepareLineChart();
+                scatterChart = prepareScatterChart();
+                barChart = prepareBarChart();
+
+                tabPane.getTabs().add(new Tab("Karta ",
+                        new CustomTabPane(
+                                new CustomTab("Wykres", lineChart, false),
+                                new CustomTab("Histogram", barChart, false),
+                                new CustomTab("Parametry", new Pane(), false)
+                        )));
+
+                root.getChildren().addAll(tabPane);
+                commandLineStage.setScene(new Scene(root, 700, 600));
+                commandLineStage.show();
+
                 for (int i = 1; i < Main.getMainArgs().size(); i++) {
                     readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(i));
                     Signal signalInLoop = readerWriter.read();
@@ -365,22 +356,28 @@ public class CommandLineMode extends Application {
                     drawChart(signalInLoop);
                 }
 
+                try {
+                    CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+                    switchTabToAnother(customTabPane, 1);
+                    reportWriter.writeFxChart(BarChart.class, tabPane);
+                    if (isScatterChart) {
+                        switchTabToAnother(customTabPane, 0);
+                        reportWriter.writeFxChart(ScatterChart.class, tabPane);
+                    } else {
+                        switchTabToAnother(customTabPane, 0);
+                        reportWriter.writeFxChart(LineChart.class, tabPane);
+                    }
+//                    LineChart ln=(LineChart) customTabPane.getChartTab()
+//                            .getContent();
+//                    System.out.println(ln.getData().size());
+                } catch (FileOperationException e) {
+                    e.printStackTrace();
+                }
+
                 break;
             }
-            //            case REPRESENT: {
-            //                signal = readerWriter.read();
-            //                List<Data> data = signal.generateDiscreteRepresentation();
-            //                FileWriter writer = new FileWriter("signal_data");
-            //                for (Data d : data) {
-            //                    writer.append(String.valueOf(d.getX()));
-            //                    writer.append("\t");
-            //                    writer.append(String.valueOf(d.getY()));
-            //                    writer.append("\n");
-            //                }
-            //                writer.close();
-            //            }
         }
-        System.exit(0);
+        //        System.exit(0);
     }
 
     public void main() throws Exception {

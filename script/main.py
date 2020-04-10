@@ -78,8 +78,12 @@ def run_jar(args):
 
 
 def series_1():
-    run_jar([GENERATE, "abc.txt", SINUSOIDAL_SIGNAL, "0", "5", "1", "1"])
-    run_jar([SAMPLING, "abc.txt", "cde.txt", "10"])
+    run_jar([GENERATE, "sinsus.txt", SINUSOIDAL_SIGNAL, "0", "5", "1", "1"])
+    run_jar([GENERATE, "rect.txt", RECTANGULAR_SIGNAL, "0", "5", "1", "1","0.5"])
+
+    # run_jar([SAMPLING, "abc.txt", "cde.txt", "10"])
+    # run_jar([RECONSTRUCTION, "cde.txt", "def.txt", ZERO_ORDER_EXTRAPOLATION])
+    # run_jar([COMPARISON, "abc.txt", "def.txt"])
 
 
 def series_2():
