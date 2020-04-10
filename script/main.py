@@ -77,10 +77,11 @@ IMPULSE_NOISE = "impulse_noise"
 def build_jar():
     script_directory = pathlib.Path(os.getcwd())
     os.chdir(script_directory.parent)
-    subprocess.call("mvn clean package", shell=True)
     if platform.system().lower() == "windows":
+        subprocess.call("mvnw.cmd clean package", shell=True)
         subprocess.call("copy target\\" + JAR_NAME + " " + str(script_directory), shell=True)
     elif platform.system().lower() == "linux":
+        subprocess.call("./mvnw clean package", shell=True)
         subprocess.call("copy target/" + JAR_NAME + " " + str(script_directory), shell=True)
 
 
