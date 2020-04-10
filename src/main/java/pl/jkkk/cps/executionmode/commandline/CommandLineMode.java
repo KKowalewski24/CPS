@@ -46,9 +46,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.fillBarChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.fillLineChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.fillScatterChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.changeScatterChartToLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.getCurrentCustomTabPaneFromTabPane;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
@@ -167,19 +168,22 @@ public class CommandLineMode extends Application {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
         try {
-            fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
+            clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
+                    .getContent(), histogramData);
             switchTabToAnother(customTabPane, 1);
             reportWriter.writeFxChart(BarChart.class, tabPane);
 
             if (isScatterChart) {
                 changeLineChartToScatterChart(tabPane);
-                fillScatterChart((ScatterChart) customTabPane.getChartTab()
+                clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
                 reportWriter.writeFxChart(ScatterChart.class, tabPane);
 
             } else {
-                fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
+                changeScatterChartToLineChart(tabPane);
+                clearAndFillLineChart((LineChart) customTabPane.getChartTab()
+                        .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
                 reportWriter.writeFxChart(LineChart.class, tabPane);
             }
