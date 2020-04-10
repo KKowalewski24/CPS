@@ -14,8 +14,17 @@ public class Main {
      * <p>
      * Generate - generate, filename to save, signal type, params for signal
      * Signal type abbreviation:
-     * uni_noise, gauss_noise, sin, sin_one_half, sin_two_half, rect,
-     * rect_symm, triang, unit_jump, unit_impulse, impulse_noise
+     * uni_noise - rangeStart, rangeLength, amplitude
+     * gauss_noise -rangeStart, rangeLength, amplitude
+     * sin - rangeStart, rangeLength, amplitude, term
+     * sin_one_half - rangeStart, rangeLength, amplitude, term
+     * sin_two_half - rangeStart, rangeLength, amplitude, term
+     * rect - rangeStart, rangeLength, amplitude, term, fulfillment
+     * rect_symm - rangeStart, rangeLength, amplitude, term, fulfillment
+     * triang - rangeStart, rangeLength, amplitude, term, fulfillment
+     * unit_jump - rangeStart, rangeLength, amplitude, jumpMoment
+     * unit_impulse - rangeStart, rangeLength, sampleRate, amplitude, jumpMoment.intValue()
+     * impulse_noise - rangeStart, rangeLength, sampleRate, amplitude,probability
      * <p>
      * Sampling - sampl, filename to read, filename to save, sampleRate
      * <p>
