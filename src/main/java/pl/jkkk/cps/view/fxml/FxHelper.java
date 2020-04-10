@@ -164,9 +164,19 @@ public class FxHelper {
         customTabPane.getChartTab().setContent(prepareScatterChart());
     }
 
+    public static void changeLineChartToScatterChart(TabPane tabPane, ScatterChart scatterChart) {
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+        customTabPane.getChartTab().setContent(scatterChart);
+    }
+
     public static void changeScatterChartToLineChart(TabPane tabPane) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
         customTabPane.getChartTab().setContent(prepareLineChart());
+    }
+
+    public static void changeScatterChartToLineChart(TabPane tabPane, LineChart lineChart) {
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+        customTabPane.getChartTab().setContent(lineChart);
     }
 
     /*--------------------------------------------------------------------------------------------*/

@@ -171,12 +171,12 @@ public class CommandLineMode extends Application {
                 .getContent(), histogramData);
 
         if (isScatterChart) {
-            changeLineChartToScatterChart(tabPane);
+            changeLineChartToScatterChart(tabPane, scatterChart);
             fillScatterChart((ScatterChart) customTabPane.getChartTab()
                     .getContent(), mainChartData);
 
         } else {
-            changeScatterChartToLineChart(tabPane);
+            changeScatterChartToLineChart(tabPane, lineChart);
             fillLineChart((LineChart) customTabPane.getChartTab()
                     .getContent(), mainChartData);
         }
@@ -367,9 +367,6 @@ public class CommandLineMode extends Application {
                         switchTabToAnother(customTabPane, 0);
                         reportWriter.writeFxChart(LineChart.class, tabPane);
                     }
-//                    LineChart ln=(LineChart) customTabPane.getChartTab()
-//                            .getContent();
-//                    System.out.println(ln.getData().size());
                 } catch (FileOperationException e) {
                     e.printStackTrace();
                 }
@@ -377,7 +374,7 @@ public class CommandLineMode extends Application {
                 break;
             }
         }
-        //        System.exit(0);
+        System.exit(0);
     }
 
     public void main() throws Exception {
