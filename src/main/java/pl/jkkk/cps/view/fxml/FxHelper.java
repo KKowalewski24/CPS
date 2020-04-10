@@ -115,6 +115,10 @@ public class FxHelper {
         chart.getData().add(series);
     }
 
+    public static void addNewDataToChart(XYChart chart, XYChart.Series series) {
+        chart.getData().add(series);
+    }
+
     /*--------------------------------------------------------------------------------------------*/
     public static LineChart prepareLineChart(String... title) {
         LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
@@ -166,6 +170,17 @@ public class FxHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    public static void clearAndFillLineChart(LineChart lineChart,
+                                             Collection<ChartRecord<Number, Number>> dataCollection) {
+        XYChart.Series series = new XYChart.Series<>();
+
+        dataCollection.forEach((it) -> {
+            series.getData().add(prepareDataRecord(it.getX(), it.getY()));
+        });
+
+        clearAndAddNewDataToChart(lineChart, series);
+    }
+
     public static void fillLineChart(LineChart lineChart,
                                      Collection<ChartRecord<Number, Number>> dataCollection) {
         XYChart.Series series = new XYChart.Series<>();
@@ -174,7 +189,18 @@ public class FxHelper {
             series.getData().add(prepareDataRecord(it.getX(), it.getY()));
         });
 
-        clearAndAddNewDataToChart(lineChart, series);
+        addNewDataToChart(lineChart, series);
+    }
+
+    public static void clearAndFillScatterChart(ScatterChart scatterChart,
+                                                Collection<ChartRecord<Number, Number>> dataCollection) {
+        XYChart.Series series = new XYChart.Series<>();
+
+        dataCollection.forEach((it) -> {
+            series.getData().add(prepareDataRecord(it.getX(), it.getY()));
+        });
+
+        clearAndAddNewDataToChart(scatterChart, series);
     }
 
     public static void fillScatterChart(ScatterChart scatterChart,
@@ -185,7 +211,18 @@ public class FxHelper {
             series.getData().add(prepareDataRecord(it.getX(), it.getY()));
         });
 
-        clearAndAddNewDataToChart(scatterChart, series);
+        addNewDataToChart(scatterChart, series);
+    }
+
+    public static void clearAndFillBarChart(BarChart barChart,
+                                            Collection<ChartRecord<String, Number>> dataCollection) {
+        XYChart.Series series = new XYChart.Series<>();
+
+        dataCollection.forEach((it) -> {
+            series.getData().add(prepareDataRecord(it.getX(), it.getY()));
+        });
+
+        clearAndAddNewDataToChart(barChart, series);
     }
 
     public static void fillBarChart(BarChart barChart,
@@ -196,6 +233,6 @@ public class FxHelper {
             series.getData().add(prepareDataRecord(it.getX(), it.getY()));
         });
 
-        clearAndAddNewDataToChart(barChart, series);
+        addNewDataToChart(barChart, series);
     }
 }

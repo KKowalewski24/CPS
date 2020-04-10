@@ -11,15 +11,24 @@ public class Main {
 
     /**
      * Params for cmd mode
+     * <p>
      * Generate - generate, filename to save, signal type, params for signal
      * Signal type abbreviation:
      * uni_noise, gauss_noise, sin, sin_one_half, sin_two_half, rect,
      * rect_symm, triang, unit_jump, unit_impulse, impulse_noise
-     *
-     *
+     * <p>
      * Sampling - sampl, filename to read, filename to save, sampleRate
-     *
+     * <p>
+     * Quantization - quant, filename to read, filename to save, type, quantization level
+     * Type abbreviation :
+     * qu_trun, qu_roud
+     * <p>
+     * Reconstruction - recon, filename to read, filename to save, type, sinc param(only for sinc)
+     * Type abbreviation:
+     * zero_order, first_order, sinc
+     * <p>
      * Comparison - comp, first filename to read, second filename to read
+     * <p>
      * Draw charts - draw, filenames to read...
      */
 

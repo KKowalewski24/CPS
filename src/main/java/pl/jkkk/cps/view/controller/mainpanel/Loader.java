@@ -58,9 +58,9 @@ import java.util.stream.Collectors;
 import static pl.jkkk.cps.view.fxml.FxHelper.appendLabelText;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeScatterChartToLineChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.fillBarChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.fillLineChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.fillScatterChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.getCurrentCustomTabPaneFromTabPane;
 import static pl.jkkk.cps.view.fxml.FxHelper.getIndexFromComboBox;
 import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
@@ -165,18 +165,20 @@ public class Loader {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
         try {
-            fillBarChart((BarChart) customTabPane.getHistogramTab().getContent(), histogramData);
+            clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
+                    .getContent(), histogramData);
             switchTabToAnother(customTabPane, 1);
             reportWriter.writeFxChart(BarChart.class, tabPane);
 
             if (isScatterChart) {
-                fillScatterChart((ScatterChart) customTabPane.getChartTab()
+                clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
                 reportWriter.writeFxChart(ScatterChart.class, tabPane);
 
             } else {
-                fillLineChart((LineChart) customTabPane.getChartTab().getContent(), mainChartData);
+                clearAndFillLineChart((LineChart) customTabPane.getChartTab()
+                        .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
                 reportWriter.writeFxChart(LineChart.class, tabPane);
             }

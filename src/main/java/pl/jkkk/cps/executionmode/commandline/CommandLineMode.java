@@ -16,6 +16,7 @@ import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
@@ -277,21 +278,57 @@ public class CommandLineMode extends Application {
                 break;
             }
             case QUANTIZATION: {
-                //                TODO
+                isScatterChart = true;
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+                signal = readerWriter.read();
+
+                if (Operation.EVEN_QUANTIZATION_WITH_TRUNCATION
+                        == Operation.fromString(Main.getMainArgs().get(3))) {
+
+                    signal = adc.truncatingQuantization((DiscreteSignal) signal,
+                            Integer.valueOf(Main.getMainArgs().get(4)));
+
+                } else if (Operation.EVEN_QUANTIZATION_WITH_ROUNDING
+                        == Operation.fromString(Main.getMainArgs().get(3))) {
+
+                    signal = adc.roundingQuantization((DiscreteSignal) signal,
+                            Integer.valueOf(Main.getMainArgs().get(4)));
+
+                }
+
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+                readerWriter.write(signal);
                 break;
             }
             case RECONSTRUCTION: {
+                isScatterChart = true;
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+                signal = readerWriter.read();
 
+                if (Operation.ZERO_ORDER_EXTRAPOLATION
+                        == Operation.fromString(Main.getMainArgs().get(3))) {
+                    signal = dac.zeroOrderHold((DiscreteSignal) signal);
+
+                } else if (Operation.FIRST_ORDER_INTERPOLATION
+                        == Operation.fromString(Main.getMainArgs().get(3))) {
+                    signal = dac.firstOrderHold((DiscreteSignal) signal);
+
+                } else if (Operation.RECONSTRUCTION_BASED_FUNCTION_SINC
+                        == Operation.fromString(Main.getMainArgs().get(3))) {
+
+                    signal = dac.sincBasic((DiscreteSignal) signal,
+                            Integer.valueOf(Main.getMainArgs().get(4)));
+                }
+
+                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+                readerWriter.write(signal);
                 break;
             }
             case COMPARISON: {
                 readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-                Signal signal1 = readerWriter.read();
+                List<Data> firstSignalData = readerWriter.read().generateDiscreteRepresentation();
                 readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-                Signal signal2 = readerWriter.read();
-
-                List<Data> firstSignalData = signal1.generateDiscreteRepresentation();
-                List<Data> secondSignalData = signal2.generateDiscreteRepresentation();
+                List<Data> secondSignalData = readerWriter.read().generateDiscreteRepresentation();
 
                 double meanSquaredError = Signal.meanSquaredError(secondSignalData,
                         firstSignalData);
@@ -305,7 +342,6 @@ public class CommandLineMode extends Application {
                         firstSignalData);
 
                 latexGenerator = new LatexGenerator("Comparison");
-
                 latexGenerator.createSummaryForComparison(meanSquaredError,
                         signalToNoiseRatio, peakSignalToNoiseRatio,
                         maximumDifference, effectiveNumberOfBits,

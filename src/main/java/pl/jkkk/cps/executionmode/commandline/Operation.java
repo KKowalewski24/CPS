@@ -5,13 +5,23 @@ import java.util.Arrays;
 public enum Operation {
     GENERATE("generate"),
     REPRESENT("represent"),
+
     ADD("add"),
     SUBTRACT("sub"),
     MULTIPLY("mult"),
     DIVIDE("div"),
+
     SAMPLING("sampl"),
+
     QUANTIZATION("quant"),
+    EVEN_QUANTIZATION_WITH_TRUNCATION("qu_trun"),
+    EVEN_QUANTIZATION_WITH_ROUNDING("qu_roud"),
+
     RECONSTRUCTION("recon"),
+    ZERO_ORDER_EXTRAPOLATION("zero_order"),
+    FIRST_ORDER_INTERPOLATION("first_order"),
+    RECONSTRUCTION_BASED_FUNCTION_SINC("sinc"),
+
     COMPARISON("comp"),
     DRAW_CHARTS("draw");
 
