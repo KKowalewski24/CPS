@@ -1,11 +1,16 @@
+import os
+import pathlib
+import platform
 import subprocess
-import datetime
+import sys
 
 '''
 
 How to use
-Copy generated jar to directory where this python script is located, 
-the call run_jar() function, 
+To build run `python main.py build` or `python main.py -b` in order to build jar file, 
+then run program without args to run experiments
+
+ 
 if empty array is passed jar is being called with 0 args
 if you want to pass args just place them in array as a string
 
@@ -69,6 +74,16 @@ IMPULSE_NOISE = "impulse_noise"
 
 
 # ----------------------------------------------------------------------------- #
+def build_jar():
+    script_directory = pathlib.Path(os.getcwd())
+    os.chdir(script_directory.parent)
+    subprocess.call("mvn clean package", shell=True)
+    if platform.system().lower() == "windows":
+        subprocess.call("copy target\\" + JAR_NAME + " " + str(script_directory), shell=True)
+    elif platform.system().lower() == "linux":
+        subprocess.call("copy target/" + JAR_NAME + " " + str(script_directory), shell=True)
+
+
 def run_jar(args):
     command = ["java", "-jar", JAR_NAME]
     for it in args:
@@ -93,8 +108,12 @@ def series_2():
 
 # ----------------------------------------------------------------------------- #
 def main():
-    series_1()
-    # series_2()
+    if len(sys.argv) > 1 and (sys.argv[1] == "build" or sys.argv[1] == "-b"):
+        build_jar()
+    else:
+        # series_1()
+        # series_2()
+        pass
 
     print("------------------------------------------------------------------------")
     print("FINISHED SUCCESSFULLY")
