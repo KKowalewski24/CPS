@@ -1,5 +1,6 @@
 package pl.jkkk.cps.logic.report;
 
+import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
 
 import java.text.DecimalFormat;
@@ -60,13 +61,15 @@ public class LatexGenerator {
 
     public void generate(ReportType reportType) {
         if (ReportType.SIGNAL == reportType) {
-            reportWriter.writePlainText(filename, new StringBuilder()
-                    .append(summaryForSignal)
-                    .toString());
+            reportWriter.writePlainText(filename, Main.getMainArgs(),
+                    new StringBuilder()
+                            .append(summaryForSignal)
+                            .toString());
         } else if (ReportType.COMPARISON == reportType) {
-            reportWriter.writePlainText(filename, new StringBuilder()
-                    .append(summaryForComparison)
-                    .toString());
+            reportWriter.writePlainText(filename, Main.getMainArgs(),
+                    new StringBuilder()
+                            .append(summaryForComparison)
+                            .toString());
         }
     }
 }

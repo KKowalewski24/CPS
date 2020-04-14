@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalTime;
+import java.util.List;
 
 public class ReportWriter {
 
@@ -19,17 +20,22 @@ public class ReportWriter {
     public static final String TXT = ".txt";
 
     /*------------------------ METHODS REGION ------------------------*/
-    public String generateFilename(String type, String fileExtension) {
-        return String.format("%s_%02d%02d%02d%s",
+    public String generateFilename(String type, List<String> callArgs, String fileExtension) {
+        StringBuilder args = new StringBuilder();
+        callArgs.forEach((it) -> args.append(it).append("_"));
+
+        return String.format("%s_%s%02d%02d%02d%s",
                 type,
+                args.toString(),
                 LocalTime.now().getHour(),
                 LocalTime.now().getMinute(),
                 LocalTime.now().getSecond(),
                 fileExtension);
     }
 
-    public void writeFxChart(Class<?> type, Node object) throws FileOperationException {
-        File file = new File(generateFilename(type.getSimpleName(), PNG));
+    public void writeFxChart(Class<?> type, List<String> mainArgs, Node object)
+            throws FileOperationException {
+        File file = new File(generateFilename(type.getSimpleName(), mainArgs, PNG));
         WritableImage image = object.snapshot(new SnapshotParameters(), null);
 
         try {
@@ -39,8 +45,8 @@ public class ReportWriter {
         }
     }
 
-    public void writePlainText(String filename, String value) {
-        try (FileWriter fileWriter = new FileWriter(generateFilename(filename, TXT))) {
+    public void writePlainText(String filename, List<String> mainArgs, String value) {
+        try (FileWriter fileWriter = new FileWriter(generateFilename(filename, mainArgs, TXT))) {
             fileWriter.write(value);
         } catch (IOException e) {
             e.printStackTrace();

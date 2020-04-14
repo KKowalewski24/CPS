@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
+import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.exception.NotSameLengthException;
 import pl.jkkk.cps.logic.model.ADC;
@@ -168,21 +169,21 @@ public class Loader {
             clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
                     .getContent(), histogramData);
             switchTabToAnother(customTabPane, 1);
-            reportWriter.writeFxChart(BarChart.class, tabPane);
+            reportWriter.writeFxChart(BarChart.class, Main.getMainArgs(), tabPane);
 
             if (isScatterChart) {
                 changeLineChartToScatterChart(tabPane);
                 clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart(ScatterChart.class, tabPane);
+                reportWriter.writeFxChart(ScatterChart.class, Main.getMainArgs(), tabPane);
 
             } else {
                 changeScatterChartToLineChart(tabPane);
                 clearAndFillLineChart((LineChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart(LineChart.class, tabPane);
+                reportWriter.writeFxChart(LineChart.class, Main.getMainArgs(), tabPane);
             }
 
             fillParamsTab(customTabPane, signalParams);

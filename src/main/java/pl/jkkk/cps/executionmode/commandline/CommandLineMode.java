@@ -359,13 +359,13 @@ public class CommandLineMode extends Application {
                 try {
                     CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
                     switchTabToAnother(customTabPane, 1);
-                    reportWriter.writeFxChart(BarChart.class, tabPane);
+                    reportWriter.writeFxChart(BarChart.class, Main.getMainArgs(), tabPane);
                     if (isScatterChart) {
                         switchTabToAnother(customTabPane, 0);
-                        reportWriter.writeFxChart(ScatterChart.class, tabPane);
+                        reportWriter.writeFxChart(ScatterChart.class, Main.getMainArgs(), tabPane);
                     } else {
                         switchTabToAnother(customTabPane, 0);
-                        reportWriter.writeFxChart(LineChart.class, tabPane);
+                        reportWriter.writeFxChart(LineChart.class, Main.getMainArgs(), tabPane);
                     }
                 } catch (FileOperationException e) {
                     e.printStackTrace();
