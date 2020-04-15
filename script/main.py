@@ -7,8 +7,9 @@ import sys
 '''
 
 How to use
-To build run `python main.py build` or `python main.py -b` in order to build jar file, 
-then run program without args to run experiments
+To build run `python main.py build` or `python main.py -b` in order to build jar file
+To run program python main.py run $NUMBER$` or `python main.py -r $NUMBER$` 
+where $NUMBER$ is task number - 2,3,4
 
  
 if empty array is passed jar is being called with 0 args
@@ -92,21 +93,26 @@ def append_array(main_array: [], child_array: []) -> []:
     return main_array
 
 
+def remove_files(filenames: []) -> None:
+    for it in filenames:
+        os.remove(it)
+
+
 def run_jar(args: []) -> None:
     subprocess.call(append_array(["java", "-jar", JAR_NAME], args))
 
 
 # TASK2 ----------------------------------------------------------------------- #
-def single_experiment(signal_type: str, signal_args: [],
-                      sample_rate: str, reconstruction_type: str,
-                      sinc_param: str = "-15") -> None:
+def task2_reconstruction_single_experiment(signal_type: str, signal_args: [],
+                                           sample_rate: str, reconstruction_type: str,
+                                           sinc_param: str = "-15") -> None:
     filename_orig_chart = "original_chart"
     filename_samp_output = "sampling_output"
     filename_recon_output = "recon_output"
 
     run_jar(append_array([GENERATE, filename_orig_chart, signal_type], signal_args))
     run_jar([SAMPLING, filename_orig_chart, filename_samp_output, sample_rate])
-    if sinc_param == -15:
+    if sinc_param == "-15":
         run_jar([RECONSTRUCTION, filename_samp_output, filename_recon_output, reconstruction_type])
     else:
         run_jar([RECONSTRUCTION, filename_samp_output, filename_recon_output,
@@ -114,55 +120,174 @@ def single_experiment(signal_type: str, signal_args: [],
     run_jar([COMPARISON, filename_orig_chart, filename_recon_output])
     run_jar([DRAW_CHARTS, filename_orig_chart, filename_recon_output])
 
-    os.remove(filename_orig_chart)
-    os.remove(filename_samp_output)
-    os.remove(filename_recon_output)
+    remove_files([filename_orig_chart, filename_samp_output, filename_recon_output])
     pass
 
 
-def series_A() -> None:
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "21",
-                      RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "30",
-                      RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "50",
-                      RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "100",
-                      RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+def task2_quantization_single_experiment(signal_type: str, signal_args: [],
+                                         sample_rate: str, quantization_type: str,
+                                         quantization_level: str) -> None:
+    filename_orig_chart = "original_chart"
+    filename_samp_output = "sampling_output"
+    filename_quant_output = "quant_output"
 
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "30",
-                      ZERO_ORDER_EXTRAPOLATION)
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "50",
-                      ZERO_ORDER_EXTRAPOLATION)
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "100",
-                      ZERO_ORDER_EXTRAPOLATION)
+    run_jar(append_array([GENERATE, filename_orig_chart, signal_type], signal_args))
+    run_jar([SAMPLING, filename_orig_chart, filename_samp_output, sample_rate])
+    run_jar([QUANTIZATION, filename_samp_output,
+             filename_quant_output, quantization_type, quantization_level])
+    run_jar([COMPARISON, filename_orig_chart, filename_quant_output])
+    run_jar([DRAW_CHARTS, filename_orig_chart, filename_quant_output])
 
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "30",
-                      FIRST_ORDER_INTERPOLATION)
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "50",
-                      FIRST_ORDER_INTERPOLATION)
-    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "100",
-                      FIRST_ORDER_INTERPOLATION)
-
+    remove_files([filename_orig_chart, filename_samp_output, filename_quant_output])
     pass
 
 
-def series_B() -> None:
-    # sin - rangeStart=0, rangeLength, amplitude=1, term
-    # wspolczynnik wypelnianienia na 0.5
-    # run_jar([])
+def task2_series1_A() -> None:
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "21",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "30",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "100",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "30",
+                                           ZERO_ORDER_EXTRAPOLATION)
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           ZERO_ORDER_EXTRAPOLATION)
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "100",
+                                           ZERO_ORDER_EXTRAPOLATION)
+
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "30",
+                                           FIRST_ORDER_INTERPOLATION)
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           FIRST_ORDER_INTERPOLATION)
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "100",
+                                           FIRST_ORDER_INTERPOLATION)
     pass
 
 
-def series_C() -> None:
-    # run_jar([])
+def task2_series1_B() -> None:
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    task2_reconstruction_single_experiment(RECTANGULAR_SIGNAL,
+                                           ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    task2_reconstruction_single_experiment(TRIANGULAR_SIGNAL,
+                                           ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           ZERO_ORDER_EXTRAPOLATION)
+    task2_reconstruction_single_experiment(RECTANGULAR_SIGNAL,
+                                           ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                           ZERO_ORDER_EXTRAPOLATION)
+    task2_reconstruction_single_experiment(TRIANGULAR_SIGNAL,
+                                           ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                           ZERO_ORDER_EXTRAPOLATION)
+
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           FIRST_ORDER_INTERPOLATION)
+    task2_reconstruction_single_experiment(RECTANGULAR_SIGNAL,
+                                           ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                           FIRST_ORDER_INTERPOLATION)
+    task2_reconstruction_single_experiment(TRIANGULAR_SIGNAL,
+                                           ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                           FIRST_ORDER_INTERPOLATION)
+    pass
+
+
+def task2_series1_C() -> None:
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "1", "1", "0.143"], "5",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "1", "1", "0.08"], "5",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "1", "1", "0.09"], "5",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    pass
+
+
+def task2_series1_D() -> None:
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "1")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "2")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "3")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "4")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "5")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "10")
+    task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
+                                           ["0", "0.5", "1", "0.1"], "50",
+                                           RECONSTRUCTION_BASED_FUNCTION_SINC, "25")
+    pass
+
+
+def task2_series2_A() -> None:
+    task2_quantization_single_experiment(SINUSOIDAL_SIGNAL,
+                                         ["0", "0.5", "1", "0.1"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "2")
+    task2_quantization_single_experiment(SINUSOIDAL_SIGNAL,
+                                         ["0", "0.5", "1", "0.1"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "5")
+    task2_quantization_single_experiment(SINUSOIDAL_SIGNAL,
+                                         ["0", "0.5", "1", "0.1"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "10")
+
+    task2_quantization_single_experiment(RECTANGULAR_SIGNAL,
+                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "2")
+    task2_quantization_single_experiment(RECTANGULAR_SIGNAL,
+                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "5")
+    task2_quantization_single_experiment(RECTANGULAR_SIGNAL,
+                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "10")
+
+    task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
+                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "2")
+    task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
+                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "5")
+    task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
+                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "10")
     pass
 
 
 def task_2() -> None:
-    series_A()
-    series_B()
-    series_C()
+    # task2_series1_A()
+    # task2_series1_B()
+    # task2_series1_C()
+    # task2_series1_D()
+    # task2_series2_A()
     pass
 
 
@@ -178,16 +303,18 @@ def task_4() -> None:
 
 # ----------------------------------------------------------------------------- #
 def main() -> None:
-    if len(sys.argv) > 1 and (sys.argv[1] == "build" or sys.argv[1] == "-b"):
+    if len(sys.argv) == 2 and (sys.argv[1] == "build" or sys.argv[1] == "-b"):
         build_jar()
-    else:
-        task_2()
-        # task_3()
-        # task_4()
-        pass
+    elif len(sys.argv) == 3 and (sys.argv[1] == "run" or sys.argv[1] == "-r"):
+        if sys.argv[2] == "2":
+            task_2()
+        elif sys.argv[2] == "3":
+            task_3()
+        elif sys.argv[2] == "4":
+            task_4()
 
     print("------------------------------------------------------------------------")
-    print("FINISHED SUCCESSFULLY")
+    print("FINISHED")
     print("------------------------------------------------------------------------")
 
 
