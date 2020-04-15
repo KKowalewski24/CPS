@@ -33,12 +33,12 @@
 
     D. Wpływ wartości N na jakość rekonstrukcji przy wykorzystaniu metody sinc
         a. sin/0.5/10Hz/50Hz/sinc(N=1)
-        a. sin/0.5/10Hz/50Hz/sinc(N=2)
-        a. sin/0.5/10Hz/50Hz/sinc(N=3)
-        a. sin/0.5/10Hz/50Hz/sinc(N=4)
-        a. sin/0.5/10Hz/50Hz/sinc(N=5)
-        a. sin/0.5/10Hz/50Hz/sinc(N=10)
-        a. sin/0.5/10Hz/50Hz/sinc(N=25)
+        b. sin/0.5/10Hz/50Hz/sinc(N=2)
+        c. sin/0.5/10Hz/50Hz/sinc(N=3)
+        d. sin/0.5/10Hz/50Hz/sinc(N=4)
+        e. sin/0.5/10Hz/50Hz/sinc(N=5)
+        f. sin/0.5/10Hz/50Hz/sinc(N=10)
+        g. sin/0.5/10Hz/50Hz/sinc(N=25)
 
 2. Badanie kwantyzacji ( generowanie -> próbkowanie -> kwantyzacja -> porównanie (drugi i trzeci) -> rysowanie (na jednym rysunku drugi i trzeci) )
 
@@ -46,7 +46,12 @@
     na wyjściu: parametry MSE,SNR,PSNR,MD,SNR_theor,ENOB
 
     A. Wpływ liczby poziomów kwantyzacji sygnału na błąd kwantyzacji dla różnych sygnałów
-        a) sin/0.5/
-        b) sin one half
-        c) rect
-        d) triangle
+        a) sin     /0.5s/10Hz/50Hz/2
+        b) sin     /0.5s/10Hz/50Hz/5
+        c) sin     /0.5s/10Hz/50Hz/10
+        d) rect    /0.5s/10Hz/50Hz/2
+        e) rect    /0.5s/10Hz/50Hz/5
+        f) rect    /0.5s/10Hz/50Hz/10
+        g) triangle/0.5s/10Hz/50Hz/2
+        h) triangle/0.5s/10Hz/50Hz/5
+        i) triangle/0.5s/10Hz/50Hz/10
