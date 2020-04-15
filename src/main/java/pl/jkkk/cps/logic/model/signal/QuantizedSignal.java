@@ -19,8 +19,7 @@ public abstract class QuantizedSignal extends DiscreteSignal {
     @Override
     public double value(int i) {
         int levelIndex = (int) rounding(
-                (sourceSignal.value(i) - levels.get(0)) / (levels.get(levels.size() - 1) - levels.get(0)) * levels
-                        .size());
+                (sourceSignal.value(i) - levels.get(0)) / (levels.get(levels.size() - 1) - levels.get(0)) * (levels.size() - 1));
         return levels.get(levelIndex);
     }
 
