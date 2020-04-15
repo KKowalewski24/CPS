@@ -71,7 +71,6 @@ public class CommandLineMode extends Application {
     private LineChart lineChart;
     private ScatterChart scatterChart;
     private BarChart barChart;
-    private boolean isScatterChart;
 
     /*------------------------ METHODS REGION ------------------------*/
     private Signal generate(String[] args) {
@@ -164,7 +163,8 @@ public class CommandLineMode extends Application {
     private void fillCustomTabPaneWithData(TabPane tabPane,
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
-                                           double[] signalParams) {
+                                           double[] signalParams,
+                                           boolean isScatterChart) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
         fillBarChart((BarChart) customTabPane.getHistogramTab()
@@ -229,7 +229,8 @@ public class CommandLineMode extends Application {
         signalParams[3] = Signal.varianceValue(signalData);
         signalParams[4] = Signal.meanPowerValue(signalData);
 
-        fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams);
+        fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams, 
+                signal instanceof DiscreteSignal);
     }
 
     @Override
@@ -256,7 +257,6 @@ public class CommandLineMode extends Application {
                 break;
             }
             case QUANTIZATION: {
-                isScatterChart = true;
                 readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
                 signal = readerWriter.read();
 
@@ -279,7 +279,6 @@ public class CommandLineMode extends Application {
                 break;
             }
             case RECONSTRUCTION: {
-                isScatterChart = true;
                 readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
                 signal = readerWriter.read();
 
@@ -348,25 +347,15 @@ public class CommandLineMode extends Application {
                 for (int i = 1; i < Main.getMainArgs().size(); i++) {
                     readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(i));
                     Signal signalInLoop = readerWriter.read();
-
-                    if (signalInLoop instanceof UnitImpulseSignal || signalInLoop instanceof ImpulseNoise) {
-                        isScatterChart = true;
-                    }
-
                     drawChart(signalInLoop);
                 }
 
                 try {
                     CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
                     switchTabToAnother(customTabPane, 1);
-                    reportWriter.writeFxChart(BarChart.class, Main.getMainArgs(), tabPane);
-                    if (isScatterChart) {
-                        switchTabToAnother(customTabPane, 0);
-                        reportWriter.writeFxChart(ScatterChart.class, Main.getMainArgs(), tabPane);
-                    } else {
-                        switchTabToAnother(customTabPane, 0);
-                        reportWriter.writeFxChart(LineChart.class, Main.getMainArgs(), tabPane);
-                    }
+                    reportWriter.writeFxChart("histogram", Main.getMainArgs(), tabPane);
+                    switchTabToAnother(customTabPane, 0);
+                    reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
                 } catch (FileOperationException e) {
                     e.printStackTrace();
                 }

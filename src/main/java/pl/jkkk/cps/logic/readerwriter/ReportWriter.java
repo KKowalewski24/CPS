@@ -20,12 +20,12 @@ public class ReportWriter {
     public static final String TXT = ".txt";
 
     /*------------------------ METHODS REGION ------------------------*/
-    public String generateFilename(String type, List<String> callArgs, String fileExtension) {
+    public String generateFilename(String name, List<String> callArgs, String fileExtension) {
         StringBuilder args = new StringBuilder();
         callArgs.forEach((it) -> args.append(it).append("_"));
 
         return String.format("%s_%s%02d%02d%02d%s",
-                type,
+                name,
                 args.toString(),
                 LocalTime.now().getHour(),
                 LocalTime.now().getMinute(),
@@ -33,9 +33,9 @@ public class ReportWriter {
                 fileExtension);
     }
 
-    public void writeFxChart(Class<?> type, List<String> mainArgs, Node object)
+    public void writeFxChart(String name, List<String> mainArgs, Node object)
             throws FileOperationException {
-        File file = new File(generateFilename(type.getSimpleName(), mainArgs, PNG));
+        File file = new File(generateFilename(name, mainArgs, PNG));
         WritableImage image = object.snapshot(new SnapshotParameters(), null);
 
         try {

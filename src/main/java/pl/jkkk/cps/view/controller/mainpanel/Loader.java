@@ -169,21 +169,21 @@ public class Loader {
             clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
                     .getContent(), histogramData);
             switchTabToAnother(customTabPane, 1);
-            reportWriter.writeFxChart(BarChart.class, Main.getMainArgs(), tabPane);
+            reportWriter.writeFxChart("history", Main.getMainArgs(), tabPane);
 
             if (isScatterChart) {
                 changeLineChartToScatterChart(tabPane);
                 clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart(ScatterChart.class, Main.getMainArgs(), tabPane);
+                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
 
             } else {
                 changeScatterChartToLineChart(tabPane);
                 clearAndFillLineChart((LineChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart(LineChart.class, Main.getMainArgs(), tabPane);
+                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
             }
 
             fillParamsTab(customTabPane, signalParams);
