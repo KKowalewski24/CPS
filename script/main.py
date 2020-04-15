@@ -135,8 +135,8 @@ def task2_quantization_single_experiment(signal_type: str, signal_args: [],
     run_jar([SAMPLING, filename_orig_chart, filename_samp_output, sample_rate])
     run_jar([QUANTIZATION, filename_samp_output,
              filename_quant_output, quantization_type, quantization_level])
-    run_jar([COMPARISON, filename_orig_chart, filename_quant_output])
-    run_jar([DRAW_CHARTS, filename_orig_chart, filename_quant_output])
+    run_jar([COMPARISON, filename_samp_output, filename_quant_output])
+    run_jar([DRAW_CHARTS, filename_samp_output, filename_quant_output])
 
     remove_files([filename_orig_chart, filename_samp_output, filename_quant_output])
     pass
@@ -283,11 +283,11 @@ def task2_series2_A() -> None:
 
 
 def task_2() -> None:
-    # task2_series1_A()
-    # task2_series1_B()
-    # task2_series1_C()
-    # task2_series1_D()
-    # task2_series2_A()
+    task2_series1_A()
+    task2_series1_B()
+    task2_series1_C()
+    task2_series1_D()
+    task2_series2_A()
     pass
 
 
