@@ -73,8 +73,8 @@ UNIT_IMPULSE = "unit_impulse"
 IMPULSE_NOISE = "impulse_noise"
 
 
-# ----------------------------------------------------------------------------- #
-def build_jar():
+# UTIL ------------------------------------------------------------------------ #
+def build_jar() -> None:
     script_directory = pathlib.Path(os.getcwd())
     os.chdir(script_directory.parent)
     if platform.system().lower() == "windows":
@@ -85,7 +85,7 @@ def build_jar():
         subprocess.call("copy target/" + JAR_NAME + " " + str(script_directory), shell=True)
 
 
-def run_jar(args):
+def run_jar(args: []) -> None:
     command = ["java", "-jar", JAR_NAME]
     for it in args:
         command.append(it)
@@ -93,27 +93,74 @@ def run_jar(args):
     subprocess.call(command)
 
 
-def series_1():
-    run_jar([GENERATE, "sinsus.txt", SINUSOIDAL_SIGNAL, "0", "5", "1", "1"])
-    run_jar([GENERATE, "rect.txt", RECTANGULAR_SIGNAL, "0", "5", "1", "1", "0.5"])
+def append_array(main_array: [], child_array: []) -> []:
+    for it in child_array:
+        main_array.append(it)
 
-    run_jar([SAMPLING, "sinsus.txt", "cde.txt", "10"])
-    run_jar([RECONSTRUCTION, "cde.txt", "def.txt", ZERO_ORDER_EXTRAPOLATION])
-    run_jar([COMPARISON, "sinsus.txt", "def.txt"])
-    run_jar([DRAW_CHARTS, "sinsus.txt", "rect.txt"])
+    return main_array
 
 
-def series_2():
-    run_jar([])
+# TASK2 ----------------------------------------------------------------------- #
+def single_experiment(signal_type: str, signal_args: [],
+                      sample_rate: str, reconstruction_type: str,
+                      sinc_param: str = "-15") -> None:
+    run_jar(append_array([GENERATE, "original_chart", signal_type], signal_args))
+    run_jar([SAMPLING, "original_chart", "sampling_output", sample_rate])
+    if sinc_param == -15:
+        run_jar([RECONSTRUCTION, "sampling_output", "recon_output", reconstruction_type])
+    else:
+        run_jar([RECONSTRUCTION, "sampling_output", "recon_output",
+                 reconstruction_type, sinc_param])
+    run_jar([COMPARISON, "original_chart", "recon_output"])
+    run_jar([DRAW_CHARTS, "original_chart", "recon_output"])
+
+    pass
+
+
+def series_A() -> None:
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "21",
+                      RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+
+    pass
+
+
+def series_B() -> None:
+    # sin - rangeStart=0, rangeLength, amplitude=1, term
+    # wspolczynnik wypelnianienia na 0.5
+    # run_jar([])
+    pass
+
+
+def series_C() -> None:
+    # run_jar([])
+    pass
+
+
+def task_2() -> None:
+    series_A()
+    series_B()
+    series_C()
+    pass
+
+
+# TASK3 ----------------------------------------------------------------------- #
+def task_3() -> None:
+    pass
+
+
+# TASK4 ----------------------------------------------------------------------- #
+def task_4() -> None:
+    pass
 
 
 # ----------------------------------------------------------------------------- #
-def main():
+def main() -> None:
     if len(sys.argv) > 1 and (sys.argv[1] == "build" or sys.argv[1] == "-b"):
         build_jar()
     else:
-        # series_1()
-        # series_2()
+        task_2()
+        # task_3()
+        # task_4()
         pass
 
     print("------------------------------------------------------------------------")
