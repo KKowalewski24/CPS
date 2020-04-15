@@ -35,7 +35,7 @@ build/
 
 ### VS Code ###
 .vscode/
-
+!scenario.txt
 *.png
 *.txt
 *.jar
