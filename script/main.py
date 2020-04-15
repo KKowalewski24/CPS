@@ -85,14 +85,6 @@ def build_jar() -> None:
         subprocess.call("copy target/" + JAR_NAME + " " + str(script_directory), shell=True)
 
 
-def run_jar(args: []) -> None:
-    command = ["java", "-jar", JAR_NAME]
-    for it in args:
-        command.append(it)
-
-    subprocess.call(command)
-
-
 def append_array(main_array: [], child_array: []) -> []:
     for it in child_array:
         main_array.append(it)
@@ -100,26 +92,57 @@ def append_array(main_array: [], child_array: []) -> []:
     return main_array
 
 
+def run_jar(args: []) -> None:
+    subprocess.call(append_array(["java", "-jar", JAR_NAME], args))
+
+
 # TASK2 ----------------------------------------------------------------------- #
 def single_experiment(signal_type: str, signal_args: [],
                       sample_rate: str, reconstruction_type: str,
                       sinc_param: str = "-15") -> None:
-    run_jar(append_array([GENERATE, "original_chart", signal_type], signal_args))
-    run_jar([SAMPLING, "original_chart", "sampling_output", sample_rate])
-    if sinc_param == -15:
-        run_jar([RECONSTRUCTION, "sampling_output", "recon_output", reconstruction_type])
-    else:
-        run_jar([RECONSTRUCTION, "sampling_output", "recon_output",
-                 reconstruction_type, sinc_param])
-    run_jar([COMPARISON, "original_chart", "recon_output"])
-    run_jar([DRAW_CHARTS, "original_chart", "recon_output"])
+    filename_orig_chart = "original_chart"
+    filename_samp_output = "sampling_output"
+    filename_recon_output = "recon_output"
 
+    run_jar(append_array([GENERATE, filename_orig_chart, signal_type], signal_args))
+    run_jar([SAMPLING, filename_orig_chart, filename_samp_output, sample_rate])
+    if sinc_param == -15:
+        run_jar([RECONSTRUCTION, filename_samp_output, filename_recon_output, reconstruction_type])
+    else:
+        run_jar([RECONSTRUCTION, filename_samp_output, filename_recon_output,
+                 reconstruction_type, sinc_param])
+    run_jar([COMPARISON, filename_orig_chart, filename_recon_output])
+    run_jar([DRAW_CHARTS, filename_orig_chart, filename_recon_output])
+
+    os.remove(filename_orig_chart)
+    os.remove(filename_samp_output)
+    os.remove(filename_recon_output)
     pass
 
 
 def series_A() -> None:
     single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "21",
                       RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "30",
+                      RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "50",
+                      RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "100",
+                      RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
+
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "30",
+                      ZERO_ORDER_EXTRAPOLATION)
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "50",
+                      ZERO_ORDER_EXTRAPOLATION)
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "100",
+                      ZERO_ORDER_EXTRAPOLATION)
+
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "30",
+                      FIRST_ORDER_INTERPOLATION)
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "50",
+                      FIRST_ORDER_INTERPOLATION)
+    single_experiment(SINUSOIDAL_SIGNAL, ["0", "0.5", "1", "0.1"], "100",
+                      FIRST_ORDER_INTERPOLATION)
 
     pass
 
