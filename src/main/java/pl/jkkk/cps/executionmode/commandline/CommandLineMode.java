@@ -229,7 +229,7 @@ public class CommandLineMode extends Application {
         signalParams[3] = Signal.varianceValue(signalData);
         signalParams[4] = Signal.meanPowerValue(signalData);
 
-        fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams, 
+        fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams,
                 signal instanceof DiscreteSignal);
     }
 
@@ -245,6 +245,11 @@ public class CommandLineMode extends Application {
                 readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
                 signal = generate(Main.getMainArgs().stream().toArray(String[]::new));
                 readerWriter.write(signal);
+
+                latexGenerator = new LatexGenerator("Input_gene");
+                latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 2);
+                latexGenerator.generate(ReportType.INPUT_PARAMETERS);
+
                 break;
             }
             case SAMPLING: {
@@ -254,6 +259,11 @@ public class CommandLineMode extends Application {
                         Double.valueOf(Main.getMainArgs().get(3)));
                 readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
                 readerWriter.write(signal);
+
+                latexGenerator = new LatexGenerator("Input_sampling");
+                latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 3);
+                latexGenerator.generate(ReportType.INPUT_PARAMETERS);
+
                 break;
             }
             case QUANTIZATION: {
@@ -276,6 +286,11 @@ public class CommandLineMode extends Application {
 
                 readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
                 readerWriter.write(signal);
+
+                latexGenerator = new LatexGenerator("Input_Quant");
+                latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 4);
+                latexGenerator.generate(ReportType.INPUT_PARAMETERS);
+
                 break;
             }
             case RECONSTRUCTION: {
@@ -299,6 +314,11 @@ public class CommandLineMode extends Application {
 
                 readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
                 readerWriter.write(signal);
+
+                latexGenerator = new LatexGenerator("Input_Recon");
+                latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 3);
+                latexGenerator.generate(ReportType.INPUT_PARAMETERS);
+
                 break;
             }
             case COMPARISON: {
