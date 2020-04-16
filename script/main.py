@@ -266,19 +266,16 @@ def task2_series2_A() -> None:
     task2_quantization_single_experiment(RECTANGULAR_SIGNAL,
                                          ["0", "1", "1", "0.25", "0.5"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "5")
-    task2_quantization_single_experiment(RECTANGULAR_SIGNAL,
-                                         ["0", "1", "1", "0.25", "0.5"], "100",
-                                         EVEN_QUANTIZATION_WITH_ROUNDING, "10")
 
     task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
                                          ["0", "1", "1", "0.25", "0.5"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "2")
     task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
                                          ["0", "1", "1", "0.25", "0.5"], "100",
-                                         EVEN_QUANTIZATION_WITH_ROUNDING, "5")
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "3")
     task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
                                          ["0", "1", "1", "0.25", "0.5"], "100",
-                                         EVEN_QUANTIZATION_WITH_ROUNDING, "10")
+                                         EVEN_QUANTIZATION_WITH_ROUNDING, "5")
     pass
 
 
