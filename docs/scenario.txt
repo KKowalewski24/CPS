@@ -52,12 +52,12 @@ porównanie (drugi i trzeci) -> rysowanie (na jednym rysunku drugi i trzeci) )
     na wyjściu: parametry MSE,SNR,PSNR,MD,SNR_theor,ENOB
 
     A. Wpływ liczby poziomów kwantyzacji sygnału na błąd kwantyzacji dla różnych sygnałów
-        a) sin     /0.5s/10Hz/50Hz/2
-        b) sin     /0.5s/10Hz/50Hz/5
-        c) sin     /0.5s/10Hz/50Hz/10
-        d) rect    /0.5s/10Hz/50Hz/2
-        e) rect    /0.5s/10Hz/50Hz/5
-        f) rect    /0.5s/10Hz/50Hz/10
-        g) triangle/0.5s/10Hz/50Hz/2
-        h) triangle/0.5s/10Hz/50Hz/5
-        i) triangle/0.5s/10Hz/50Hz/10
+        a) sin     /1s/4Hz/100Hz/2
+        b) sin     /1s/4Hz/100Hz/5
+        c) sin     /1s/4Hz/100Hz/10
+        d) rect    /1s/4Hz/100Hz/2
+        e) rect    /1s/4Hz/100Hz/5
+        f) rect    /1s/4Hz/100Hz/10
+        g) triangle/1s/4Hz/100Hz/2
+        h) triangle/1s/4Hz/100Hz/5
+        i) triangle/1s/4Hz/100Hz/10
