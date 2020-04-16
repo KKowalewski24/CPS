@@ -216,7 +216,7 @@ def task2_series1_C() -> None:
                                            ["0", "1", "1", "0.143"], "5",
                                            RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
     task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
-                                           ["0", "1", "1", "0.08"], "5",
+                                           ["0", "1", "1", "0.083"], "5",
                                            RECONSTRUCTION_BASED_FUNCTION_SINC, "100")
     task2_reconstruction_single_experiment(SINUSOIDAL_SIGNAL,
                                            ["0", "1", "1", "0.09"], "5",
@@ -251,33 +251,33 @@ def task2_series1_D() -> None:
 
 def task2_series2_A() -> None:
     task2_quantization_single_experiment(SINUSOIDAL_SIGNAL,
-                                         ["0", "0.5", "1", "0.1"], "50",
+                                         ["0", "1", "1", "0.25"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "2")
     task2_quantization_single_experiment(SINUSOIDAL_SIGNAL,
-                                         ["0", "0.5", "1", "0.1"], "50",
+                                         ["0", "1", "1", "0.25"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "5")
     task2_quantization_single_experiment(SINUSOIDAL_SIGNAL,
-                                         ["0", "0.5", "1", "0.1"], "50",
+                                         ["0", "1", "1", "0.25"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "10")
 
     task2_quantization_single_experiment(RECTANGULAR_SIGNAL,
-                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         ["0", "1", "1", "0.25", "0.5"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "2")
     task2_quantization_single_experiment(RECTANGULAR_SIGNAL,
-                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         ["0", "1", "1", "0.25", "0.5"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "5")
     task2_quantization_single_experiment(RECTANGULAR_SIGNAL,
-                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         ["0", "1", "1", "0.25", "0.5"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "10")
 
     task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
-                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         ["0", "1", "1", "0.25", "0.5"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "2")
     task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
-                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         ["0", "1", "1", "0.25", "0.5"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "5")
     task2_quantization_single_experiment(TRIANGULAR_SIGNAL,
-                                         ["0", "0.5", "1", "0.1", "0.5"], "50",
+                                         ["0", "1", "1", "0.25", "0.5"], "100",
                                          EVEN_QUANTIZATION_WITH_ROUNDING, "10")
     pass
 
