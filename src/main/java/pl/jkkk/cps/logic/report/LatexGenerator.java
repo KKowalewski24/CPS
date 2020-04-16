@@ -75,6 +75,8 @@ public class LatexGenerator {
                 .append(df.format(peakSignalToNoiseRatio))
                 .append(" & ")
                 .append(df.format(maximumDifference))
+                .append(" & ")
+                .append(df.format(effectiveNumberOfBits))
                 .toString();
     }
 
