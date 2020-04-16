@@ -57,7 +57,6 @@ porównanie (drugi i trzeci) -> rysowanie (na jednym rysunku drugi i trzeci) )
         c) sin     /1s/4Hz/100Hz/10
         d) rect    /1s/4Hz/100Hz/2
         e) rect    /1s/4Hz/100Hz/5
-        f) rect    /1s/4Hz/100Hz/10
         g) triangle/1s/4Hz/100Hz/2
-        h) triangle/1s/4Hz/100Hz/5
-        i) triangle/1s/4Hz/100Hz/10
+        h) triangle/1s/4Hz/100Hz/3
+        i) triangle/1s/4Hz/100Hz/5
