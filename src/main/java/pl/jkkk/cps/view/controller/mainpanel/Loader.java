@@ -1,30 +1,30 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import javafx.scene.Node;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-
+import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;
+import pl.jkkk.cps.logic.exception.NotSameLengthException;
+import pl.jkkk.cps.logic.model.ADC;
+import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.OperationType;
-import pl.jkkk.cps.logic.model.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
+import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
+import pl.jkkk.cps.logic.model.enumtype.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
@@ -38,27 +38,43 @@ import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
-import pl.jkkk.cps.logic.reader.FileReader;
-import pl.jkkk.cps.view.helper.ChartRecord;
-import pl.jkkk.cps.view.helper.CustomTabPane;
-import pl.jkkk.cps.view.helper.DouglasPeuckerAlg;
-import pl.jkkk.cps.view.util.PopOutWindow;
-import pl.jkkk.cps.view.util.StageController;
-import static pl.jkkk.cps.view.helper.ChartHelper.appendLabelText;
-import static pl.jkkk.cps.view.helper.ChartHelper.castTabPaneToCustomTabPane;
-import static pl.jkkk.cps.view.helper.ChartHelper.changeLineChartToScatterChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.changeScatterChartToLineChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.fillBarChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.fillLineChart;
-import static pl.jkkk.cps.view.helper.ChartHelper.fillScatterChart;
+import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
+import pl.jkkk.cps.logic.readerwriter.ReportWriter;
+import pl.jkkk.cps.logic.report.LatexGenerator;
+import pl.jkkk.cps.logic.report.ReportType;
+import pl.jkkk.cps.view.fxml.DouglasPeuckerAlg;
+import pl.jkkk.cps.view.fxml.PopOutWindow;
+import pl.jkkk.cps.view.fxml.StageController;
+import pl.jkkk.cps.view.model.ChartRecord;
+import pl.jkkk.cps.view.model.CustomTabPane;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static pl.jkkk.cps.view.fxml.FxHelper.appendLabelText;
+import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.changeScatterChartToLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillScatterChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.getCurrentCustomTabPaneFromTabPane;
+import static pl.jkkk.cps.view.fxml.FxHelper.getIndexFromComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
+import static pl.jkkk.cps.view.fxml.FxHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.switchTabToAnother;
 
 public class Loader {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private ComboBox comboBoxSignalTypes;
-    private ComboBox comboBoxOperationTypes;
-    private ComboBox comboBoxFirstSignal;
-    private ComboBox comboBoxSecondSignal;
+    private ComboBox comboBoxOperationTypesTwoArgs;
+    private ComboBox comboBoxFirstSignalTwoArgs;
+    private ComboBox comboBoxSecondSignalTwoArgs;
 
     private TextField textFieldAmplitude;
     private TextField textFieldStartTime;
@@ -72,22 +88,43 @@ public class Loader {
     private TabPane tabPaneResults;
     private Spinner spinnerHistogramRange;
 
+    private ComboBox comboBoxOperationTypesOneArgs;
+    private ComboBox comboBoxSignalOneArgs;
+    private ComboBox comboBoxComparisonFirstSignal;
+    private ComboBox comboBoxComparisonSecondSignal;
+    private AnchorPane comparisonPane;
+    private AnchorPane oneArgsPane;
+    private TextField textFieldQuantizationLevels;
+    private TextField textFieldSampleRate;
+    private TextField textFieldReconstructionSincParam;
+
     private Map<Integer, Signal> signals = new HashMap<>();
-    private FileReader<Signal> signalFileReader;
+    private FileReaderWriter<Signal> signalFileReaderWriter;
+    private ReportWriter reportWriter = new ReportWriter();
+    private LatexGenerator latexGenerator;
     private boolean isScatterChart;
+    private double overallTime = 0;
+
+    private final ADC adc = new ADC();
+    private final DAC dac = new DAC();
 
     /*------------------------ METHODS REGION ------------------------*/
-    public Loader(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypes,
-                  ComboBox comboBoxFirstSignal, ComboBox comboBoxSecondSignal,
+    public Loader(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
+                  ComboBox comboBoxFirstSignalTwoArgs, ComboBox comboBoxSecondSignalTwoArgs,
                   TextField textFieldAmplitude, TextField textFieldStartTime,
                   TextField textFieldSignalDuration, TextField textFieldBasicPeriod,
                   TextField textFieldFillFactor, TextField textFieldJumpTime,
                   TextField textFieldProbability, TextField textFieldSamplingFrequency,
-                  TabPane tabPaneResults, Spinner spinnerHistogramRange) {
+                  TabPane tabPaneResults, Spinner spinnerHistogramRange,
+                  ComboBox comboBoxOperationTypesOneArgs, ComboBox comboBoxSignalOneArgs,
+                  ComboBox comboBoxComparisonFirstSignal, ComboBox comboBoxComparisonSecondSignal,
+                  AnchorPane comparisonPane, AnchorPane oneArgsPane,
+                  TextField textFieldQuantizationLevels, TextField textFieldSampleRate,
+                  TextField textFieldReconstructionSincParam) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
-        this.comboBoxOperationTypes = comboBoxOperationTypes;
-        this.comboBoxFirstSignal = comboBoxFirstSignal;
-        this.comboBoxSecondSignal = comboBoxSecondSignal;
+        this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
+        this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
+        this.comboBoxSecondSignalTwoArgs = comboBoxSecondSignalTwoArgs;
         this.textFieldAmplitude = textFieldAmplitude;
         this.textFieldStartTime = textFieldStartTime;
         this.textFieldSignalDuration = textFieldSignalDuration;
@@ -98,6 +135,15 @@ public class Loader {
         this.textFieldSamplingFrequency = textFieldSamplingFrequency;
         this.tabPaneResults = tabPaneResults;
         this.spinnerHistogramRange = spinnerHistogramRange;
+        this.comboBoxOperationTypesOneArgs = comboBoxOperationTypesOneArgs;
+        this.comboBoxSignalOneArgs = comboBoxSignalOneArgs;
+        this.comboBoxComparisonFirstSignal = comboBoxComparisonFirstSignal;
+        this.comboBoxComparisonSecondSignal = comboBoxComparisonSecondSignal;
+        this.comparisonPane = comparisonPane;
+        this.oneArgsPane = oneArgsPane;
+        this.textFieldQuantizationLevels = textFieldQuantizationLevels;
+        this.textFieldSampleRate = textFieldSampleRate;
+        this.textFieldReconstructionSincParam = textFieldReconstructionSincParam;
     }
 
     private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
@@ -112,107 +158,116 @@ public class Loader {
         appendLabelText(paneChildren.get(4), "" + df.format(signalParams[4]));
     }
 
+    /*--------------------------------------------------------------------------------------------*/
     private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Collection<ChartRecord<Number, Number>> chartCollection,
-                                           Collection<ChartRecord<String, Number>> barChartCollection,
+                                           Collection<ChartRecord<Number, Number>> mainChartData,
+                                           Collection<ChartRecord<String, Number>> histogramData,
                                            double[] signalParams) {
-        CustomTabPane customTabPane = castTabPaneToCustomTabPane(tabPane);
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
-        if (isScatterChart) {
-            fillScatterChart(customTabPane, chartCollection);
-        } else {
-            fillLineChart(customTabPane, chartCollection);
+        try {
+            clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
+                    .getContent(), histogramData);
+            switchTabToAnother(customTabPane, 1);
+            reportWriter.writeFxChart("history", Main.getMainArgs(), tabPane);
+
+            if (isScatterChart) {
+                changeLineChartToScatterChart(tabPane);
+                clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
+                        .getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+
+            } else {
+                changeScatterChartToLineChart(tabPane);
+                clearAndFillLineChart((LineChart) customTabPane.getChartTab()
+                        .getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+            }
+
+            fillParamsTab(customTabPane, signalParams);
+            latexGenerator = new LatexGenerator("Signal_Params");
+            latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
+                    signalParams[2], signalParams[3], signalParams[4]);
+            latexGenerator.generate(ReportType.SIGNAL);
+
+        } catch (FileOperationException e) {
+            e.printStackTrace();
         }
-        fillBarChart(customTabPane, barChartCollection);
-        fillParamsTab(customTabPane, signalParams);
     }
 
-    private void convertSignalToChart(Signal signal) {
+    private void representSignal(Signal signal) {
+        /* remember signal */
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
+        signals.put(tabIndex, signal);
+
+        /* generate discrete representation of signal */
+        List<Data> signalData = signal.generateDiscreteRepresentation();
+
         /* prepare line/point chart data */
         List<Data> data;
-        if(signal instanceof GaussianNoise || signal instanceof UniformNoise){
+        if (signal instanceof GaussianNoise || signal instanceof UniformNoise) {
             data = new ArrayList<>();
-            for(int i = 0; i < signal.getData().size(); i++){
-                if(i % (signal.getData().size() / 1000) == 0)
-                    data.add(signal.getData().get(i));
+            for (int i = 0; i < signalData.size(); i++) {
+                if (i % (signalData.size() / 1000) == 0) {
+                    data.add(signalData.get(i));
+                }
             }
-        }else if(signal instanceof ContinuousSignal || signal instanceof OperationResultSignal){
+        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
             DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
-            data = signal.getData();
-            data = new ArrayList<>(douglasPeucker.calculate(
-                    data,
-                    (data.get(data.size() - 1).getX() - data.get(0).getX()) * 1.0 / 10000.0,
-                    0,
-                    data.size() - 1));
-        }else{
-            data = signal.getData();
+            data = signalData;
+            data = new ArrayList<>(douglasPeucker
+                    .calculate(data, (data.get(data.size() - 1).getX() - data.get(0)
+                            .getX()) * 1.0 / 10000.0, 0, data.size() - 1));
+        } else {
+            data = signalData;
         }
+
         System.out.println("Wygenerowanu punktów: " + data.size());
-        List<ChartRecord<Number, Number>> chartData = data.stream()
-                .map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
-                .collect(Collectors.toList());
+
+        List<ChartRecord<Number, Number>> chartData =
+                data.stream().map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
+                        .collect(Collectors.toList());
 
         /* prepare barchart data */
         DecimalFormat df = new DecimalFormat("#.##");
-        List<ChartRecord<String, Number>> histogramData = signal
-                .generateHistogram((int) spinnerHistogramRange.getValue())
-                .stream()
-                .map(range -> new ChartRecord<String, Number>(
-                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
-                        range.getQuantity()))
-                .collect(Collectors.toList());
+        List<ChartRecord<String, Number>> histogramData =
+                Signal.generateHistogram((int) spinnerHistogramRange.getValue(), signalData)
+                        .stream()
+                        .map(range -> new ChartRecord<String, Number>(
+                                df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
+                                range.getQuantity()))
+                        .collect(Collectors.toList());
 
         /* prepare params */
         double[] signalParams = new double[5];
-        signalParams[0] = signal.meanValue();
-        signalParams[1] = signal.absMeanValue();
-        signalParams[2] = signal.rmsValue();
-        signalParams[3] = signal.varianceValue();
-        signalParams[4] = signal.meanPowerValue();
+        signalParams[0] = Signal.meanValue(signalData);
+        signalParams[1] = Signal.absMeanValue(signalData);
+        signalParams[2] = Signal.rmsValue(signalData);
+        signalParams[3] = Signal.varianceValue(signalData);
+        signalParams[4] = Signal.meanPowerValue(signalData);
 
         /* render it all */
         fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
     }
 
-    private void representSignal(Signal signal) {
-
-        /* remember signal */
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
-        signals.put(tabIndex, signal);
-
-        /* generate signal */
-        signal.generate();
-
-        convertSignalToChart(signal);
-    }
-
+    /*--------------------------------------------------------------------------------------------*/
     public void computeCharts() {
-        String selectedSignal = comboBoxSignalTypes.getSelectionModel()
-                .getSelectedItem().toString();
-
-        Double amplitude = null;
-        Double rangeStart = null;
-        Double rangeLength = null;
-        Double term = null;
-        Double fulfillment = null;
-        Double jumpMoment = null;
-        Double probability = null;
-        Double sampleRate = null;
+        String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
 
         try {
-            amplitude = Double.parseDouble(textFieldAmplitude.getText());
-            rangeStart = Double.parseDouble(textFieldStartTime.getText());
-            rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
-            term = Double.parseDouble(textFieldBasicPeriod.getText());
-            fulfillment = Double.parseDouble(textFieldFillFactor.getText());
-            jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
-            probability = Double.parseDouble(textFieldProbability.getText());
-            sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
+            Double amplitude = Double.parseDouble(textFieldAmplitude.getText());
+            Double rangeStart = Double.parseDouble(textFieldStartTime.getText());
+            Double rangeLength = Double.parseDouble(textFieldSignalDuration.getText());
+            Double term = Double.parseDouble(textFieldBasicPeriod.getText());
+            Double fulfillment = Double.parseDouble(textFieldFillFactor.getText());
+            Double jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
+            Double probability = Double.parseDouble(textFieldProbability.getText());
+            Double sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
 
             Signal signal = null;
             isScatterChart = false;
-            changeScatterChartToLineChart(tabPaneResults,
-                    new LineChart<>(new NumberAxis(), new NumberAxis()));
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
 
@@ -238,8 +293,8 @@ public class Loader {
 
             } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())) {
 
-                signal = new RectangularSignal(rangeStart, rangeLength, amplitude, term,
-                        fulfillment);
+                signal = new RectangularSignal(rangeStart, rangeLength, amplitude,
+                        term, fulfillment);
 
             } else if (selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())) {
 
@@ -258,18 +313,12 @@ public class Loader {
             } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
 
                 isScatterChart = true;
-                changeLineChartToScatterChart(tabPaneResults,
-                        new ScatterChart(new NumberAxis(), new NumberAxis()));
-
                 signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate,
                         amplitude, jumpMoment.intValue());
 
             } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
 
                 isScatterChart = true;
-                changeLineChartToScatterChart(tabPaneResults,
-                        new ScatterChart(new NumberAxis(), new NumberAxis()));
-
                 signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
                         probability);
 
@@ -278,72 +327,173 @@ public class Loader {
             representSignal(signal);
 
         } catch (NumberFormatException e) {
-            PopOutWindow.messageBox("Błędne Dane",
-                    "Wprowadzono błędne dane", Alert.AlertType.WARNING);
-
+            PopOutWindow.messageBox("Błędne Dane", "Wprowadzono błędne dane",
+                    Alert.AlertType.WARNING);
         }
     }
 
-    public void performOperationOnCharts() {
-        String selectedOperation = comboBoxOperationTypes.getSelectionModel()
-                .getSelectedItem().toString();
-        int s1Index = comboBoxFirstSignal.getSelectionModel().getSelectedIndex();
-        int s2Index = comboBoxSecondSignal.getSelectionModel().getSelectedIndex();
+    public void performOneArgsOperationOnCharts() {
+        Signal signal = null;
+        String selectedOperationOneArgs = getValueFromComboBox(comboBoxOperationTypesOneArgs);
+        Integer selectedSignalIndex = getIndexFromComboBox(comboBoxSignalOneArgs);
+        Signal selectedSignal = signals.get(selectedSignalIndex);
+
+        try {
+            long startTime = System.currentTimeMillis();
+
+            if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
+                isScatterChart = true;
+                double sampleRate = Double.valueOf(textFieldSampleRate.getText());
+
+                signal = adc.sampling((ContinuousSignal) selectedSignal, sampleRate);
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+                isScatterChart = true;
+                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
+                Integer quantizationLevels = Integer.valueOf(textFieldQuantizationLevels.getText());
+                String method = getValueFromComboBox(comboBoxMethod);
+
+                if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName())) {
+                    signal = adc.truncatingQuantization((DiscreteSignal) selectedSignal,
+                            quantizationLevels);
+                } else if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName())) {
+                    signal = adc.roundingQuantization((DiscreteSignal) selectedSignal,
+                            quantizationLevels);
+                }
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+                isScatterChart = false;
+                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
+                String method = getValueFromComboBox(comboBoxMethod);
+
+                if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
+                    signal = dac.zeroOrderHold((DiscreteSignal) selectedSignal);
+                } else if (method.equals(SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName())) {
+                    signal = dac.firstOrderHold((DiscreteSignal) selectedSignal);
+                } else if (method.equals(SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC
+                        .getName())) {
+                    Integer sincParam = Integer.valueOf(textFieldReconstructionSincParam.getText());
+
+                    signal = dac.sincBasic((DiscreteSignal) selectedSignal, sincParam);
+                }
+            }
+
+            overallTime += ((System.currentTimeMillis() - startTime) / 1000.0);
+
+            representSignal(signal);
+
+        } catch (NullPointerException | NumberFormatException e) {
+            e.printStackTrace();
+            PopOutWindow.messageBox("Błędne dane", "Wprowadzono błędne dane",
+                    Alert.AlertType.WARNING);
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            PopOutWindow.messageBox("Błędne dane", "Wybrano niepoprawny typ sygnału",
+                    Alert.AlertType.WARNING);
+        }
+    }
+
+    public void performTwoArgsOperationOnCharts() {
+        String selectedOperation = getValueFromComboBox(comboBoxOperationTypesTwoArgs);
+
+        int s1Index = getIndexFromComboBox(comboBoxFirstSignalTwoArgs);
+        int s2Index = getIndexFromComboBox(comboBoxSecondSignalTwoArgs);
 
         Signal s1 = signals.get(s1Index);
         Signal s2 = signals.get(s2Index);
         Signal resultSignal = null;
 
-        if (selectedOperation.equals(OperationType.ADDITION.getName())) {
+        if (selectedOperation.equals(TwoArgsOperationType.ADDITION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
-        } else if (selectedOperation.equals(OperationType.SUBTRACTION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.SUBTRACTION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
-        } else if (selectedOperation.equals(OperationType.MULTIPLICATION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.MULTIPLICATION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
-        } else if (selectedOperation.equals(OperationType.DIVISION.getName())) {
+        } else if (selectedOperation.equals(TwoArgsOperationType.DIVISION.getName())) {
             resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
         }
 
         representSignal(resultSignal);
     }
 
-    public void loadChart() {
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+    public void generateComparison() {
+        Integer selectedTab1Index = getIndexFromComboBox(comboBoxComparisonFirstSignal);
+        Integer selectedTab2Index = getIndexFromComboBox(comboBoxComparisonSecondSignal);
+        List<Node> paneChildren = comparisonPane.getChildren();
+
+        List<Data> firstSignalData = signals.get(selectedTab1Index)
+                .generateDiscreteRepresentation();
+        List<Data> secondSignalData = signals.get(selectedTab2Index)
+                .generateDiscreteRepresentation();
+        DecimalFormat df = new DecimalFormat("##.####");
 
         try {
-            signalFileReader = new FileReader<>(new FileChooser()
-                    .showOpenDialog(StageController.getApplicationStage())
-                    .getName());
+            double meanSquaredError = Signal.meanSquaredError(secondSignalData, firstSignalData);
+            double signalToNoiseRatio = Signal.signalToNoiseRatio(secondSignalData,
+                    firstSignalData);
+            double peakSignalToNoiseRatio = Signal.peakSignalToNoiseRatio(secondSignalData,
+                    firstSignalData);
+            double maximumDifference = Signal.maximumDifference(secondSignalData, firstSignalData);
+            double effectiveNumberOfBits = Signal.effectiveNumberOfBits(secondSignalData,
+                    firstSignalData);
 
-            signals.put(tabIndex, signalFileReader.read());
-            convertSignalToChart(signals.get(tabIndex));
+            appendLabelText(paneChildren.get(0), "" + df.format(meanSquaredError));
+            appendLabelText(paneChildren.get(1), "" + df.format(signalToNoiseRatio));
+            appendLabelText(paneChildren.get(2), "" + df.format(peakSignalToNoiseRatio));
+            appendLabelText(paneChildren.get(3), "" + df.format(maximumDifference));
+            appendLabelText(paneChildren.get(4), "" + df.format(effectiveNumberOfBits));
+            appendLabelText(paneChildren.get(5), "" + df.format(overallTime));
+
+            latexGenerator = new LatexGenerator("Comparison");
+            latexGenerator.createSummaryForComparison(meanSquaredError, signalToNoiseRatio,
+                    peakSignalToNoiseRatio, maximumDifference, effectiveNumberOfBits, overallTime);
+            latexGenerator.generate(ReportType.COMPARISON);
+
+        } catch (NotSameLengthException e) {
+            PopOutWindow.messageBox("Błednie wybrane wykresy",
+                    "Wykresy mają błędnie dobraną długość",
+                    Alert.AlertType.WARNING);
+        }
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    public void loadChart() {
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
+
+        try {
+            signalFileReaderWriter = new FileReaderWriter<>(
+                    new FileChooser().showOpenDialog(StageController.getApplicationStage())
+                            .getName());
+            representSignal(signalFileReaderWriter.read());
 
         } catch (NullPointerException | FileOperationException e) {
-            e.printStackTrace();
-            PopOutWindow.messageBox("Błąd Ładowania Pliku",
-                    "Nie można załadować wybranego pliku", Alert.AlertType.WARNING);
+            PopOutWindow
+                    .messageBox("Błąd Ładowania Pliku",
+                            "Nie można załadować wybranego pliku",
+                            Alert.AlertType.WARNING);
         }
     }
 
     public void saveChart() {
-        int tabIndex = tabPaneResults.getSelectionModel().getSelectedIndex();
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
 
         try {
             if (signals.get(tabIndex) != null) {
-                signalFileReader = new FileReader<>(new FileChooser()
-                        .showSaveDialog(StageController.getApplicationStage())
-                        .getName());
-
-                signalFileReader.write(signals.get(tabIndex));
+                signalFileReaderWriter = new FileReaderWriter<>(
+                        new FileChooser().showSaveDialog(StageController.getApplicationStage())
+                                .getName());
+                signalFileReaderWriter.write(signals.get(tabIndex));
             } else {
                 PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
-                        "Sygnał nie został jeszcze wygenerowany", Alert.AlertType.WARNING);
+                        "Sygnał nie został jeszcze wygenerowany",
+                        Alert.AlertType.WARNING);
             }
         } catch (NullPointerException | FileOperationException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
-                    "Nie można zapisać do wybranego pliku", Alert.AlertType.WARNING);
+                    "Nie można zapisać do wybranego pliku",
+                    Alert.AlertType.WARNING);
         }
     }
 }
-    

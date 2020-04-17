@@ -3,27 +3,28 @@ package pl.jkkk.cps.view.controller.mainpanel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
-import pl.jkkk.cps.view.util.PopOutWindow;
-import pl.jkkk.cps.view.util.StageController;
+import pl.jkkk.cps.view.fxml.StageController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
-import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
-import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
+import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
 
 public class MainPanel implements Initializable {
 
+    public AnchorPane oneArgsPane;
     /*------------------------ FIELDS REGION ------------------------*/
     @FXML
     private TabPane tabPaneInputs;
@@ -32,15 +33,26 @@ public class MainPanel implements Initializable {
     @FXML
     private ComboBox comboBoxSignalTypes;
     @FXML
-    private ComboBox comboBoxOperationTypes;
+    private ComboBox comboBoxOperationTypesTwoArgs;
     @FXML
-    private ComboBox comboBoxFirstSignal;
+    private ComboBox comboBoxFirstSignalTwoArgs;
     @FXML
-    private ComboBox comboBoxSecondSignal;
+    private ComboBox comboBoxSecondSignalTwoArgs;
     @FXML
     private TabPane tabPaneResults;
     @FXML
     private Spinner spinnerHistogramRange;
+
+    @FXML
+    private ComboBox comboBoxOperationTypesOneArgs;
+    @FXML
+    private ComboBox comboBoxSignalOneArgs;
+    @FXML
+    private ComboBox comboBoxComparisonFirstSignal;
+    @FXML
+    private ComboBox comboBoxComparisonSecondSignal;
+    @FXML
+    private AnchorPane comparisonPane;
 
     private TextField textFieldAmplitude = new TextField();
     private TextField textFieldStartTime = new TextField();
@@ -50,6 +62,9 @@ public class MainPanel implements Initializable {
     private TextField textFieldJumpTime = new TextField();
     private TextField textFieldProbability = new TextField();
     private TextField textFieldSamplingFrequency = new TextField();
+    private TextField textFieldQuantizationLevels = new TextField();
+    private TextField textFieldSampleRate = new TextField();
+    private TextField textFieldReconstructionSincParam = new TextField();
 
     private Initializer initializer;
     private Loader loader;
@@ -61,19 +76,27 @@ public class MainPanel implements Initializable {
                 .IntegerSpinnerValueFactory(5, 20, 10, 5));
 
         initializer = new Initializer(
-                comboBoxSignalTypes, comboBoxOperationTypes, comboBoxFirstSignal,
-                comboBoxSecondSignal, chooseParamsTab, textFieldAmplitude,
+                comboBoxSignalTypes, comboBoxOperationTypesTwoArgs, comboBoxFirstSignalTwoArgs,
+                comboBoxSecondSignalTwoArgs, chooseParamsTab, textFieldAmplitude,
                 textFieldStartTime, textFieldSignalDuration, textFieldBasicPeriod,
                 textFieldFillFactor, textFieldJumpTime, textFieldProbability,
-                textFieldSamplingFrequency, tabPaneResults
+                textFieldSamplingFrequency, tabPaneResults,
+                comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
+                comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
+                comparisonPane, oneArgsPane, textFieldQuantizationLevels,
+                textFieldSampleRate, textFieldReconstructionSincParam
         );
 
         loader = new Loader(
-                comboBoxSignalTypes, comboBoxOperationTypes, comboBoxFirstSignal,
-                comboBoxSecondSignal, textFieldAmplitude, textFieldStartTime,
+                comboBoxSignalTypes, comboBoxOperationTypesTwoArgs, comboBoxFirstSignalTwoArgs,
+                comboBoxSecondSignalTwoArgs, textFieldAmplitude, textFieldStartTime,
                 textFieldSignalDuration, textFieldBasicPeriod, textFieldFillFactor,
                 textFieldJumpTime, textFieldProbability, textFieldSamplingFrequency,
-                tabPaneResults, spinnerHistogramRange
+                tabPaneResults, spinnerHistogramRange,
+                comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
+                comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
+                comparisonPane, oneArgsPane, textFieldQuantizationLevels,
+                textFieldSampleRate, textFieldReconstructionSincParam
         );
 
         initializer.prepareTabPaneResults(0);
@@ -89,8 +112,14 @@ public class MainPanel implements Initializable {
     @FXML
     private void onActionButtonAddNewTab(ActionEvent actionEvent) {
         initializer.prepareTabPaneResults(tabPaneResults.getTabs().size());
-        fillComboBox(comboBoxFirstSignal, getTabNameList(tabPaneResults.getTabs()));
-        fillComboBox(comboBoxSecondSignal, getTabNameList(tabPaneResults.getTabs()));
+
+        fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxSecondSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+
+        fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
+
+        fillComboBox(comboBoxComparisonFirstSignal, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxComparisonSecondSignal, getTabNameList(tabPaneResults.getTabs()));
     }
 
     @FXML
@@ -112,8 +141,7 @@ public class MainPanel implements Initializable {
     /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionButtonGenerateData(ActionEvent actionEvent) {
-        //TODO ADD IMPL, IN FINAL VERSION LOAD DATA FROM LOGIC
-        Integer selectedTab = tabPaneInputs.getSelectionModel().getSelectedIndex();
+        Integer selectedTab = getSelectedTabIndex(tabPaneInputs);
 
         switch (selectedTab) {
             case 0: {
@@ -121,9 +149,29 @@ public class MainPanel implements Initializable {
                 break;
             }
             case 1: {
-                loader.performOperationOnCharts();
+                loader.performOneArgsOperationOnCharts();
                 break;
             }
+            case 2: {
+                loader.performTwoArgsOperationOnCharts();
+                break;
+            }
+        }
+    }
+
+    @FXML
+    private void onActionButtonGenerateComparison(ActionEvent actionEvent) {
+        loader.generateComparison();
+    }
+
+    @FXML
+    private void onActionButtonChangeTheme(ActionEvent actionEvent) {
+        if (StageController.getGlobalCssStyling() != null) {
+            StageController.setGlobalCssStyling(null);
+            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+        } else {
+            StageController.setGlobalCssStyling(PATH_CSS_STYLING);
+            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
         }
     }
 }

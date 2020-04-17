@@ -1,0 +1,62 @@
+1. Badanie jakości rekonstrukcji sygnału ( generowanie -> próbkowanie ->
+rekonstrukcja -> porównanie (pierwszy i trzeci) -> narysowanie (na jednym rysunku pierwszy i trzeci) )
+
+    na wejściu: sygnał, czas trwania sygnału, częstotliwość sygnału (T = 1/f),
+    częstotliwość próbkowania, metoda rekonstrukcji
+    na wyjściu: parametry MSE,SNR,PSNR,MD świadczące o jakości sygnału
+
+    A. Wpływ zależności między częstotliwością sygnału a częstotliwością próbkowania
+    na jakość rekonstrukcji dla jej różnych rodzajów
+        a. sin/0.5s/10Hz/21Hz/sinc(N=100)
+        b. sin/0.5s/10Hz/30Hz/sinc(N=100)
+        c. sin/0.5s/10Hz/50Hz/sinc(N=100)
+        d. sin/0.5s/10Hz/100Hz/sinc(N=100)
+        e. sin/0.5s/10Hz/30Hz/zero
+        f. sin/0.5s/10Hz/50Hz/zero
+        g. sin/0.5s/10Hz/100Hz/zero
+        h. sin/0.5s/10Hz/30Hz/one
+        i. sin/0.5s/10Hz/50Hz/one
+        j. sin/0.5s/10Hz/100Hz/one
+
+    B. Wpływ rodzaju sygnału na jakość rekonstrukcji dla jej różnych rodzajów
+        a. sin     /0.5s/10Hz/50Hz/sinc(N=100)
+        b. rect    /0.5s/10Hz/50Hz/sinc(N=100)
+        c. triangle/0.5s/10Hz/50Hz/sinc(N=100)
+        d. sin     /0.5s/10Hz/50Hz/zero
+        e. rect    /0.5s/10Hz/50Hz/zero
+        f. triangle/0.5s/10Hz/50Hz/zero
+        g. sin     /0.5s/10Hz/50Hz/one
+        h. rect    /0.5s/10Hz/50Hz/one
+        i. triangle/0.5s/10Hz/50Hz/one
+
+    C. Zjawisko aliasingu
+        a. sin/1s/ 7Hz/5Hz/sinc(N=100)
+        b. sin/1s/12Hz/5Hz/sinc(N=100)
+        c. sin/1s/11Hz/5Hz/sinc(N=100)
+
+    D. Wpływ wartości N na jakość rekonstrukcji przy wykorzystaniu metody sinc
+        a. sin/0.5/10Hz/50Hz/sinc(N=1)
+        b. sin/0.5/10Hz/50Hz/sinc(N=2)
+        c. sin/0.5/10Hz/50Hz/sinc(N=3)
+        d. sin/0.5/10Hz/50Hz/sinc(N=4)
+        e. sin/0.5/10Hz/50Hz/sinc(N=5)
+        f. sin/0.5/10Hz/50Hz/sinc(N=10)
+        g. sin/0.5/10Hz/50Hz/sinc(N=25)
+
+2. Badanie kwantyzacji ( generowanie -> próbkowanie -> kwantyzacja ->
+porównanie (drugi i trzeci) -> rysowanie (na jednym rysunku drugi i trzeci) )
+
+    na wejściu: sygnał, czas trwania sygnału, częstotliwość sygnału,
+    częstotliwość próbkowania, liczba poziomów kwantyzacji
+
+    na wyjściu: parametry MSE,SNR,PSNR,MD,SNR_theor,ENOB
+
+    A. Wpływ liczby poziomów kwantyzacji sygnału na błąd kwantyzacji dla różnych sygnałów
+        a) sin     /1s/4Hz/100Hz/2
+        b) sin     /1s/4Hz/100Hz/5
+        c) sin     /1s/4Hz/100Hz/10
+        d) rect    /1s/4Hz/100Hz/2
+        e) rect    /1s/4Hz/100Hz/5
+        g) triangle/1s/4Hz/100Hz/2
+        h) triangle/1s/4Hz/100Hz/3
+        i) triangle/1s/4Hz/100Hz/5

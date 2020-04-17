@@ -5,15 +5,14 @@ public class UnitJumpSignal extends ContinuousSignal {
     private final double amplitude;
     private final double jumpPosition;
 
-    public UnitJumpSignal(double rangeStart, double rangeLength, double amplitude,
-                          double jumpPosition) {
+    public UnitJumpSignal(double rangeStart, double rangeLength, double amplitude, double jumpPosition) {
         super(rangeStart, rangeLength);
         this.amplitude = amplitude;
         this.jumpPosition = jumpPosition;
     }
 
     @Override
-    protected double value(double t) {
+    public double value(double t) {
         if (t > jumpPosition) {
             return amplitude;
         } else if (t == jumpPosition) {

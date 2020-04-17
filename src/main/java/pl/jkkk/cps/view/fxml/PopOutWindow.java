@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.util;
+package pl.jkkk.cps.view.fxml;
 
 import javafx.scene.control.Alert;
 

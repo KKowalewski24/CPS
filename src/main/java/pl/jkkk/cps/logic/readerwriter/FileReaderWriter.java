@@ -1,4 +1,4 @@
-package pl.jkkk.cps.logic.reader;
+package pl.jkkk.cps.logic.readerwriter;
 
 import pl.jkkk.cps.logic.exception.FileOperationException;
 
@@ -7,14 +7,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class FileReader<T> {
+public class FileReaderWriter<T extends Serializable> {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private String filename;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public FileReader(String filename) {
+    public FileReaderWriter(String filename) {
         this.filename = filename;
     }
 

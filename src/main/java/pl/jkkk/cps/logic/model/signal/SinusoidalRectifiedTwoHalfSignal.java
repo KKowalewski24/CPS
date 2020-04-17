@@ -13,7 +13,7 @@ public class SinusoidalRectifiedTwoHalfSignal extends ContinuousSignal {
     }
 
     @Override
-    protected double value(double t) {
-        return amplitude * Math.abs(Math.sin((2.0 * Math.PI / term) * (t - rangeStart)));
+    public double value(double t) {
+        return amplitude * Math.abs(Math.sin((2.0 * Math.PI / term) * (t - getRangeStart())));
     }
 }

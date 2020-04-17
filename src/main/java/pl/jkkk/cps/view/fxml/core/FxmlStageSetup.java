@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.util.core;
+package pl.jkkk.cps.view.fxml.core;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

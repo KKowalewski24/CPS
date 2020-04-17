@@ -10,11 +10,11 @@ public class GaussianNoise extends ContinuousSignal {
     public GaussianNoise(double rangeStart, double rangeLength, double amplitude) {
         super(rangeStart, rangeLength);
         this.amplitude = amplitude;
-        this.rand = new Random();
+        this.rand = new Random(47);
     }
 
     @Override
-    protected double value(double t) {
+    public double value(double t) {
         return (rand.nextGaussian() * 2.0 - 1.0) * amplitude;
     }
 }

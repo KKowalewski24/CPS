@@ -1,38 +1,42 @@
 package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import pl.jkkk.cps.logic.model.OperationType;
-import pl.jkkk.cps.logic.model.SignalType;
-import pl.jkkk.cps.view.helper.CustomTab;
-import pl.jkkk.cps.view.helper.CustomTabPane;
+import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
+import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
+import pl.jkkk.cps.logic.model.enumtype.SignalType;
+import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
+import pl.jkkk.cps.view.model.CustomTab;
+import pl.jkkk.cps.view.model.CustomTabPane;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static pl.jkkk.cps.view.helper.ChartHelper.fillComboBox;
-import static pl.jkkk.cps.view.helper.ChartHelper.getTabNameList;
-import static pl.jkkk.cps.view.helper.ChartHelper.prepareLabelWithPosition;
-import static pl.jkkk.cps.view.helper.ChartHelper.setTextFieldPosition;
-import static pl.jkkk.cps.view.helper.ChartHelper.textFieldSetValue;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
+import static pl.jkkk.cps.view.fxml.FxHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareLabelWithPosition;
+import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.removeAndAddNewPaneChildren;
+import static pl.jkkk.cps.view.fxml.FxHelper.setTextFieldPosition;
+import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
 
 public class Initializer {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private ComboBox comboBoxSignalTypes;
-    private ComboBox comboBoxOperationTypes;
-    private ComboBox comboBoxFirstSignal;
-    private ComboBox comboBoxSecondSignal;
+    private ComboBox comboBoxOperationTypesTwoArgs;
+    private ComboBox comboBoxFirstSignalTwoArgs;
+    private ComboBox comboBoxSecondSignalTwoArgs;
     private Pane chooseParamsTab;
 
     private TextField textFieldAmplitude;
@@ -46,18 +50,33 @@ public class Initializer {
 
     private TabPane tabPaneResults;
 
+    private ComboBox comboBoxOperationTypesOneArgs;
+    private ComboBox comboBoxSignalOneArgs;
+    private ComboBox comboBoxComparisonFirstSignal;
+    private ComboBox comboBoxComparisonSecondSignal;
+    private AnchorPane comparisonPane;
+    private AnchorPane oneArgsPane;
+    private TextField textFieldQuantizationLevels;
+    private TextField textFieldSampleRate;
+    private TextField textFieldReconstructionSincParam;
+
     /*------------------------ METHODS REGION ------------------------*/
-    public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypes,
-                       ComboBox comboBoxFirstSignal, ComboBox comboBoxSecondSignal,
+    public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
+                       ComboBox comboBoxFirstSignalTwoArgs, ComboBox comboBoxSecondSignalTwoArgs,
                        Pane chooseParamsTab, TextField textFieldAmplitude,
                        TextField textFieldStartTime, TextField textFieldSignalDuration,
                        TextField textFieldBasicPeriod, TextField textFieldFillFactor,
                        TextField textFieldJumpTime, TextField textFieldProbability,
-                       TextField textFieldSamplingFrequency, TabPane tabPaneResults) {
+                       TextField textFieldSamplingFrequency, TabPane tabPaneResults,
+                       ComboBox comboBoxOperationTypesOneArgs, ComboBox comboBoxSignalOneArgs,
+                       ComboBox comboBoxComparisonFirstSignal,
+                       ComboBox comboBoxComparisonSecondSignal, AnchorPane comparisonPane,
+                       AnchorPane oneArgsPane, TextField textFieldQuantizationLevels,
+                       TextField textFieldSampleRate, TextField textFieldReconstructionSincParam) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
-        this.comboBoxOperationTypes = comboBoxOperationTypes;
-        this.comboBoxFirstSignal = comboBoxFirstSignal;
-        this.comboBoxSecondSignal = comboBoxSecondSignal;
+        this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
+        this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
+        this.comboBoxSecondSignalTwoArgs = comboBoxSecondSignalTwoArgs;
         this.chooseParamsTab = chooseParamsTab;
         this.textFieldAmplitude = textFieldAmplitude;
         this.textFieldStartTime = textFieldStartTime;
@@ -68,9 +87,19 @@ public class Initializer {
         this.textFieldProbability = textFieldProbability;
         this.textFieldSamplingFrequency = textFieldSamplingFrequency;
         this.tabPaneResults = tabPaneResults;
+        this.comboBoxOperationTypesOneArgs = comboBoxOperationTypesOneArgs;
+        this.comboBoxSignalOneArgs = comboBoxSignalOneArgs;
+        this.comboBoxComparisonFirstSignal = comboBoxComparisonFirstSignal;
+        this.comboBoxComparisonSecondSignal = comboBoxComparisonSecondSignal;
+        this.comparisonPane = comparisonPane;
+        this.oneArgsPane = oneArgsPane;
+        this.textFieldQuantizationLevels = textFieldQuantizationLevels;
+        this.textFieldSampleRate = textFieldSampleRate;
+        this.textFieldReconstructionSincParam = textFieldReconstructionSincParam;
     }
 
-    private void fillTextFields() {
+    /*--------------------------------------------------------------------------------------------*/
+    private void fillGenerationTab() {
         textFieldSetValue(textFieldAmplitude, String.valueOf(1));
         textFieldSetValue(textFieldStartTime, String.valueOf(0));
         textFieldSetValue(textFieldSignalDuration, String.valueOf(5));
@@ -79,9 +108,7 @@ public class Initializer {
         textFieldSetValue(textFieldJumpTime, String.valueOf(2));
         textFieldSetValue(textFieldProbability, String.valueOf(0.5));
         textFieldSetValue(textFieldSamplingFrequency, String.valueOf(16));
-    }
 
-    private void fillComboBoxes() {
         fillComboBox(comboBoxSignalTypes, Stream.of(
                 SignalType.UNIFORM_NOISE.getName(),
                 SignalType.GAUSSIAN_NOISE.getName(),
@@ -96,19 +123,6 @@ public class Initializer {
                 SignalType.IMPULSE_NOISE.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
-        fillComboBox(comboBoxOperationTypes, Stream.of(
-                OperationType.ADDITION.getName(),
-                OperationType.SUBTRACTION.getName(),
-                OperationType.MULTIPLICATION.getName(),
-                OperationType.DIVISION.getName()
-        ).collect(Collectors.toCollection(ArrayList::new)));
-
-        fillComboBox(comboBoxFirstSignal, getTabNameList(tabPaneResults.getTabs()));
-        fillComboBox(comboBoxSecondSignal, getTabNameList(tabPaneResults.getTabs()));
-    }
-
-    private void fillChooseParamsTab() {
-
         List<Node> basicInputs = Stream.of(
                 prepareLabelWithPosition("Wybierz Parametry", 168, 14),
                 prepareLabelWithPosition("Amplituda", 50, 50),
@@ -122,8 +136,7 @@ public class Initializer {
         chooseParamsTab.getChildren().setAll(basicInputs);
 
         comboBoxSignalTypes.setOnAction((event -> {
-            String selectedSignal = comboBoxSignalTypes.getSelectionModel()
-                    .getSelectedItem().toString();
+            String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())
                     || selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
@@ -179,44 +192,133 @@ public class Initializer {
         }));
     }
 
+    /*--------------------------------------------------------------------------------------------*/
+    private void actionComboBoxOperationTypesOneArgs() {
+        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
+        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
+
+        String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
+        topPane.setVisible(false);
+
+        if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
+            bottomPane.setVisible(true);
+
+            removeAndAddNewPaneChildren(bottomPane,
+                    prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
+                    setTextFieldPosition(textFieldSampleRate, 250, 30)
+            );
+
+        } else {
+            if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+                fillComboBox(comboBoxMethod, Stream.of(
+                        QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName(),
+                        QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName()
+                ).collect(Collectors.toCollection(ArrayList::new)));
+
+                topPane.setVisible(true);
+                bottomPane.setVisible(true);
+
+                removeAndAddNewPaneChildren(bottomPane,
+                        prepareLabelWithPosition("Liczba Poziomów Kwantyzacji", 14, 33),
+                        setTextFieldPosition(textFieldQuantizationLevels, 250, 30)
+                );
+
+            } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+
+                fillComboBox(comboBoxMethod, Stream.of(
+                        SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName(),
+                        SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName(),
+                        SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC.getName()
+                ).collect(Collectors.toCollection(ArrayList::new)));
+
+                topPane.setVisible(true);
+                bottomPane.setVisible(true);
+
+                removeAndAddNewPaneChildren(bottomPane,
+                        prepareLabelWithPosition("Parametr funkcji sinc", 14, 33),
+                        setTextFieldPosition(textFieldReconstructionSincParam,
+                                250, 30)
+                );
+            }
+        }
+    }
+
+    private void fillOneArgsTab() {
+        fillComboBox(comboBoxOperationTypesOneArgs, Stream.of(
+                OneArgsOperationType.SAMPLING.getName(),
+                OneArgsOperationType.QUANTIZATION.getName(),
+                OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName()
+        ).collect(Collectors.toCollection(ArrayList::new)));
+
+        textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
+        textFieldSetValue(textFieldSampleRate, String.valueOf(10));
+        textFieldSetValue(textFieldReconstructionSincParam, String.valueOf(1));
+        fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
+
+        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
+        topPane.setVisible(false);
+        removeAndAddNewPaneChildren(bottomPane,
+                prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
+                setTextFieldPosition(textFieldSampleRate, 250, 30)
+        );
+
+        comboBoxOperationTypesOneArgs.setOnAction((event -> {
+            actionComboBoxOperationTypesOneArgs();
+        }));
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    private void fillTwoArgsTab() {
+        fillComboBox(comboBoxOperationTypesTwoArgs, Stream.of(
+                TwoArgsOperationType.ADDITION.getName(),
+                TwoArgsOperationType.SUBTRACTION.getName(),
+                TwoArgsOperationType.MULTIPLICATION.getName(),
+                TwoArgsOperationType.DIVISION.getName()
+        ).collect(Collectors.toCollection(ArrayList::new)));
+
+        fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxSecondSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    private void fillComparisonTab() {
+        fillComboBox(comboBoxComparisonFirstSignal, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxComparisonSecondSignal, getTabNameList(tabPaneResults.getTabs()));
+
+        comparisonPane.getChildren().addAll(
+                prepareLabelWithPosition("Błąd średniokwadratowy: ", 25, 20),
+                prepareLabelWithPosition("Stosunek sygnał - szum: ", 25, 60),
+                prepareLabelWithPosition("Szczytowy stosunek sygnał - szum: ", 25, 100),
+                prepareLabelWithPosition("Maksymalna różnica: ", 25, 140),
+                prepareLabelWithPosition("Efektywna liczba bitów: ", 25, 180),
+                prepareLabelWithPosition("Czas transformacji: ", 25, 220)
+        );
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
     public void prepareTabPaneInputs() {
-        fillComboBoxes();
-        fillTextFields();
-        fillChooseParamsTab();
+        fillGenerationTab();
+        fillOneArgsTab();
+        fillTwoArgsTab();
+        fillComparisonTab();
     }
 
     public void prepareTabPaneResults(int index) {
-
-        LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
-        lineChart.setCreateSymbols(false);
-        lineChart.setAnimated(false);
-
-        BarChart barChart = new BarChart<>(new CategoryAxis(), new NumberAxis());
-        barChart.setAnimated(false);
-
         Pane pane = new Pane(
                 prepareLabelWithPosition("Wartość średnia sygnału: ", 25, 40),
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
                 prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
                 prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
                 prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
-
-         /* not for this task
-                prepareLabelWithPosition("Błąd średniokwadratowy: ", 25, 240),
-                prepareLabelWithPosition("Stosunek sygnał - szum: ", 25, 280),
-                prepareLabelWithPosition("Szczytowy stosunek sygnał - szum: ", 25, 320),
-                prepareLabelWithPosition("Maksymalna różnica: ", 25, 360),
-                prepareLabelWithPosition("Efektywna liczba bitów: ", 25, 400),
-                prepareLabelWithPosition("Czas transformacji: ", 25, 440)
-          */
         );
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
-                        new CustomTab("Wykres", lineChart, false),
-                        new CustomTab("Histogram", barChart, false),
+                        new CustomTab("Wykres", prepareLineChart(), false),
+                        new CustomTab("Histogram", prepareBarChart(), false),
                         new CustomTab("Parametry", pane, false)
                 )));
     }
 }
-    

@@ -1,0 +1,26 @@
+package pl.jkkk.cps.logic.model.enumtype;
+
+public enum SignalType {
+
+    UNIFORM_NOISE("Szum o rozkładzie jednostajnym"),
+    GAUSSIAN_NOISE("Szum gaussowski"),
+    SINUSOIDAL_SIGNAL("Sygnał sinusoidalny"),
+    SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL("Sygnał sinusoidalny wyprostowany jednopołówkowo"),
+    SINUSOIDAL_RECTIFIED_IN_TWO_HALVES("Sygnał sinusoidalny wyprostowany dwupołówkowo"),
+    RECTANGULAR_SIGNAL("Sygnał prostokątny"),
+    SYMMETRICAL_RECTANGULAR_SIGNAL("Sygnał prostokątny symetryczny"),
+    TRIANGULAR_SIGNAL("Sygnał trójkątny"),
+    UNIT_JUMP("Skok jednostkowy"),
+    UNIT_IMPULSE("Impuls jednostkowy"),
+    IMPULSE_NOISE("Szum impulsowy");
+
+    private final String name;
+
+    SignalType(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+}

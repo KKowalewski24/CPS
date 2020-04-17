@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.helper;
+package pl.jkkk.cps.view.model;
 
 import javafx.scene.control.TabPane;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -13,7 +13,8 @@ public class CustomTabPane extends TabPane {
     private CustomTab paramsTab;
 
     /*------------------------ METHODS REGION ------------------------*/
-    public CustomTabPane(CustomTab chartTab, CustomTab histogramTab, CustomTab paramsTab) {
+    public CustomTabPane(CustomTab chartTab, CustomTab histogramTab,
+                         CustomTab paramsTab) {
         super(chartTab, histogramTab, paramsTab);
         this.chartTab = chartTab;
         this.histogramTab = histogramTab;
@@ -24,20 +25,20 @@ public class CustomTabPane extends TabPane {
         return chartTab;
     }
 
-    public CustomTab getHistogramTab() {
-        return histogramTab;
-    }
-
-    public CustomTab getParamsTab() {
-        return paramsTab;
-    }
-
     public void setChartTab(CustomTab chartTab) {
         this.chartTab = chartTab;
     }
 
+    public CustomTab getHistogramTab() {
+        return histogramTab;
+    }
+
     public void setHistogramTab(CustomTab histogramTab) {
         this.histogramTab = histogramTab;
+    }
+
+    public CustomTab getParamsTab() {
+        return paramsTab;
     }
 
     public void setParamsTab(CustomTab paramsTab) {

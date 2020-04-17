@@ -1,4 +1,4 @@
-package pl.jkkk.cps.view.helper;
+package pl.jkkk.cps.view.model;
 
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
