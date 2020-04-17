@@ -5,19 +5,17 @@ import java.util.List;
 
 import pl.jkkk.cps.logic.model.Data;
 
-public class DiscreteSignal extends Signal {
+public abstract class DiscreteSignal extends Signal {
 
     private final double sampleRate;
     private final int numberOfSamples;
     private final double step;
-    private ContinuousSignal continuousSignal;
 
-    public DiscreteSignal(double rangeStart, double rangeLength, double sampleRate, ContinuousSignal continuousSignal) {
+    public DiscreteSignal(double rangeStart, double rangeLength, double sampleRate) {
         super(rangeStart, rangeLength);
         this.sampleRate = sampleRate;
         this.numberOfSamples = (int) (rangeLength * sampleRate);
         this.step = 1.0 / sampleRate;
-        this.continuousSignal = continuousSignal;
     }
 
     public double getSampleRate() {
@@ -28,9 +26,7 @@ public class DiscreteSignal extends Signal {
         return numberOfSamples;
     }
 
-    public double value(int i) {
-        return continuousSignal.value(argument(i));
-    }
+    abstract public double value(int i);
 
     public double argument(int i) {
         return i * step + getRangeStart();

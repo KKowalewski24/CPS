@@ -9,7 +9,7 @@ public abstract class QuantizedSignal extends DiscreteSignal {
     private final DiscreteSignal sourceSignal;
 
     public QuantizedSignal(DiscreteSignal sourceSignal, int numberOfLevels) {
-        super(sourceSignal.getRangeStart(), sourceSignal.getRangeLength(), sourceSignal.getSampleRate(), null);
+        super(sourceSignal.getRangeStart(), sourceSignal.getRangeLength(), sourceSignal.getSampleRate());
         this.levels = calculateLevels(sourceSignal, numberOfLevels);
         this.sourceSignal = sourceSignal;
     }

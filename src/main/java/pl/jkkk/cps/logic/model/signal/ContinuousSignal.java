@@ -14,7 +14,7 @@ public abstract class ContinuousSignal extends Signal {
 
     @Override
     public List<Data> generateDiscreteRepresentation() {
-        return new DiscreteSignal(getRangeStart(), getRangeLength(),
+        return new ContinuousBasedDiscreteSignal(getRangeStart(), getRangeLength(),
                     1000000.0 / getRangeLength(), this)
                 .generateDiscreteRepresentation();
     }
