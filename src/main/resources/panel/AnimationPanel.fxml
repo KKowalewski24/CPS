@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+           prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="pl.jkkk.cps.view.controller.animationpanel.AnimationPanel">
+    <children>
+        <Button mnemonicParsing="false" text="Button"/>
+        <TextArea prefHeight="200.0" prefWidth="200.0"/>
+    </children>
+</StackPane>

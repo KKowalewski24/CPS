@@ -7,7 +7,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.jkkk.cps.view.controller.mainpanel.MainPanel">
     <children>
-        <ToolBar layoutX="346.0" layoutY="14.0" prefHeight="61.0" prefWidth="609.0">
+        <ToolBar layoutX="268.0" layoutY="14.0" prefHeight="61.0" prefWidth="765.0">
             <items>
                 <Button minHeight="35.0" minWidth="100.0" mnemonicParsing="false"
                         onAction="#onActionButtonGenerateData" prefHeight="35.0" prefWidth="112.0"
@@ -15,6 +15,9 @@
                 <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
                         mnemonicParsing="false" onAction="#onActionButtonAddNewTab"
                         text="Dodaj Kartę"/>
+                <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
+                        mnemonicParsing="false" onAction="#onActionButtonOpenAnimationWindow"
+                        text="Otwórz Okno Animacje"/>
                 <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
                         mnemonicParsing="false" onAction="#onActionButtonChangeTheme"
                         text="Tryb Ciemny ON/OFF"/>
@@ -26,9 +29,11 @@
             </items>
         </ToolBar>
 
-        <ToolBar layoutX="1012.0" layoutY="14.0" prefHeight="61.0" prefWidth="257.0">
+        <ToolBar layoutX="1128.0" layoutY="14.0" prefHeight="61.0" prefWidth="141.0">
             <items>
+                <Pane HBox.hgrow="ALWAYS"/>
                 <Spinner fx:id="spinnerHistogramRange" prefHeight="29.0" prefWidth="70.0"/>
+                <Pane HBox.hgrow="ALWAYS"/>
             </items>
         </ToolBar>
 
