@@ -2,24 +2,24 @@ package pl.jkkk.cps.logic.model.signal;
 
 public class ConvolutionSignal extends DiscreteSignal {
 
-    private final DiscreteSignal s1;
-    private final DiscreteSignal s2;
+    private final DiscreteSignal h;
+    private final DiscreteSignal x;
 
-    public ConvolutionSignal(DiscreteSignal s1, DiscreteSignal s2){
-        super(s1.getRangeStart(), 
-                (s1.getNumberOfSamples() + s2.getNumberOfSamples() - 1) * (1.0 / s1.getSampleRate()), 
-                s1.getSampleRate());
-        this.s1 = s1;
-        this.s2 = s2;
+    public ConvolutionSignal(DiscreteSignal h, DiscreteSignal x){
+        super(h.getRangeStart(), 
+                (h.getNumberOfSamples() + x.getNumberOfSamples() - 1) * (1.0 / h.getSampleRate()), 
+                h.getSampleRate());
+        this.h = h;
+        this.x = x;
     }
 
     @Override
     public double value(int i){
         double sum = 0.0;
-        
-        for (int k = (i < s1.getNumberOfSamples() ? 0 : i - s1.getNumberOfSamples() + 1); 
-                k <= i; k++){
-            sum += s2.value(k) * s1.value(i - k);
+        int startK = Math.max(0, i - x.getNumberOfSamples() + 1);
+        int endX = Math.min(h.getNumberOfSamples(), i + 1);
+        for (int k = startK; k < endX; k++) {
+            sum += h.value(k) * x.value(i - k);
         }
         
         return sum;
