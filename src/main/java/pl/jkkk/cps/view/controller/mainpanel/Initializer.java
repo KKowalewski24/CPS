@@ -118,7 +118,7 @@ public class Initializer {
         textFieldSetValue(textFieldProbability, String.valueOf(0.5));
         textFieldSetValue(textFieldSamplingFrequency, String.valueOf(16));
         textFieldSetValue(textFieldCuttingFrequency, String.valueOf(4));
-        textFieldSetValue(textFieldFilterRow, String.valueOf(16));
+        textFieldSetValue(textFieldFilterRow, String.valueOf(15));
 
         fillComboBox(comboBoxSignalTypes, Stream.of(
                 SignalType.UNIFORM_NOISE.getName(),

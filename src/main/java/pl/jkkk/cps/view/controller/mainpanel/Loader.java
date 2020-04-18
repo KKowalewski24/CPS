@@ -23,11 +23,15 @@ import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.WindowType;
+import pl.jkkk.cps.logic.model.signal.BandPassFilter;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
+import pl.jkkk.cps.logic.model.signal.HighPassFilter;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
+import pl.jkkk.cps.logic.model.signal.LowPassFilter;
 import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
@@ -39,6 +43,7 @@ import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
+import pl.jkkk.cps.logic.model.window.Window;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
 import pl.jkkk.cps.logic.report.LatexGenerator;
@@ -273,65 +278,56 @@ public class Loader {
             Double jumpMoment = Double.parseDouble(textFieldJumpTime.getText());
             Double probability = Double.parseDouble(textFieldProbability.getText());
             Double sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
+            Double cuttingFrequency = Double.parseDouble(textFieldCuttingFrequency.getText());
+            Integer filterRow = Integer.parseInt(textFieldFilterRow.getText());
+            WindowType selectedWindowType = WindowType.fromString(
+                    getValueFromComboBox((ComboBox) windowTypePane.getChildren().get(1)));
 
             Signal signal = null;
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
-
                 signal = new UniformNoise(rangeStart, rangeLength, amplitude);
-
             } else if (selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
-
                 signal = new GaussianNoise(rangeStart, rangeLength, amplitude);
-
             } else if (selectedSignal.equals(SignalType.SINUSOIDAL_SIGNAL.getName())) {
-
                 signal = new SinusoidalSignal(rangeStart, rangeLength, amplitude, term);
-
             } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName())) {
-
                 signal = new SinusoidalRectifiedOneHalfSignal(rangeStart, rangeLength,
                         amplitude, term);
-
             } else if (selectedSignal.equals(SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName())) {
-
                 signal = new SinusoidalRectifiedTwoHalfSignal(rangeStart, rangeLength,
                         amplitude, term);
-
             } else if (selectedSignal.equals(SignalType.RECTANGULAR_SIGNAL.getName())) {
-
                 signal = new RectangularSignal(rangeStart, rangeLength, amplitude,
                         term, fulfillment);
-
             } else if (selectedSignal.equals(SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName())) {
-
                 signal = new RectangularSymmetricSignal(rangeStart, rangeLength, amplitude,
                         term, fulfillment);
-
             } else if (selectedSignal.equals(SignalType.TRIANGULAR_SIGNAL.getName())) {
-
                 signal = new TriangularSignal(rangeStart, rangeLength, amplitude, term,
                         fulfillment);
-
             } else if (selectedSignal.equals(SignalType.UNIT_JUMP.getName())) {
-
                 signal = new UnitJumpSignal(rangeStart, rangeLength, amplitude, jumpMoment);
-
             } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
-
                 signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate,
                         amplitude, jumpMoment.intValue());
-
             } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
-
                 signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
                         probability);
-
+            } else if (selectedSignal.equals(SignalType.LOW_PASS_FILTER.getName())) {
+                signal = new LowPassFilter(sampleRate, filterRow, cuttingFrequency,
+                        Window.fromEnum(selectedWindowType, filterRow));
+            } else if (selectedSignal.equals(SignalType.BAND_PASS_FILTER.getName())) {
+                signal = new BandPassFilter(sampleRate, filterRow, cuttingFrequency,
+                        Window.fromEnum(selectedWindowType, filterRow));
+            } else if (selectedSignal.equals(SignalType.HIGH_PASS_FILTER.getName())) {
+                signal = new HighPassFilter(sampleRate, filterRow, cuttingFrequency,
+                        Window.fromEnum(selectedWindowType, filterRow));
             }
 
             representSignal(signal);
 
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
             PopOutWindow.messageBox("Błędne Dane", "Wprowadzono błędne dane",
                     Alert.AlertType.WARNING);
         }
