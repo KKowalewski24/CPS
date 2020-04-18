@@ -280,9 +280,14 @@ public class Loader {
             Double sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
             Double cuttingFrequency = Double.parseDouble(textFieldCuttingFrequency.getText());
             Integer filterRow = Integer.parseInt(textFieldFilterRow.getText());
-            WindowType selectedWindowType = WindowType.fromString(
-                    getValueFromComboBox((ComboBox) windowTypePane.getChildren().get(1)));
 
+            WindowType selectedWindowType = null;
+            if (selectedSignal.equals(SignalType.LOW_PASS_FILTER.getName())
+                    || selectedSignal.equals(SignalType.BAND_PASS_FILTER.getName())
+                    || selectedSignal.equals(SignalType.HIGH_PASS_FILTER.getName())) {
+                selectedWindowType = WindowType.fromString(
+                        getValueFromComboBox((ComboBox) windowTypePane.getChildren().get(1)));
+            }
             Signal signal = null;
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
@@ -316,13 +321,13 @@ public class Loader {
                         probability);
             } else if (selectedSignal.equals(SignalType.LOW_PASS_FILTER.getName())) {
                 signal = new LowPassFilter(sampleRate, filterRow, cuttingFrequency,
-                        Window.fromEnum(selectedWindowType, filterRow));
+                        WindowType.fromEnum(selectedWindowType, filterRow));
             } else if (selectedSignal.equals(SignalType.BAND_PASS_FILTER.getName())) {
                 signal = new BandPassFilter(sampleRate, filterRow, cuttingFrequency,
-                        Window.fromEnum(selectedWindowType, filterRow));
+                        WindowType.fromEnum(selectedWindowType, filterRow));
             } else if (selectedSignal.equals(SignalType.HIGH_PASS_FILTER.getName())) {
                 signal = new HighPassFilter(sampleRate, filterRow, cuttingFrequency,
-                        Window.fromEnum(selectedWindowType, filterRow));
+                        WindowType.fromEnum(selectedWindowType, filterRow));
             }
 
             representSignal(signal);

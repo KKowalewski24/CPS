@@ -30,6 +30,15 @@ if you want to pass args just place them in array as a string
      * unit_jump - rangeStart, rangeLength, amplitude, jumpMoment
      * unit_impulse - rangeStart, rangeLength, sampleRate, amplitude, jumpMoment.intValue()
      * impulse_noise - rangeStart, rangeLength, sampleRate, amplitude,probability
+     * --
+     * low_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
+     * --
+     * band_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
+     * --
+     * high_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
      * <p>
      * Sampling - sampl, filename to read, filename to save, sampleRate
      * <p>
@@ -75,6 +84,14 @@ TRIANGULAR_SIGNAL = "triang"
 UNIT_JUMP = "unit_jump"
 UNIT_IMPULSE = "unit_impulse"
 IMPULSE_NOISE = "impulse_noise"
+LOW_PASS_FILTER = "low_fil"
+BAND_PASS_FILTER = "band_fil"
+HIGH_PASS_FILTER = "high_fil"
+
+RECTANGULAR_WINDOW = "win_rect"
+HAMMING_WINDOW = "win_ham"
+HANNING_WINDOW = "win_han"
+BLACKMAN_WINDOW = "win_bla"
 
 
 # UTIL ------------------------------------------------------------------------ #
@@ -292,15 +309,24 @@ def task_2() -> None:
 
 
 # TASK3 ----------------------------------------------------------------------- #
+def task3_generate_signals(filename_first_signal: str, signal_type_first: str,
+                           signal_args_first: str, filename_second_signal: str,
+                           signal_type_second: str, signal_args_second: str) -> None:
+    run_jar(append_array([GENERATE, filename_first_signal,
+                          signal_type_first], signal_args_first))
+    run_jar(append_array([GENERATE, filename_second_signal,
+                          signal_type_second], signal_args_second))
+
+    pass
+
+
 def task3_convolution(signal_type_first: str, signal_args_first: [],
                       signal_type_second: str, signal_args_second: []) -> None:
     filename_first_signal = "first_signal"
     filename_second_signal = "second_signal"
     filename_result_signal = "result_signal"
-
-    run_jar(append_array([GENERATE, filename_first_signal, signal_type_first], signal_args_first))
-    run_jar(append_array([GENERATE, filename_second_signal,
-                          signal_type_second], signal_args_second))
+    task3_generate_signals(filename_first_signal, signal_type_first, signal_args_first,
+                           filename_second_signal, signal_type_second, signal_args_second)
     run_jar([CONVOLUTION, filename_first_signal, filename_second_signal, filename_result_signal])
     run_jar([DRAW_CHARTS, filename_result_signal])
     remove_files([filename_first_signal, filename_second_signal])
@@ -310,6 +336,8 @@ def task3_convolution(signal_type_first: str, signal_args_first: [],
 def task_3() -> None:
     task3_convolution(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
                       IMPULSE_NOISE, ["0", "5", "16", "1", "0.5"])
+    task3_convolution(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
+                      LOW_PASS_FILTER, ["16", "15", "4", HAMMING_WINDOW, "15"])
     pass
 
 

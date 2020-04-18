@@ -25,6 +25,15 @@ public class Main {
      * unit_jump - rangeStart, rangeLength, amplitude, jumpMoment
      * unit_impulse - rangeStart, rangeLength, sampleRate, amplitude, jumpMoment.intValue()
      * impulse_noise - rangeStart, rangeLength, sampleRate, amplitude,probability
+     * --
+     * low_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
+     * --
+     * band_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
+     * --
+     * high_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
      * <p>
      * Sampling - sampl, filename to read, filename to save, sampleRate
      * <p>

@@ -2,7 +2,7 @@ package pl.jkkk.cps.executionmode.commandline;
 
 import java.util.Arrays;
 
-public enum Operation {
+public enum OperationCmd {
     GENERATE("generate"),
     REPRESENT("represent"),
 
@@ -28,7 +28,7 @@ public enum Operation {
 
     private final String abbreviation;
 
-    Operation(final String abbreviation) {
+    OperationCmd(final String abbreviation) {
         this.abbreviation = abbreviation;
     }
 
@@ -36,10 +36,10 @@ public enum Operation {
         return abbreviation;
     }
 
-    public static Operation fromString(final String text) {
-        return Arrays.asList(Operation.values())
+    public static OperationCmd fromString(final String text) {
+        return Arrays.asList(OperationCmd.values())
                 .stream()
-                .filter(operation -> operation.abbreviation.equals(text))
+                .filter(operationCmd -> operationCmd.abbreviation.equals(text))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }

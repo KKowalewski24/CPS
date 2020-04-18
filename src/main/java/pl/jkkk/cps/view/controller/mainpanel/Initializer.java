@@ -210,12 +210,12 @@ public class Initializer {
 
                 chooseParamsTab.getChildren().setAll(
                         prepareLabelWithPosition("Wybierz Parametry", 168, 14),
-                        prepareLabelWithPosition("Częstotliwość odcięcia", 50, 50),
+                        prepareLabelWithPosition("Częstotliwość próbkowania", 50, 50),
                         prepareLabelWithPosition("Rząd filtra", 50, 90),
-                        prepareLabelWithPosition("Częstotliwość próbkowania", 50, 130),
-                        setTextFieldPosition(textFieldCuttingFrequency, 270, 50),
+                        prepareLabelWithPosition("Częstotliwość odcięcia", 50, 130),
+                        setTextFieldPosition(textFieldSamplingFrequency, 270, 50),
                         setTextFieldPosition(textFieldFilterRow, 270, 90),
-                        setTextFieldPosition(textFieldSamplingFrequency, 270, 130)
+                        setTextFieldPosition(textFieldCuttingFrequency, 270, 130)
                 );
 
                 ComboBox comboBoxWindowType = (ComboBox) windowTypePane.getChildren().get(1);

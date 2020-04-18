@@ -15,11 +15,14 @@ import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.signal.BandPassFilter;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
+import pl.jkkk.cps.logic.model.signal.HighPassFilter;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
+import pl.jkkk.cps.logic.model.signal.LowPassFilter;
 import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
@@ -82,17 +85,14 @@ public class CommandLineMode extends Application {
     public void start(Stage stage) throws Exception {
         commandLineStage = stage;
 
-        Operation operation = Operation.fromString(Main.getMainArgs().get(0));
-        Signal signal = null;
-        FileReaderWriter<Signal> readerWriter = null;
-        switch (operation) {
+        OperationCmd operationCmd = OperationCmd.fromString(Main.getMainArgs().get(0));
+        switch (operationCmd) {
             case GENERATE: {
                 caseGenerate();
                 break;
             }
             case SAMPLING: {
                 caseSampling();
-
                 break;
             }
             case QUANTIZATION: {
@@ -146,14 +146,14 @@ public class CommandLineMode extends Application {
         FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
         Signal signal = readerWriter.read();
 
-        if (Operation.EVEN_QUANTIZATION_WITH_TRUNCATION
-                == Operation.fromString(Main.getMainArgs().get(3))) {
+        if (OperationCmd.EVEN_QUANTIZATION_WITH_TRUNCATION
+                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
 
             signal = adc.truncatingQuantization((DiscreteSignal) signal,
                     Integer.valueOf(Main.getMainArgs().get(4)));
 
-        } else if (Operation.EVEN_QUANTIZATION_WITH_ROUNDING
-                == Operation.fromString(Main.getMainArgs().get(3))) {
+        } else if (OperationCmd.EVEN_QUANTIZATION_WITH_ROUNDING
+                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
 
             signal = adc.roundingQuantization((DiscreteSignal) signal,
                     Integer.valueOf(Main.getMainArgs().get(4)));
@@ -172,16 +172,16 @@ public class CommandLineMode extends Application {
         FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
         Signal signal = readerWriter.read();
 
-        if (Operation.ZERO_ORDER_EXTRAPOLATION
-                == Operation.fromString(Main.getMainArgs().get(3))) {
+        if (OperationCmd.ZERO_ORDER_EXTRAPOLATION
+                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
             signal = dac.zeroOrderHold((DiscreteSignal) signal);
 
-        } else if (Operation.FIRST_ORDER_INTERPOLATION
-                == Operation.fromString(Main.getMainArgs().get(3))) {
+        } else if (OperationCmd.FIRST_ORDER_INTERPOLATION
+                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
             signal = dac.firstOrderHold((DiscreteSignal) signal);
 
-        } else if (Operation.RECONSTRUCTION_BASED_FUNCTION_SINC
-                == Operation.fromString(Main.getMainArgs().get(3))) {
+        } else if (OperationCmd.RECONSTRUCTION_BASED_FUNCTION_SINC
+                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
 
             signal = dac.sincBasic((DiscreteSignal) signal,
                     Integer.valueOf(Main.getMainArgs().get(4)));
@@ -341,7 +341,7 @@ public class CommandLineMode extends Application {
     }
 
     private Signal generate(String[] args) {
-        switch (SignalType.fromString(args[2])) {
+        switch (SignalTypeCmd.fromString(args[2])) {
             case UNIFORM_NOISE: {
                 return new UniformNoise(
                         Double.parseDouble(args[3]),
@@ -421,6 +421,30 @@ public class CommandLineMode extends Application {
                         Double.parseDouble(args[5]),
                         Double.parseDouble(args[6]),
                         Double.parseDouble(args[7]));
+            }
+            case LOW_PASS_FILTER: {
+                return new LowPassFilter(
+                        Double.parseDouble(args[3]),
+                        Integer.parseInt(args[4]),
+                        Double.parseDouble(args[5]),
+                        WindowTypeCmd.fromEnum(WindowTypeCmd.fromString(args[6]),
+                                Integer.parseInt(args[4])));
+            }
+            case BAND_PASS_FILTER: {
+                return new BandPassFilter(
+                        Double.parseDouble(args[3]),
+                        Integer.parseInt(args[4]),
+                        Double.parseDouble(args[5]),
+                        WindowTypeCmd.fromEnum(WindowTypeCmd.fromString(args[6]),
+                                Integer.parseInt(args[4])));
+            }
+            case HIGH_PASS_FILTER: {
+                return new HighPassFilter(
+                        Double.parseDouble(args[3]),
+                        Integer.parseInt(args[4]),
+                        Double.parseDouble(args[5]),
+                        WindowTypeCmd.fromEnum(WindowTypeCmd.fromString(args[6]),
+                                Integer.parseInt(args[4])));
             }
         }
 

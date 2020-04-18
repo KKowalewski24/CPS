@@ -1,4 +1,4 @@
-package pl.jkkk.cps.logic.model.enumtype;
+package pl.jkkk.cps.executionmode.commandline;
 
 import pl.jkkk.cps.logic.model.window.BlackmanWindow;
 import pl.jkkk.cps.logic.model.window.HammingWindow;
@@ -8,15 +8,15 @@ import pl.jkkk.cps.logic.model.window.Window;
 
 import java.util.Arrays;
 
-public enum WindowType {
-    RECTANGULAR_WINDOW("Okno Prostokątne"),
-    HAMMING_WINDOW("Okno Hamminga"),
-    HANNING_WINDOW("Okno Hanninga"),
-    BLACKMAN_WINDOW("Okno Blackmana");
+public enum WindowTypeCmd {
+    RECTANGULAR_WINDOW("win_rect"),
+    HAMMING_WINDOW("win_ham"),
+    HANNING_WINDOW("win_han"),
+    BLACKMAN_WINDOW("win_bla");
 
     private final String name;
 
-    WindowType(String name) {
+    WindowTypeCmd(String name) {
         this.name = name;
     }
 
@@ -24,16 +24,16 @@ public enum WindowType {
         return name;
     }
 
-    public static WindowType fromString(final String text) {
-        return Arrays.asList(WindowType.values())
+    public static WindowTypeCmd fromString(final String text) {
+        return Arrays.asList(WindowTypeCmd.values())
                 .stream()
                 .filter(operation -> operation.name.equals(text))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static Window fromEnum(WindowType windowType, int M) {
-        switch (windowType) {
+    public static Window fromEnum(WindowTypeCmd windowTypeCmd, int M) {
+        switch (windowTypeCmd) {
             case RECTANGULAR_WINDOW: {
                 return new RectangularWindow();
             }
