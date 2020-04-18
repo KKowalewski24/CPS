@@ -267,33 +267,6 @@ public class CommandLineMode extends Application {
                 (DiscreteSignal) signal2));
     }
 
-    private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Collection<ChartRecord<Number, Number>> mainChartData,
-                                           Collection<ChartRecord<String, Number>> histogramData,
-                                           double[] signalParams,
-                                           boolean isScatterChart) {
-        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
-
-        fillBarChart((BarChart) customTabPane.getHistogramTab()
-                .getContent(), histogramData);
-
-        if (isScatterChart) {
-            changeLineChartToScatterChart(tabPane, scatterChart);
-            fillScatterChart((ScatterChart) customTabPane.getChartTab()
-                    .getContent(), mainChartData);
-
-        } else {
-            changeScatterChartToLineChart(tabPane, lineChart);
-            fillLineChart((LineChart) customTabPane.getChartTab()
-                    .getContent(), mainChartData);
-        }
-
-        latexGenerator = new LatexGenerator("Signal_Params");
-        latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
-                signalParams[2], signalParams[3], signalParams[4]);
-        latexGenerator.generate(ReportType.SIGNAL);
-    }
-
     private void drawChart(Signal signal) {
         List<Data> signalData = signal.generateDiscreteRepresentation();
 
@@ -338,6 +311,33 @@ public class CommandLineMode extends Application {
 
         fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams,
                 signal instanceof DiscreteSignal);
+    }
+
+    private void fillCustomTabPaneWithData(TabPane tabPane,
+                                           Collection<ChartRecord<Number, Number>> mainChartData,
+                                           Collection<ChartRecord<String, Number>> histogramData,
+                                           double[] signalParams,
+                                           boolean isScatterChart) {
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+
+        fillBarChart((BarChart) customTabPane.getHistogramTab()
+                .getContent(), histogramData);
+
+        if (isScatterChart) {
+            changeLineChartToScatterChart(tabPane, scatterChart);
+            fillScatterChart((ScatterChart) customTabPane.getChartTab()
+                    .getContent(), mainChartData);
+
+        } else {
+            changeScatterChartToLineChart(tabPane, lineChart);
+            fillLineChart((LineChart) customTabPane.getChartTab()
+                    .getContent(), mainChartData);
+        }
+
+        latexGenerator = new LatexGenerator("Signal_Params");
+        latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
+                signalParams[2], signalParams[3], signalParams[4]);
+        latexGenerator.generate(ReportType.SIGNAL);
     }
 
     private Signal generate(String[] args) {

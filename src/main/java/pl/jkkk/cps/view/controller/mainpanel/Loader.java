@@ -106,7 +106,6 @@ public class Loader {
     private FileReaderWriter<Signal> signalFileReaderWriter;
     private ReportWriter reportWriter = new ReportWriter();
     private LatexGenerator latexGenerator;
-    private boolean isScatterChart;
     private double overallTime = 0;
 
     private final ADC adc = new ADC();
@@ -170,7 +169,7 @@ public class Loader {
     private void fillCustomTabPaneWithData(TabPane tabPane,
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
-                                           double[] signalParams) {
+                                           double[] signalParams, boolean isScatterChart) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
         try {
@@ -257,7 +256,8 @@ public class Loader {
         signalParams[4] = Signal.meanPowerValue(signalData);
 
         /* render it all */
-        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams);
+        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams,
+                signal instanceof DiscreteSignal);
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -275,7 +275,6 @@ public class Loader {
             Double sampleRate = Double.parseDouble(textFieldSamplingFrequency.getText());
 
             Signal signal = null;
-            isScatterChart = false;
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())) {
 
@@ -320,13 +319,11 @@ public class Loader {
 
             } else if (selectedSignal.equals(SignalType.UNIT_IMPULSE.getName())) {
 
-                isScatterChart = true;
                 signal = new UnitImpulseSignal(rangeStart, rangeLength, sampleRate,
                         amplitude, jumpMoment.intValue());
 
             } else if (selectedSignal.equals(SignalType.IMPULSE_NOISE.getName())) {
 
-                isScatterChart = true;
                 signal = new ImpulseNoise(rangeStart, rangeLength, sampleRate, amplitude,
                         probability);
 
@@ -350,13 +347,11 @@ public class Loader {
             long startTime = System.currentTimeMillis();
 
             if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
-                isScatterChart = true;
                 double sampleRate = Double.valueOf(textFieldSampleRate.getText());
 
                 signal = adc.sampling((ContinuousSignal) selectedSignal, sampleRate);
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-                isScatterChart = true;
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
                 ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
                 Integer quantizationLevels = Integer.valueOf(textFieldQuantizationLevels.getText());
@@ -371,7 +366,6 @@ public class Loader {
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
-                isScatterChart = false;
                 Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
                 ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
                 String method = getValueFromComboBox(comboBoxMethod);
