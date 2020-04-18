@@ -11,6 +11,7 @@ public enum OperationCmd {
     MULTIPLY("mult"),
     DIVIDE("div"),
     CONVOLUTION("conv"),
+    CORRELATION("corr"),
 
     SAMPLING("sampl"),
 

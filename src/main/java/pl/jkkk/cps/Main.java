@@ -50,6 +50,8 @@ public class Main {
      * Draw charts - draw, filenames to read...
      * <p>
      * Convolution - conv, first filename to read, second filename to read, filename to save
+     *
+     * Correlation - corr, first filename to read, second filename to read, filename to save
      */
 
     /*------------------------ FIELDS REGION ------------------------*/

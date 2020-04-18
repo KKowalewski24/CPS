@@ -8,7 +8,8 @@ public enum TwoArgsOperationType {
     SUBTRACTION("Ddejmowanie"),
     MULTIPLICATION("Mnożenie"),
     DIVISION("Dzielenie"),
-    CONVOLUTION("Splot");
+    CONVOLUTION("Splot"),
+    CORRELATION("Korelacja");
 
     private final String name;
 

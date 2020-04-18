@@ -314,7 +314,8 @@ public class Initializer {
                 TwoArgsOperationType.SUBTRACTION.getName(),
                 TwoArgsOperationType.MULTIPLICATION.getName(),
                 TwoArgsOperationType.DIVISION.getName(),
-                TwoArgsOperationType.CONVOLUTION.getName()
+                TwoArgsOperationType.CONVOLUTION.getName(),
+                TwoArgsOperationType.CORRELATION.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));

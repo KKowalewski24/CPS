@@ -27,6 +27,7 @@ import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.logic.model.signal.BandPassFilter;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
+import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;
@@ -419,13 +420,19 @@ public class Loader {
                 resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
             } else if (selectedOperation.equals(TwoArgsOperationType.CONVOLUTION.getName())) {
                 resultSignal = new ConvolutionSignal((DiscreteSignal) s1, (DiscreteSignal) s2);
+            } else if (selectedOperation.equals(TwoArgsOperationType.CORRELATION.getName())) {
+                resultSignal = new CorrelationSignal((DiscreteSignal) s1, (DiscreteSignal) s2);
             }
 
             representSignal(resultSignal);
 
         } catch (ClassCastException e) {
-            e.printStackTrace();
-            PopOutWindow.messageBox("Błędne dane", "Wybrano niepoprawny typ sygnału",
+            PopOutWindow.messageBox("Błędne dane",
+                    "Wybrano niepoprawny typ sygnału",
+                    Alert.AlertType.WARNING);
+        } catch (NullPointerException e) {
+            PopOutWindow.messageBox("Brak Wygenerowanego Sygnału",
+                    "Sygnał nie został jeszcze wygenerowany",
                     Alert.AlertType.WARNING);
         }
     }

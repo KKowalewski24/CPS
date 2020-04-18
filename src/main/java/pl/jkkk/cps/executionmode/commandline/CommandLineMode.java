@@ -18,6 +18,7 @@ import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.BandPassFilter;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
+import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;
@@ -113,6 +114,10 @@ public class CommandLineMode extends Application {
             }
             case CONVOLUTION: {
                 caseConvolution();
+                break;
+            }
+            case CORRELATION: {
+                caseCorrelation();
                 break;
             }
         }
@@ -264,6 +269,17 @@ public class CommandLineMode extends Application {
 
         readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(3));
         readerWriter.write(new ConvolutionSignal((DiscreteSignal) signal1,
+                (DiscreteSignal) signal2));
+    }
+
+    private void caseCorrelation() throws FileOperationException {
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+        Signal signal1 = readerWriter.read();
+        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+        Signal signal2 = readerWriter.read();
+
+        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(3));
+        readerWriter.write(new CorrelationSignal((DiscreteSignal) signal1,
                 (DiscreteSignal) signal2));
     }
 

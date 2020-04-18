@@ -55,6 +55,8 @@ if you want to pass args just place them in array as a string
      * Draw charts - draw, filenames to read...
      * <p>
      * Convolution - conv, first filename to read, second filename to read, filename to save
+     * 
+     * Correlation - corr, first filename to read, second filename to read, filename to save
 
 '''
 
@@ -333,11 +335,26 @@ def task3_convolution(signal_type_first: str, signal_args_first: [],
     pass
 
 
+def task3_correlation(signal_type_first: str, signal_args_first: [],
+                      signal_type_second: str, signal_args_second: []) -> None:
+    filename_first_signal = "first_signal"
+    filename_second_signal = "second_signal"
+    filename_result_signal = "result_signal"
+    task3_generate_signals(filename_first_signal, signal_type_first, signal_args_first,
+                           filename_second_signal, signal_type_second, signal_args_second)
+    run_jar([CONVOLUTION, filename_first_signal, filename_second_signal, filename_result_signal])
+    run_jar([DRAW_CHARTS, filename_result_signal])
+    remove_files([filename_first_signal, filename_second_signal])
+    pass
+
+
 def task_3() -> None:
     task3_convolution(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
                       IMPULSE_NOISE, ["0", "5", "16", "1", "0.5"])
     task3_convolution(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
                       LOW_PASS_FILTER, ["16", "15", "4", HAMMING_WINDOW, "15"])
+    task3_correlation(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
+                      IMPULSE_NOISE, ["0", "5", "16", "1", "0.5"])
     pass
 
 
