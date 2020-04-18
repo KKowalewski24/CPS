@@ -24,6 +24,7 @@ import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -405,17 +406,26 @@ public class Loader {
         Signal s2 = signals.get(s2Index);
         Signal resultSignal = null;
 
-        if (selectedOperation.equals(TwoArgsOperationType.ADDITION.getName())) {
-            resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
-        } else if (selectedOperation.equals(TwoArgsOperationType.SUBTRACTION.getName())) {
-            resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
-        } else if (selectedOperation.equals(TwoArgsOperationType.MULTIPLICATION.getName())) {
-            resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
-        } else if (selectedOperation.equals(TwoArgsOperationType.DIVISION.getName())) {
-            resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
-        }
+        try {
+            if (selectedOperation.equals(TwoArgsOperationType.ADDITION.getName())) {
+                resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
+            } else if (selectedOperation.equals(TwoArgsOperationType.SUBTRACTION.getName())) {
+                resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
+            } else if (selectedOperation.equals(TwoArgsOperationType.MULTIPLICATION.getName())) {
+                resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
+            } else if (selectedOperation.equals(TwoArgsOperationType.DIVISION.getName())) {
+                resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
+            } else if (selectedOperation.equals(TwoArgsOperationType.CONVOLUTION.getName())) {
+                resultSignal = new ConvolutionSignal((DiscreteSignal) s1, (DiscreteSignal) s2);
+            }
 
-        representSignal(resultSignal);
+            representSignal(resultSignal);
+
+        } catch (ClassCastException e) {
+            e.printStackTrace();
+            PopOutWindow.messageBox("Błędne dane", "Wybrano niepoprawny typ sygnału",
+                    Alert.AlertType.WARNING);
+        }
     }
 
     public void generateComparison() {

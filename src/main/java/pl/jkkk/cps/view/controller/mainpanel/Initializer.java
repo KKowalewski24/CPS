@@ -275,7 +275,8 @@ public class Initializer {
                 TwoArgsOperationType.ADDITION.getName(),
                 TwoArgsOperationType.SUBTRACTION.getName(),
                 TwoArgsOperationType.MULTIPLICATION.getName(),
-                TwoArgsOperationType.DIVISION.getName()
+                TwoArgsOperationType.DIVISION.getName(),
+                TwoArgsOperationType.CONVOLUTION.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));

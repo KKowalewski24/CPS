@@ -39,6 +39,8 @@ public class Main {
      * Comparison - comp, first filename to read, second filename to read
      * <p>
      * Draw charts - draw, filenames to read...
+     * <p>
+     * Convolution - conv, first filename to read, second filename to read, filename to save
      */
 
     /*------------------------ FIELDS REGION ------------------------*/

@@ -16,6 +16,7 @@ import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -73,6 +74,272 @@ public class CommandLineMode extends Application {
     private BarChart barChart;
 
     /*------------------------ METHODS REGION ------------------------*/
+    public void main() throws Exception {
+        launch();
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        commandLineStage = stage;
+
+        Operation operation = Operation.fromString(Main.getMainArgs().get(0));
+        Signal signal = null;
+        FileReaderWriter<Signal> readerWriter = null;
+        switch (operation) {
+            case GENERATE: {
+                caseGenerate();
+                break;
+            }
+            case SAMPLING: {
+                caseSampling();
+
+                break;
+            }
+            case QUANTIZATION: {
+                caseQuantization();
+                break;
+            }
+            case RECONSTRUCTION: {
+                caseReconstruction();
+                break;
+            }
+            case COMPARISON: {
+                caseComparison();
+                break;
+            }
+            case DRAW_CHARTS: {
+                caseDrawCharts();
+                break;
+            }
+            case CONVOLUTION: {
+                caseConvolution();
+                break;
+            }
+        }
+        System.exit(0);
+    }
+
+    private void caseGenerate() throws FileOperationException {
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+        Signal signal = generate(Main.getMainArgs().stream().toArray(String[]::new));
+        readerWriter.write(signal);
+
+        latexGenerator = new LatexGenerator("Input_gene");
+        latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 2);
+        latexGenerator.generate(ReportType.INPUT_PARAMETERS);
+    }
+
+    private void caseSampling() throws FileOperationException {
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+        Signal signal = readerWriter.read();
+        signal = adc.sampling((ContinuousSignal) signal,
+                Double.valueOf(Main.getMainArgs().get(3)));
+        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+        readerWriter.write(signal);
+
+        latexGenerator = new LatexGenerator("Input_sampling");
+        latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 3);
+        latexGenerator.generate(ReportType.INPUT_PARAMETERS);
+    }
+
+    private void caseQuantization() throws FileOperationException {
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+        Signal signal = readerWriter.read();
+
+        if (Operation.EVEN_QUANTIZATION_WITH_TRUNCATION
+                == Operation.fromString(Main.getMainArgs().get(3))) {
+
+            signal = adc.truncatingQuantization((DiscreteSignal) signal,
+                    Integer.valueOf(Main.getMainArgs().get(4)));
+
+        } else if (Operation.EVEN_QUANTIZATION_WITH_ROUNDING
+                == Operation.fromString(Main.getMainArgs().get(3))) {
+
+            signal = adc.roundingQuantization((DiscreteSignal) signal,
+                    Integer.valueOf(Main.getMainArgs().get(4)));
+
+        }
+
+        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+        readerWriter.write(signal);
+
+        latexGenerator = new LatexGenerator("Input_Quant");
+        latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 4);
+        latexGenerator.generate(ReportType.INPUT_PARAMETERS);
+    }
+
+    private void caseReconstruction() throws FileOperationException {
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+        Signal signal = readerWriter.read();
+
+        if (Operation.ZERO_ORDER_EXTRAPOLATION
+                == Operation.fromString(Main.getMainArgs().get(3))) {
+            signal = dac.zeroOrderHold((DiscreteSignal) signal);
+
+        } else if (Operation.FIRST_ORDER_INTERPOLATION
+                == Operation.fromString(Main.getMainArgs().get(3))) {
+            signal = dac.firstOrderHold((DiscreteSignal) signal);
+
+        } else if (Operation.RECONSTRUCTION_BASED_FUNCTION_SINC
+                == Operation.fromString(Main.getMainArgs().get(3))) {
+
+            signal = dac.sincBasic((DiscreteSignal) signal,
+                    Integer.valueOf(Main.getMainArgs().get(4)));
+        }
+
+        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+        readerWriter.write(signal);
+
+        latexGenerator = new LatexGenerator("Input_Recon");
+        latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 3);
+        latexGenerator.generate(ReportType.INPUT_PARAMETERS);
+    }
+
+    private void caseComparison() throws FileOperationException {
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+        List<Data> firstSignalData = readerWriter.read().generateDiscreteRepresentation();
+        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+        List<Data> secondSignalData = readerWriter.read().generateDiscreteRepresentation();
+
+        double meanSquaredError = Signal.meanSquaredError(secondSignalData,
+                firstSignalData);
+        double signalToNoiseRatio = Signal.signalToNoiseRatio(secondSignalData,
+                firstSignalData);
+        double peakSignalToNoiseRatio = Signal.peakSignalToNoiseRatio(secondSignalData,
+                firstSignalData);
+        double maximumDifference = Signal.maximumDifference(secondSignalData,
+                firstSignalData);
+        double effectiveNumberOfBits = Signal.effectiveNumberOfBits(secondSignalData,
+                firstSignalData);
+
+        latexGenerator = new LatexGenerator("Comparison");
+        latexGenerator.createSummaryForComparison(meanSquaredError,
+                signalToNoiseRatio, peakSignalToNoiseRatio,
+                maximumDifference, effectiveNumberOfBits,
+                /*TODO ADD overall time*/0);
+        latexGenerator.generate(ReportType.COMPARISON);
+    }
+
+    private void caseDrawCharts() throws FileOperationException {
+        root = new StackPane();
+        tabPane = new TabPane();
+        lineChart = prepareLineChart();
+        scatterChart = prepareScatterChart();
+        barChart = prepareBarChart();
+
+        tabPane.getTabs().add(new Tab("Karta ",
+                new CustomTabPane(
+                        new CustomTab("Wykres", lineChart, false),
+                        new CustomTab("Histogram", barChart, false),
+                        new CustomTab("Parametry", new Pane(), false)
+                )));
+
+        root.getChildren().addAll(tabPane);
+        commandLineStage.setScene(new Scene(root, 700, 600));
+        commandLineStage.show();
+
+        for (int i = 1; i < Main.getMainArgs().size(); i++) {
+            FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs()
+                    .get(i));
+            Signal signalInLoop = readerWriter.read();
+            drawChart(signalInLoop);
+        }
+
+        try {
+            CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+            switchTabToAnother(customTabPane, 1);
+            reportWriter.writeFxChart("histogram", Main.getMainArgs(), tabPane);
+            switchTabToAnother(customTabPane, 0);
+            reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+        } catch (FileOperationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void caseConvolution() throws FileOperationException {
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
+        Signal signal1 = readerWriter.read();
+        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
+        Signal signal2 = readerWriter.read();
+
+        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(3));
+        readerWriter.write(new ConvolutionSignal((DiscreteSignal) signal1,
+                (DiscreteSignal) signal2));
+    }
+
+    private void fillCustomTabPaneWithData(TabPane tabPane,
+                                           Collection<ChartRecord<Number, Number>> mainChartData,
+                                           Collection<ChartRecord<String, Number>> histogramData,
+                                           double[] signalParams,
+                                           boolean isScatterChart) {
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+
+        fillBarChart((BarChart) customTabPane.getHistogramTab()
+                .getContent(), histogramData);
+
+        if (isScatterChart) {
+            changeLineChartToScatterChart(tabPane, scatterChart);
+            fillScatterChart((ScatterChart) customTabPane.getChartTab()
+                    .getContent(), mainChartData);
+
+        } else {
+            changeScatterChartToLineChart(tabPane, lineChart);
+            fillLineChart((LineChart) customTabPane.getChartTab()
+                    .getContent(), mainChartData);
+        }
+
+        latexGenerator = new LatexGenerator("Signal_Params");
+        latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
+                signalParams[2], signalParams[3], signalParams[4]);
+        latexGenerator.generate(ReportType.SIGNAL);
+    }
+
+    private void drawChart(Signal signal) {
+        List<Data> signalData = signal.generateDiscreteRepresentation();
+
+        List<Data> data;
+        if (signal instanceof GaussianNoise || signal instanceof UniformNoise) {
+            data = new ArrayList<>();
+            for (int i = 0; i < signalData.size(); i++) {
+                if (i % (signalData.size() / 1000) == 0) {
+                    data.add(signalData.get(i));
+                }
+            }
+        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
+            DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
+            data = signalData;
+            data = new ArrayList<>(douglasPeucker
+                    .calculate(data, (data.get(data.size() - 1).getX() - data.get(0)
+                            .getX()) * 1.0 / 10000.0, 0, data.size() - 1));
+        } else {
+            data = signalData;
+        }
+
+        List<ChartRecord<Number, Number>> chartData = data
+                .stream()
+                .map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
+                .collect(Collectors.toList());
+
+        DecimalFormat df = new DecimalFormat("#.##");
+        List<ChartRecord<String, Number>> histogramData = Signal
+                .generateHistogram(10, signalData)
+                .stream()
+                .map(range -> new ChartRecord<String, Number>(
+                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
+                        range.getQuantity()))
+                .collect(Collectors.toList());
+
+        double[] signalParams = new double[5];
+        signalParams[0] = Signal.meanValue(signalData);
+        signalParams[1] = Signal.absMeanValue(signalData);
+        signalParams[2] = Signal.rmsValue(signalData);
+        signalParams[3] = Signal.varianceValue(signalData);
+        signalParams[4] = Signal.meanPowerValue(signalData);
+
+        fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams,
+                signal instanceof DiscreteSignal);
+    }
+
     private Signal generate(String[] args) {
         switch (SignalType.fromString(args[2])) {
             case UNIFORM_NOISE: {
@@ -158,235 +425,5 @@ public class CommandLineMode extends Application {
         }
 
         return null;
-    }
-
-    private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Collection<ChartRecord<Number, Number>> mainChartData,
-                                           Collection<ChartRecord<String, Number>> histogramData,
-                                           double[] signalParams,
-                                           boolean isScatterChart) {
-        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
-
-        fillBarChart((BarChart) customTabPane.getHistogramTab()
-                .getContent(), histogramData);
-
-        if (isScatterChart) {
-            changeLineChartToScatterChart(tabPane, scatterChart);
-            fillScatterChart((ScatterChart) customTabPane.getChartTab()
-                    .getContent(), mainChartData);
-
-        } else {
-            changeScatterChartToLineChart(tabPane, lineChart);
-            fillLineChart((LineChart) customTabPane.getChartTab()
-                    .getContent(), mainChartData);
-        }
-
-        latexGenerator = new LatexGenerator("Signal_Params");
-        latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
-                signalParams[2], signalParams[3], signalParams[4]);
-        latexGenerator.generate(ReportType.SIGNAL);
-    }
-
-    private void drawChart(Signal signal) {
-        List<Data> signalData = signal.generateDiscreteRepresentation();
-
-        List<Data> data;
-        if (signal instanceof GaussianNoise || signal instanceof UniformNoise) {
-            data = new ArrayList<>();
-            for (int i = 0; i < signalData.size(); i++) {
-                if (i % (signalData.size() / 1000) == 0) {
-                    data.add(signalData.get(i));
-                }
-            }
-        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
-            DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
-            data = signalData;
-            data = new ArrayList<>(douglasPeucker
-                    .calculate(data, (data.get(data.size() - 1).getX() - data.get(0)
-                            .getX()) * 1.0 / 10000.0, 0, data.size() - 1));
-        } else {
-            data = signalData;
-        }
-
-        List<ChartRecord<Number, Number>> chartData = data
-                .stream()
-                .map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
-                .collect(Collectors.toList());
-
-        DecimalFormat df = new DecimalFormat("#.##");
-        List<ChartRecord<String, Number>> histogramData = Signal
-                .generateHistogram(10, signalData)
-                .stream()
-                .map(range -> new ChartRecord<String, Number>(
-                        df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
-                        range.getQuantity()))
-                .collect(Collectors.toList());
-
-        double[] signalParams = new double[5];
-        signalParams[0] = Signal.meanValue(signalData);
-        signalParams[1] = Signal.absMeanValue(signalData);
-        signalParams[2] = Signal.rmsValue(signalData);
-        signalParams[3] = Signal.varianceValue(signalData);
-        signalParams[4] = Signal.meanPowerValue(signalData);
-
-        fillCustomTabPaneWithData(tabPane, chartData, histogramData, signalParams,
-                signal instanceof DiscreteSignal);
-    }
-
-    @Override
-    public void start(Stage stage) throws Exception {
-        commandLineStage = stage;
-
-        Operation operation = Operation.fromString(Main.getMainArgs().get(0));
-        Signal signal;
-        FileReaderWriter<Signal> readerWriter;
-        switch (operation) {
-            case GENERATE: {
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-                signal = generate(Main.getMainArgs().stream().toArray(String[]::new));
-                readerWriter.write(signal);
-
-                latexGenerator = new LatexGenerator("Input_gene");
-                latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 2);
-                latexGenerator.generate(ReportType.INPUT_PARAMETERS);
-
-                break;
-            }
-            case SAMPLING: {
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-                signal = readerWriter.read();
-                signal = adc.sampling((ContinuousSignal) signal,
-                        Double.valueOf(Main.getMainArgs().get(3)));
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-                readerWriter.write(signal);
-
-                latexGenerator = new LatexGenerator("Input_sampling");
-                latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 3);
-                latexGenerator.generate(ReportType.INPUT_PARAMETERS);
-
-                break;
-            }
-            case QUANTIZATION: {
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-                signal = readerWriter.read();
-
-                if (Operation.EVEN_QUANTIZATION_WITH_TRUNCATION
-                        == Operation.fromString(Main.getMainArgs().get(3))) {
-
-                    signal = adc.truncatingQuantization((DiscreteSignal) signal,
-                            Integer.valueOf(Main.getMainArgs().get(4)));
-
-                } else if (Operation.EVEN_QUANTIZATION_WITH_ROUNDING
-                        == Operation.fromString(Main.getMainArgs().get(3))) {
-
-                    signal = adc.roundingQuantization((DiscreteSignal) signal,
-                            Integer.valueOf(Main.getMainArgs().get(4)));
-
-                }
-
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-                readerWriter.write(signal);
-
-                latexGenerator = new LatexGenerator("Input_Quant");
-                latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 4);
-                latexGenerator.generate(ReportType.INPUT_PARAMETERS);
-
-                break;
-            }
-            case RECONSTRUCTION: {
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-                signal = readerWriter.read();
-
-                if (Operation.ZERO_ORDER_EXTRAPOLATION
-                        == Operation.fromString(Main.getMainArgs().get(3))) {
-                    signal = dac.zeroOrderHold((DiscreteSignal) signal);
-
-                } else if (Operation.FIRST_ORDER_INTERPOLATION
-                        == Operation.fromString(Main.getMainArgs().get(3))) {
-                    signal = dac.firstOrderHold((DiscreteSignal) signal);
-
-                } else if (Operation.RECONSTRUCTION_BASED_FUNCTION_SINC
-                        == Operation.fromString(Main.getMainArgs().get(3))) {
-
-                    signal = dac.sincBasic((DiscreteSignal) signal,
-                            Integer.valueOf(Main.getMainArgs().get(4)));
-                }
-
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-                readerWriter.write(signal);
-
-                latexGenerator = new LatexGenerator("Input_Recon");
-                latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 3);
-                latexGenerator.generate(ReportType.INPUT_PARAMETERS);
-
-                break;
-            }
-            case COMPARISON: {
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-                List<Data> firstSignalData = readerWriter.read().generateDiscreteRepresentation();
-                readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-                List<Data> secondSignalData = readerWriter.read().generateDiscreteRepresentation();
-
-                double meanSquaredError = Signal.meanSquaredError(secondSignalData,
-                        firstSignalData);
-                double signalToNoiseRatio = Signal.signalToNoiseRatio(secondSignalData,
-                        firstSignalData);
-                double peakSignalToNoiseRatio = Signal.peakSignalToNoiseRatio(secondSignalData,
-                        firstSignalData);
-                double maximumDifference = Signal.maximumDifference(secondSignalData,
-                        firstSignalData);
-                double effectiveNumberOfBits = Signal.effectiveNumberOfBits(secondSignalData,
-                        firstSignalData);
-
-                latexGenerator = new LatexGenerator("Comparison");
-                latexGenerator.createSummaryForComparison(meanSquaredError,
-                        signalToNoiseRatio, peakSignalToNoiseRatio,
-                        maximumDifference, effectiveNumberOfBits,
-                        /*TODO ADD overall time*/0);
-                latexGenerator.generate(ReportType.COMPARISON);
-                break;
-            }
-            case DRAW_CHARTS: {
-                root = new StackPane();
-                tabPane = new TabPane();
-                lineChart = prepareLineChart();
-                scatterChart = prepareScatterChart();
-                barChart = prepareBarChart();
-
-                tabPane.getTabs().add(new Tab("Karta ",
-                        new CustomTabPane(
-                                new CustomTab("Wykres", lineChart, false),
-                                new CustomTab("Histogram", barChart, false),
-                                new CustomTab("Parametry", new Pane(), false)
-                        )));
-
-                root.getChildren().addAll(tabPane);
-                commandLineStage.setScene(new Scene(root, 700, 600));
-                commandLineStage.show();
-
-                for (int i = 1; i < Main.getMainArgs().size(); i++) {
-                    readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(i));
-                    Signal signalInLoop = readerWriter.read();
-                    drawChart(signalInLoop);
-                }
-
-                try {
-                    CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
-                    switchTabToAnother(customTabPane, 1);
-                    reportWriter.writeFxChart("histogram", Main.getMainArgs(), tabPane);
-                    switchTabToAnother(customTabPane, 0);
-                    reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
-                } catch (FileOperationException e) {
-                    e.printStackTrace();
-                }
-
-                break;
-            }
-        }
-        System.exit(0);
-    }
-
-    public void main() throws Exception {
-        launch();
     }
 }

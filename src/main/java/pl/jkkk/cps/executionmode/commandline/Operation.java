@@ -10,6 +10,7 @@ public enum Operation {
     SUBTRACT("sub"),
     MULTIPLY("mult"),
     DIVIDE("div"),
+    CONVOLUTION("conv"),
 
     SAMPLING("sampl"),
 

@@ -15,7 +15,7 @@ where $NUMBER$ is task number - 2,3,4
 if empty array is passed jar is being called with 0 args
 if you want to pass args just place them in array as a string
 
-  * Params for cmd mode
+     * Params for cmd mode
      * <p>
      * Generate - generate, filename to save, signal type, params for signal
      * Signal type abbreviation:
@@ -44,6 +44,8 @@ if you want to pass args just place them in array as a string
      * Comparison - comp, first filename to read, second filename to read
      * <p>
      * Draw charts - draw, filenames to read...
+     * <p>
+     * Convolution - conv, first filename to read, second filename to read, filename to save
 
 '''
 
@@ -60,6 +62,7 @@ FIRST_ORDER_INTERPOLATION = "first_order"
 RECONSTRUCTION_BASED_FUNCTION_SINC = "sinc"
 COMPARISON = "comp"
 DRAW_CHARTS = "draw"
+CONVOLUTION = "conv"
 
 UNIFORM_NOISE = "uni_noise"
 GAUSSIAN_NOISE = "gauss_noise"
@@ -289,7 +292,24 @@ def task_2() -> None:
 
 
 # TASK3 ----------------------------------------------------------------------- #
+def task3_convolution(signal_type_first: str, signal_args_first: [],
+                      signal_type_second: str, signal_args_second: []) -> None:
+    filename_first_signal = "first_signal"
+    filename_second_signal = "second_signal"
+    filename_result_signal = "result_signal"
+
+    run_jar(append_array([GENERATE, filename_first_signal, signal_type_first], signal_args_first))
+    run_jar(append_array([GENERATE, filename_second_signal,
+                          signal_type_second], signal_args_second))
+    run_jar([CONVOLUTION, filename_first_signal, filename_second_signal, filename_result_signal])
+    run_jar([DRAW_CHARTS, filename_result_signal])
+    remove_files([filename_first_signal, filename_second_signal])
+    pass
+
+
 def task_3() -> None:
+    task3_convolution(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
+                      IMPULSE_NOISE, ["0", "5", "16", "1", "0.5"])
     pass
 
 
