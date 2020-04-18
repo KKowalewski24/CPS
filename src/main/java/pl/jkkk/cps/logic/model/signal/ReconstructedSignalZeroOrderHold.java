@@ -10,7 +10,8 @@ public class ReconstructedSignalZeroOrderHold extends ContinuousSignal {
     }
 
     public double value(double t) {
-        int index = (int) Math.floor((t - getRangeStart()) / getRangeLength() * sourceSignal.getNumberOfSamples());
+        int index = (int) Math.floor((t - getRangeStart())
+                / getRangeLength() * sourceSignal.getNumberOfSamples());
         return sourceSignal.value(index);
     }
 }

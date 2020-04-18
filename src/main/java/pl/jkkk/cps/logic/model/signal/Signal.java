@@ -31,7 +31,7 @@ public abstract class Signal implements Serializable {
      * This method returns discrete representation of
      * signal (every kind of signal, also continuous one),
      * this representation can be used to render chart,
-     * compute some signal params and compare signals
+     * compute some signal params and compare signals.
      *
      * @return list of data (2D-point) objects representing this signal in discrete way
      */
@@ -39,16 +39,24 @@ public abstract class Signal implements Serializable {
 
     /* compute histogram */
 
-    public static List<Range> generateHistogram(int numberOfRanges, List<Data> discreteRepresentation) {
-        final double min = discreteRepresentation.stream().mapToDouble(data -> data.getY()).min().getAsDouble();
-        final double max = discreteRepresentation.stream().mapToDouble(data -> data.getY()).max().getAsDouble();
+    public static List<Range> generateHistogram(int numberOfRanges,
+                                                List<Data> discreteRepresentation) {
+        final double min = discreteRepresentation.stream()
+                .mapToDouble(data -> data.getY())
+                .min()
+                .getAsDouble();
+        final double max = discreteRepresentation.stream()
+                .mapToDouble(data -> data.getY())
+                .max()
+                .getAsDouble();
         final List<Range> ranges = new ArrayList<>();
         IntStream.range(0, numberOfRanges).forEach(i -> {
             double begin = min + (max - min) / numberOfRanges * i;
             double end = min + (max - min) / numberOfRanges * (i + 1);
-            int quantity =
-                    (int) discreteRepresentation.stream().filter(data -> data.getY() >= begin && data.getY() <= end)
-                            .count();
+            int quantity = (int) discreteRepresentation
+                    .stream()
+                    .filter(data -> data.getY() >= begin && data.getY() <= end)
+                    .count();
             ranges.add(new Range(begin, end, quantity));
         });
         return ranges;

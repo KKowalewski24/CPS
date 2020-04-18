@@ -26,8 +26,8 @@ public class OperationResultSignal extends Signal {
         List<Data> resultData = new ArrayList<>();
 
         for (int i = 0; i < data1.size(); i++) {
-            resultData
-                    .add(new Data(data1.get(i).getX(), operation.operation(data1.get(i).getY(), data2.get(i).getY())));
+            resultData.add(new Data(data1.get(i).getX(),
+                    operation.operation(data1.get(i).getY(), data2.get(i).getY())));
         }
         return resultData;
     }

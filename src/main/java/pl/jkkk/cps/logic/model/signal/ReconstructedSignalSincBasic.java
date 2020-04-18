@@ -15,7 +15,8 @@ public class ReconstructedSignalSincBasic extends ContinuousSignal {
     public double value(double t) {
 
         /* find nearest sample */
-        int index = (int) Math.floor((t - getRangeStart()) / getRangeLength() * sourceSignal.getNumberOfSamples());
+        int index = (int) Math.floor((t - getRangeStart())
+                / getRangeLength() * sourceSignal.getNumberOfSamples());
 
         /* find range of N (or less) samples */
         int firstSample = index - N / 2;

@@ -16,7 +16,9 @@ public class TriangularSignal extends ContinuousSignal {
 
     @Override
     public double value(double t) {
-        double termPosition = ((t - getRangeStart()) / term) - Math.floor((t - getRangeStart()) / term);
+        double termPosition = ((t - getRangeStart()) / term)
+                - Math.floor((t - getRangeStart()) / term);
+
         if (termPosition < fulfillment) {
             return termPosition / fulfillment * amplitude;
         } else {

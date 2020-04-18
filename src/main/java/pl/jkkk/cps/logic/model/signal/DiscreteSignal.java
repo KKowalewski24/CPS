@@ -41,7 +41,7 @@ public abstract class DiscreteSignal extends Signal {
         return numberOfSamples;
     }
 
-    abstract public double value(int i);
+    public abstract double value(int i);
 
     public double argument(int i) {
         return i * (1.0 / sampleRate) + getRangeStart();

@@ -102,7 +102,7 @@ public class MainPanel implements Initializable {
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
                 comparisonPane, oneArgsPane, textFieldQuantizationLevels,
-                textFieldSampleRate, textFieldReconstructionSincParam,windowTypePane,
+                textFieldSampleRate, textFieldReconstructionSincParam, windowTypePane,
                 textFieldCuttingFrequency, textFieldFilterRow
         );
 

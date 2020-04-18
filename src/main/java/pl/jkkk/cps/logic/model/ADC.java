@@ -9,7 +9,8 @@ import pl.jkkk.cps.logic.model.signal.QuantizedSignalTruncated;
 public class ADC {
 
     public DiscreteSignal sampling(ContinuousSignal signal, double sampleRate) {
-        return new ContinuousBasedDiscreteSignal(signal.getRangeStart(), signal.getRangeLength(), sampleRate, signal);
+        return new ContinuousBasedDiscreteSignal(signal.getRangeStart(),
+                signal.getRangeLength(), sampleRate, signal);
     }
 
     public DiscreteSignal roundingQuantization(DiscreteSignal signal, int numberOfLevels) {

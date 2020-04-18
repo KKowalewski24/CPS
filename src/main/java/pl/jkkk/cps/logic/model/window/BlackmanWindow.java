@@ -1,7 +1,7 @@
 package pl.jkkk.cps.logic.model.window;
 
-public class BlackmanWindow implements Window{
-    
+public class BlackmanWindow implements Window {
+
     private final int M;
 
     public BlackmanWindow(int M) {

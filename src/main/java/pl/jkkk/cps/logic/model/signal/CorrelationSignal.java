@@ -1,7 +1,7 @@
 package pl.jkkk.cps.logic.model.signal;
 
 public class CorrelationSignal extends DiscreteSignal {
-    
+
     private final DiscreteSignal h;
     private final DiscreteSignal x;
 

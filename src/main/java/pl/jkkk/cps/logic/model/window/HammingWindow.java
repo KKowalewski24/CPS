@@ -1,7 +1,7 @@
 package pl.jkkk.cps.logic.model.window;
 
 public class HammingWindow implements Window {
-    
+
     private final int M;
 
     public HammingWindow(int M) {
