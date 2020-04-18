@@ -98,6 +98,9 @@ public class Loader {
     private TextField textFieldQuantizationLevels;
     private TextField textFieldSampleRate;
     private TextField textFieldReconstructionSincParam;
+    private AnchorPane windowTypePane;
+    private TextField textFieldCuttingFrequency;
+    private TextField textFieldFilterRow;
 
     private Map<Integer, Signal> signals = new HashMap<>();
     private FileReaderWriter<Signal> signalFileReaderWriter;
@@ -121,7 +124,8 @@ public class Loader {
                   ComboBox comboBoxComparisonFirstSignal, ComboBox comboBoxComparisonSecondSignal,
                   AnchorPane comparisonPane, AnchorPane oneArgsPane,
                   TextField textFieldQuantizationLevels, TextField textFieldSampleRate,
-                  TextField textFieldReconstructionSincParam) {
+                  TextField textFieldReconstructionSincParam, AnchorPane windowTypePane,
+                  TextField textFieldCuttingFrequency, TextField textFieldFilterRow) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -145,6 +149,9 @@ public class Loader {
         this.textFieldQuantizationLevels = textFieldQuantizationLevels;
         this.textFieldSampleRate = textFieldSampleRate;
         this.textFieldReconstructionSincParam = textFieldReconstructionSincParam;
+        this.windowTypePane = windowTypePane;
+        this.textFieldCuttingFrequency = textFieldCuttingFrequency;
+        this.textFieldFilterRow = textFieldFilterRow;
     }
 
     private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {

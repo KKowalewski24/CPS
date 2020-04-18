@@ -24,12 +24,15 @@ import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
 
 public class MainPanel implements Initializable {
 
-    public AnchorPane oneArgsPane;
     /*------------------------ FIELDS REGION ------------------------*/
     @FXML
     private TabPane tabPaneInputs;
     @FXML
     private Pane chooseParamsTab;
+    @FXML
+    private AnchorPane oneArgsPane;
+    @FXML
+    private AnchorPane windowTypePane;
     @FXML
     private ComboBox comboBoxSignalTypes;
     @FXML
@@ -65,6 +68,8 @@ public class MainPanel implements Initializable {
     private TextField textFieldQuantizationLevels = new TextField();
     private TextField textFieldSampleRate = new TextField();
     private TextField textFieldReconstructionSincParam = new TextField();
+    private TextField textFieldCuttingFrequency = new TextField();
+    private TextField textFieldFilterRow = new TextField();
 
     private Initializer initializer;
     private Loader loader;
@@ -84,7 +89,8 @@ public class MainPanel implements Initializable {
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
                 comparisonPane, oneArgsPane, textFieldQuantizationLevels,
-                textFieldSampleRate, textFieldReconstructionSincParam
+                textFieldSampleRate, textFieldReconstructionSincParam, windowTypePane,
+                textFieldCuttingFrequency, textFieldFilterRow
         );
 
         loader = new Loader(
@@ -96,7 +102,8 @@ public class MainPanel implements Initializable {
                 comboBoxOperationTypesOneArgs, comboBoxSignalOneArgs,
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
                 comparisonPane, oneArgsPane, textFieldQuantizationLevels,
-                textFieldSampleRate, textFieldReconstructionSincParam
+                textFieldSampleRate, textFieldReconstructionSincParam,windowTypePane,
+                textFieldCuttingFrequency, textFieldFilterRow
         );
 
         initializer.prepareTabPaneResults(0);

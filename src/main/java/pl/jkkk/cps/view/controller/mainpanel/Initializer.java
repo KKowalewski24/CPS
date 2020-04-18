@@ -12,6 +12,7 @@ import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
 
@@ -59,6 +60,9 @@ public class Initializer {
     private TextField textFieldQuantizationLevels;
     private TextField textFieldSampleRate;
     private TextField textFieldReconstructionSincParam;
+    private AnchorPane windowTypePane;
+    private TextField textFieldCuttingFrequency;
+    private TextField textFieldFilterRow;
 
     /*------------------------ METHODS REGION ------------------------*/
     public Initializer(ComboBox comboBoxSignalTypes, ComboBox comboBoxOperationTypesTwoArgs,
@@ -72,7 +76,9 @@ public class Initializer {
                        ComboBox comboBoxComparisonFirstSignal,
                        ComboBox comboBoxComparisonSecondSignal, AnchorPane comparisonPane,
                        AnchorPane oneArgsPane, TextField textFieldQuantizationLevels,
-                       TextField textFieldSampleRate, TextField textFieldReconstructionSincParam) {
+                       TextField textFieldSampleRate, TextField textFieldReconstructionSincParam,
+                       AnchorPane windowTypePane, TextField textFieldCuttingFrequency,
+                       TextField textFieldFilterRow) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -96,6 +102,9 @@ public class Initializer {
         this.textFieldQuantizationLevels = textFieldQuantizationLevels;
         this.textFieldSampleRate = textFieldSampleRate;
         this.textFieldReconstructionSincParam = textFieldReconstructionSincParam;
+        this.windowTypePane = windowTypePane;
+        this.textFieldCuttingFrequency = textFieldCuttingFrequency;
+        this.textFieldFilterRow = textFieldFilterRow;
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -108,6 +117,8 @@ public class Initializer {
         textFieldSetValue(textFieldJumpTime, String.valueOf(2));
         textFieldSetValue(textFieldProbability, String.valueOf(0.5));
         textFieldSetValue(textFieldSamplingFrequency, String.valueOf(16));
+        textFieldSetValue(textFieldCuttingFrequency, String.valueOf(4));
+        textFieldSetValue(textFieldFilterRow, String.valueOf(16));
 
         fillComboBox(comboBoxSignalTypes, Stream.of(
                 SignalType.UNIFORM_NOISE.getName(),
@@ -120,7 +131,10 @@ public class Initializer {
                 SignalType.TRIANGULAR_SIGNAL.getName(),
                 SignalType.UNIT_JUMP.getName(),
                 SignalType.UNIT_IMPULSE.getName(),
-                SignalType.IMPULSE_NOISE.getName()
+                SignalType.IMPULSE_NOISE.getName(),
+                SignalType.LOW_PASS_FILTER.getName(),
+                SignalType.BAND_PASS_FILTER.getName(),
+                SignalType.HIGH_PASS_FILTER.getName()
         ).collect(Collectors.toCollection(ArrayList::new)));
 
         List<Node> basicInputs = Stream.of(
@@ -134,9 +148,11 @@ public class Initializer {
         ).collect(Collectors.toCollection(ArrayList::new));
 
         chooseParamsTab.getChildren().setAll(basicInputs);
+        windowTypePane.setVisible(false);
 
         comboBoxSignalTypes.setOnAction((event -> {
             String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
+            windowTypePane.setVisible(false);
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())
                     || selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
@@ -188,6 +204,28 @@ public class Initializer {
                         setTextFieldPosition(textFieldProbability, 270, 170),
                         setTextFieldPosition(textFieldSamplingFrequency, 270, 210)
                 );
+            } else if (selectedSignal.equals(SignalType.LOW_PASS_FILTER.getName())
+                    || selectedSignal.equals(SignalType.BAND_PASS_FILTER.getName())
+                    || selectedSignal.equals(SignalType.HIGH_PASS_FILTER.getName())) {
+
+                chooseParamsTab.getChildren().setAll(
+                        prepareLabelWithPosition("Wybierz Parametry", 168, 14),
+                        prepareLabelWithPosition("Częstotliwość odcięcia", 50, 50),
+                        prepareLabelWithPosition("Rząd filtra", 50, 90),
+                        prepareLabelWithPosition("Częstotliwość próbkowania", 50, 130),
+                        setTextFieldPosition(textFieldCuttingFrequency, 270, 50),
+                        setTextFieldPosition(textFieldFilterRow, 270, 90),
+                        setTextFieldPosition(textFieldSamplingFrequency, 270, 130)
+                );
+
+                ComboBox comboBoxWindowType = (ComboBox) windowTypePane.getChildren().get(1);
+                fillComboBox(comboBoxWindowType, Stream.of(
+                        WindowType.RECTANGULAR_WINDOW.getName(),
+                        WindowType.HAMMING_WINDOW.getName(),
+                        WindowType.HANNING_WINDOW.getName(),
+                        WindowType.BLACKMAN_WINDOW.getName()
+                ).collect(Collectors.toList()));
+                windowTypePane.setVisible(true);
             }
         }));
     }

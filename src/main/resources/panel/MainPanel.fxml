@@ -42,8 +42,16 @@
 
                         <ComboBox fx:id="comboBoxSignalTypes" layoutX="46.0" layoutY="56.0"
                                   prefHeight="29.0" prefWidth="402.0"/>
-                        <Pane fx:id="chooseParamsTab" layoutX="19.0" layoutY="134.0"
-                              prefHeight="392.0" prefWidth="402.0"/>
+                        <Pane fx:id="chooseParamsTab" layoutX="14.0" layoutY="102.0"
+                              prefHeight="250.0" prefWidth="402.0"/>
+                        <AnchorPane fx:id="windowTypePane" layoutX="23.0" layoutY="361.0"
+                                    prefHeight="106.0" prefWidth="449.0">
+                            <children>
+                                <Label layoutX="172.0" layoutY="5.0" text="Wybierz Typ Okna"/>
+                                <ComboBox layoutX="138.0" layoutY="30.0" prefHeight="29.0"
+                                          prefWidth="174.0"/>
+                            </children>
+                        </AnchorPane>
 
                     </AnchorPane>
                 </Tab>
