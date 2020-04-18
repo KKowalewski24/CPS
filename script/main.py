@@ -1,3 +1,4 @@
+import glob
 import os
 import pathlib
 import platform
@@ -61,6 +62,9 @@ if you want to pass args just place them in array as a string
 '''
 
 JAR_NAME = "cps-0.0.1-jar-with-dependencies.jar"
+TXT = "*.txt"
+PNG = "*.png"
+JAR = "*.jar"
 
 GENERATE = "generate"
 SAMPLING = "sampl"
@@ -108,16 +112,28 @@ def build_jar() -> None:
         subprocess.call("copy target/" + JAR_NAME + " " + str(script_directory), shell=True)
 
 
+def remove_files(filenames: []) -> None:
+    for it in filenames:
+        os.remove(it)
+
+
+def clean_project_directories():
+    script_directory = pathlib.Path(os.getcwd())
+    remove_files(glob.glob(TXT))
+    remove_files(glob.glob(PNG))
+    remove_files(glob.glob(JAR))
+
+    os.chdir(script_directory.parent)
+    remove_files(glob.glob(TXT))
+    remove_files(glob.glob(PNG))
+    pass
+
+
 def append_array(main_array: [], child_array: []) -> []:
     for it in child_array:
         main_array.append(it)
 
     return main_array
-
-
-def remove_files(filenames: []) -> None:
-    for it in filenames:
-        os.remove(it)
 
 
 def run_jar(args: []) -> None:
@@ -367,6 +383,8 @@ def task_4() -> None:
 def main() -> None:
     if len(sys.argv) == 2 and (sys.argv[1] == "build" or sys.argv[1] == "-b"):
         build_jar()
+    elif len(sys.argv) == 2 and (sys.argv[1] == "clean" or sys.argv[1] == "-c"):
+        clean_project_directories()
     elif len(sys.argv) == 3 and (sys.argv[1] == "run" or sys.argv[1] == "-r"):
         if sys.argv[2] == "2":
             task_2()
