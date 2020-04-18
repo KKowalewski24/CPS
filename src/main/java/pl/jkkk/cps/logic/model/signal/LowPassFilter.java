@@ -23,11 +23,13 @@ public class LowPassFilter extends DiscreteSignal {
     @Override
     public double value(int n) {
         int c = (M - 1) / 2; /* center sample */
+        double result;
         if (n == c) {
-            return window.w(2.0 / K);
+            result = 2.0 / K;
         } else {
-            return window.w(Math.sin(2.0 * Math.PI * (n - c) / K)
-                / Math.PI * (n - c));
+            result = Math.sin(2.0 * Math.PI * (n - c) / K)
+                / Math.PI * (n - c);
         }
+        return result * window.w(n);
     }
 }

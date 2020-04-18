@@ -9,7 +9,7 @@ public class HanningWindow implements Window {
     }
 
     @Override
-    public double w(double n) {
+    public double w(int n) {
         return 0.5 - 0.5 * Math.cos(2.0 * Math.PI * n / M);
     }
 }

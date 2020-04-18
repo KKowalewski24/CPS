@@ -9,7 +9,7 @@ public class HammingWindow implements Window {
     }
 
     @Override
-    public double w(double n) {
+    public double w(int n) {
         return 0.53836 - 0.46164 * Math.cos(2.0 * Math.PI * n / M);
     }
 }

@@ -9,7 +9,7 @@ public class BlackmanWindow implements Window{
     }
 
     @Override
-    public double w(double n) {
+    public double w(int n) {
         return 0.42 - 0.5 * Math.cos(2.0 * Math.PI * n / M) + 0.08 * Math.cos(4.0 * Math.PI * n / M);
     }
 }
