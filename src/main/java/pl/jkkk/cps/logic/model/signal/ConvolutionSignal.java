@@ -7,7 +7,7 @@ public class ConvolutionSignal extends DiscreteSignal {
 
     public ConvolutionSignal(DiscreteSignal h, DiscreteSignal x){
         super(h.getRangeStart(), 
-                (h.getNumberOfSamples() + x.getNumberOfSamples() - 1) * (1.0 / h.getSampleRate()), 
+                (h.getNumberOfSamples() + x.getNumberOfSamples() - 1), 
                 h.getSampleRate());
         this.h = h;
         this.x = x;
