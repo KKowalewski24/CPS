@@ -42,6 +42,13 @@
                                 <Pane HBox.hgrow="ALWAYS"/>
                             </items>
                         </ToolBar>
+                        <AnchorPane layoutX="0.0" layoutY="14.0" prefHeight="40.0"
+                                    prefWidth="320.0">
+                            <children>
+                                <Label layoutX="14.0" layoutY="11.0" text="Label"/>
+                                <TextField layoutX="144.0" layoutY="6.0"/>
+                            </children>
+                        </AnchorPane>
                     </children>
                 </AnchorPane>
             </content>
@@ -52,8 +59,7 @@
                 <VBox layoutX="391.0" layoutY="19.0" prefHeight="630.0" prefWidth="882.0">
                     <children>
                         <LineChart fx:id="chartSignalX" animated="false" prefHeight="405.0"
-                                   prefWidth="625.0"
-                                   title="Sygnał Okresowy X">
+                                   prefWidth="625.0" title="Sygnał Okresowy X">
                             <xAxis>
                                 <CategoryAxis side="BOTTOM"/>
                             </xAxis>
