@@ -165,7 +165,7 @@ public class MainPanel implements Initializable {
     /*--------------------------------------------------------------------------------------------*/
     @FXML
     private void onActionButtonOpenAnimationWindow(ActionEvent actionEvent) {
-        StageController.loadStage(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL);
+        StageController.reloadStage(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL);
     }
 
     @FXML
