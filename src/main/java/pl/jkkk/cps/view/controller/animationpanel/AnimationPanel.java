@@ -3,6 +3,7 @@ package pl.jkkk.cps.view.controller.animationpanel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import pl.jkkk.cps.view.exception.AnimationNotStartedException;
 import pl.jkkk.cps.view.fxml.PopOutWindow;
@@ -22,6 +23,13 @@ import static pl.jkkk.cps.view.fxml.FxHelper.changeTheme;
 public class AnimationPanel implements Initializable {
 
     /*------------------------ FIELDS REGION ------------------------*/
+    @FXML
+    private LineChart chartSignalX;
+    @FXML
+    private LineChart chartSignalY;
+    @FXML
+    private LineChart chartCorrelation;
+
     private AnimationThread animationThread = new AnimationThread();
 
     /*------------------------ METHODS REGION ------------------------*/
