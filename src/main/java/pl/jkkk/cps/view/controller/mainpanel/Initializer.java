@@ -108,6 +108,31 @@ public class Initializer {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    public void prepareTabPaneInputs() {
+        fillGenerationTab();
+        fillOneArgsTab();
+        fillTwoArgsTab();
+        fillComparisonTab();
+    }
+
+    public void prepareTabPaneResults(int index) {
+        Pane pane = new Pane(
+                prepareLabelWithPosition("Wartość średnia sygnału: ", 25, 40),
+                prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
+                prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
+                prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
+                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
+        );
+
+        tabPaneResults.getTabs().add(new Tab("Karta " + index,
+                new CustomTabPane(
+                        new CustomTab("Wykres", prepareLineChart(), false),
+                        new CustomTab("Histogram", prepareBarChart(), false),
+                        new CustomTab("Parametry", pane, false)
+                )));
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
     private void fillGenerationTab() {
         textFieldSetValue(textFieldAmplitude, String.valueOf(1));
         textFieldSetValue(textFieldStartTime, String.valueOf(0));
@@ -335,30 +360,5 @@ public class Initializer {
                 prepareLabelWithPosition("Efektywna liczba bitów: ", 25, 180),
                 prepareLabelWithPosition("Czas transformacji: ", 25, 220)
         );
-    }
-
-    /*--------------------------------------------------------------------------------------------*/
-    public void prepareTabPaneInputs() {
-        fillGenerationTab();
-        fillOneArgsTab();
-        fillTwoArgsTab();
-        fillComparisonTab();
-    }
-
-    public void prepareTabPaneResults(int index) {
-        Pane pane = new Pane(
-                prepareLabelWithPosition("Wartość średnia sygnału: ", 25, 40),
-                prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
-                prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
-                prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
-                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
-        );
-
-        tabPaneResults.getTabs().add(new Tab("Karta " + index,
-                new CustomTabPane(
-                        new CustomTab("Wykres", prepareLineChart(), false),
-                        new CustomTab("Histogram", prepareBarChart(), false),
-                        new CustomTab("Parametry", pane, false)
-                )));
     }
 }

@@ -58,7 +58,7 @@
             <content>
                 <VBox layoutX="391.0" layoutY="19.0" prefHeight="630.0" prefWidth="882.0">
                     <children>
-                        <LineChart fx:id="chartSignalX" animated="false" prefHeight="405.0"
+                        <LineChart fx:id="chartSignalX" prefHeight="405.0"
                                    prefWidth="625.0" title="Sygnał Okresowy X">
                             <xAxis>
                                 <CategoryAxis side="BOTTOM"/>
@@ -67,7 +67,7 @@
                                 <NumberAxis side="LEFT"/>
                             </yAxis>
                         </LineChart>
-                        <LineChart fx:id="chartSignalY" animated="false" title="Sygnał Okresowy Y">
+                        <LineChart fx:id="chartSignalY" title="Sygnał Okresowy Y">
                             <xAxis>
                                 <CategoryAxis side="BOTTOM"/>
                             </xAxis>
@@ -75,7 +75,7 @@
                                 <NumberAxis side="LEFT"/>
                             </yAxis>
                         </LineChart>
-                        <LineChart fx:id="chartCorrelation" animated="false"
+                        <LineChart fx:id="chartCorrelation"
                                    title="Korelacja Sygnałów X oraz Y">
                             <xAxis>
                                 <CategoryAxis side="BOTTOM"/>

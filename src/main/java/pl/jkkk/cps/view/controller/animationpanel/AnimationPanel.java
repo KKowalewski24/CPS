@@ -19,6 +19,7 @@ import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_ANIMATION_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeTheme;
+import static pl.jkkk.cps.view.fxml.FxHelper.fillLineChart;
 
 public class AnimationPanel implements Initializable {
 
@@ -35,12 +36,15 @@ public class AnimationPanel implements Initializable {
     /*------------------------ METHODS REGION ------------------------*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        chartSignalX.setAnimated(false);
+        chartSignalY.setAnimated(false);
+        chartCorrelation.setAnimated(false);
     }
 
     @FXML
     private void onActionButtonStartAnimation(ActionEvent actionEvent) {
-        animationThread.startAnimation();
+        animationThread.startAnimation(chartSignalX, chartSignalY, chartCorrelation);
+        //        fillLineChart();
     }
 
     @FXML

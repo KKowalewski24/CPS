@@ -1,11 +1,12 @@
 package pl.jkkk.cps.view.controller.animationpanel;
 
 import javafx.concurrent.Task;
+import javafx.scene.chart.LineChart;
 import pl.jkkk.cps.view.exception.AnimationNotStartedException;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AnimationThread extends Thread {
+public class AnimationThread {
 
     /*------------------------ FIELDS REGION ------------------------*/
     private AtomicBoolean isAnimationRunning = new AtomicBoolean(false);
@@ -16,7 +17,8 @@ public class AnimationThread extends Thread {
         return isAnimationRunning;
     }
 
-    public void startAnimation() {
+    public void startAnimation(LineChart chartSignalX,
+                               LineChart chartSignalY, LineChart chartCorrelation) {
         isAnimationRunning.set(true);
         run();
     }
@@ -30,8 +32,7 @@ public class AnimationThread extends Thread {
         }
     }
 
-    @Override
-    public void run() {
+    private void run() {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
