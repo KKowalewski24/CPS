@@ -12,8 +12,12 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
+import static pl.jkkk.cps.view.constant.Constants.PATH_ANIMATION_PANEL;
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
+import static pl.jkkk.cps.view.constant.Constants.TITLE_ANIMATION_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
+import static pl.jkkk.cps.view.fxml.FxHelper.changeTheme;
 
 public class AnimationPanel implements Initializable {
 
@@ -61,6 +65,16 @@ public class AnimationPanel implements Initializable {
                     "Animacja nie została rozpoczęta",
                     Alert.AlertType.WARNING);
         }
+    }
+
+    @FXML
+    private void onActionButtonChangeTheme(ActionEvent actionEvent) {
+        changeTheme(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL, PATH_CSS_STYLING);
+    }
+
+    @FXML
+    private void onActionButtonReloadStage(ActionEvent actionEvent) {
+        StageController.reloadStage(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL);
     }
 }
     

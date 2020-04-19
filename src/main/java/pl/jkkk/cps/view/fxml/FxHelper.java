@@ -20,12 +20,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
+import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
+import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
+
 public class FxHelper {
 
     /*------------------------ FIELDS REGION ------------------------*/
 
     /*------------------------ METHODS REGION ------------------------*/
     private FxHelper() {
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    public static void changeTheme(String pathPanel, String title, String pathCss) {
+        if (StageController.getGlobalCssStyling() != null) {
+            StageController.setGlobalCssStyling(null);
+            StageController.reloadStage(pathPanel, title);
+        } else {
+            StageController.setGlobalCssStyling(pathCss);
+            StageController.reloadStage(pathPanel, title);
+        }
     }
 
     /*--------------------------------------------------------------------------------------------*/

@@ -20,6 +20,7 @@ import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_ANIMATION_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
+import static pl.jkkk.cps.view.fxml.FxHelper.changeTheme;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
 import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
@@ -170,13 +171,7 @@ public class MainPanel implements Initializable {
 
     @FXML
     private void onActionButtonChangeTheme(ActionEvent actionEvent) {
-        if (StageController.getGlobalCssStyling() != null) {
-            StageController.setGlobalCssStyling(null);
-            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
-        } else {
-            StageController.setGlobalCssStyling(PATH_CSS_STYLING);
-            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
-        }
+        changeTheme(PATH_MAIN_PANEL, TITLE_MAIN_PANEL, PATH_CSS_STYLING);
     }
 
     @FXML
