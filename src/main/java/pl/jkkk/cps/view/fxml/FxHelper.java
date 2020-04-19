@@ -20,10 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
-import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
-import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
-
 public class FxHelper {
 
     /*------------------------ FIELDS REGION ------------------------*/
@@ -145,6 +141,11 @@ public class FxHelper {
         }
 
         return lineChart;
+    }
+
+    public static void prepareLineChart(LineChart lineChart) {
+        lineChart.setCreateSymbols(false);
+        lineChart.setAnimated(false);
     }
 
     public static BarChart prepareBarChart(String... title) {
