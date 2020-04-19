@@ -4,10 +4,13 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import pl.jkkk.cps.view.fxml.PopOutWindow;
 import pl.jkkk.cps.view.fxml.StageController;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
@@ -44,9 +47,20 @@ public class AnimationPanel implements Initializable {
     }
 
     @FXML
-    private synchronized void onActionButtonReturn(ActionEvent actionEvent) {
-        stopAnimation();
-        StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+    private void onActionButtonReturn(ActionEvent actionEvent) {
+        if (!isAnimationRunning.get()) {
+            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+        } else {
+            try {
+                stopAnimation();
+                TimeUnit.MILLISECONDS.sleep(200);
+                StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+            } catch (InterruptedException e) {
+                PopOutWindow.messageBox("Błąd Zatrzymania",
+                        "Nie udało się poprawnie zatrzymać animacji",
+                        Alert.AlertType.WARNING);
+            }
+        }
     }
 
     @FXML
