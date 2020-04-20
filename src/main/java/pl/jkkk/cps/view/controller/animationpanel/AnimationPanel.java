@@ -44,10 +44,8 @@ public class AnimationPanel implements Initializable {
 
     @FXML
     private void onActionButtonStartAnimation(ActionEvent actionEvent) {
-        //        animationThread.startAnimation(lineChartSignalX, lineChartSignalY,
-        //        lineChartCorrelation);
-        XYChart.Series series = new XYChart.Series();
         //        TODO remove this
+        XYChart.Series series = new XYChart.Series();
         series.getData().add(new XYChart.Data(1, 23));
         series.getData().add(new XYChart.Data(2, 14));
         series.getData().add(new XYChart.Data(3, 15));
@@ -62,6 +60,7 @@ public class AnimationPanel implements Initializable {
         series.getData().add(new XYChart.Data(12, 25));
         lineChartSignalX.getData().addAll(series);
         //        fillLineChart();
+        animationThread.startAnimation(lineChartSignalX, lineChartSignalY, lineChartCorrelation);
     }
 
     @FXML
@@ -83,6 +82,7 @@ public class AnimationPanel implements Initializable {
                         Alert.AlertType.WARNING);
             }
         }
+        StageController.getApplicationStage().setResizable(false);
     }
 
     @FXML
@@ -99,11 +99,13 @@ public class AnimationPanel implements Initializable {
     @FXML
     private void onActionButtonChangeTheme(ActionEvent actionEvent) {
         changeTheme(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL, PATH_CSS_STYLING);
+        StageController.getApplicationStage().setResizable(false);
     }
 
     @FXML
     private void onActionButtonReloadStage(ActionEvent actionEvent) {
         StageController.reloadStage(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL);
+        StageController.getApplicationStage().setResizable(false);
     }
 }
     

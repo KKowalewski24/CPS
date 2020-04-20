@@ -167,16 +167,19 @@ public class MainPanel implements Initializable {
     @FXML
     private void onActionButtonOpenAnimationWindow(ActionEvent actionEvent) {
         StageController.reloadStage(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL);
+        StageController.getApplicationStage().setResizable(false);
     }
 
     @FXML
     private void onActionButtonChangeTheme(ActionEvent actionEvent) {
         changeTheme(PATH_MAIN_PANEL, TITLE_MAIN_PANEL, PATH_CSS_STYLING);
+        StageController.getApplicationStage().setResizable(false);
     }
 
     @FXML
     private void onActionButtonReloadStage(ActionEvent actionEvent) {
         StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+        StageController.getApplicationStage().setResizable(false);
     }
 
     @FXML
