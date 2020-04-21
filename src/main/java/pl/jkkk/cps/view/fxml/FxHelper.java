@@ -29,6 +29,17 @@ public class FxHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    public static void changeTheme(String pathPanel, String title, String pathCss) {
+        if (StageController.getGlobalCssStyling() != null) {
+            StageController.setGlobalCssStyling(null);
+            StageController.reloadStage(pathPanel, title);
+        } else {
+            StageController.setGlobalCssStyling(pathCss);
+            StageController.reloadStage(pathPanel, title);
+        }
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
     public static XYChart.Data<Number, Number> prepareDataRecord(Number numberOne,
                                                                  Number numberTwo) {
         return new XYChart.Data(numberOne, numberTwo);
@@ -130,6 +141,11 @@ public class FxHelper {
         }
 
         return lineChart;
+    }
+
+    public static void prepareLineChart(LineChart lineChart) {
+        lineChart.setCreateSymbols(false);
+        lineChart.setAnimated(false);
     }
 
     public static BarChart prepareBarChart(String... title) {

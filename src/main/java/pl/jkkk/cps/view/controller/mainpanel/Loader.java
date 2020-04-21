@@ -44,7 +44,6 @@ import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
-import pl.jkkk.cps.logic.model.window.Window;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
 import pl.jkkk.cps.logic.report.LatexGenerator;
@@ -157,113 +156,6 @@ public class Loader {
         this.windowTypePane = windowTypePane;
         this.textFieldCuttingFrequency = textFieldCuttingFrequency;
         this.textFieldFilterRow = textFieldFilterRow;
-    }
-
-    private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
-        Pane pane = (Pane) customTabPane.getParamsTab().getContent();
-        List<Node> paneChildren = pane.getChildren();
-
-        DecimalFormat df = new DecimalFormat("##.####");
-        appendLabelText(paneChildren.get(0), "" + df.format(signalParams[0]));
-        appendLabelText(paneChildren.get(1), "" + df.format(signalParams[1]));
-        appendLabelText(paneChildren.get(2), "" + df.format(signalParams[2]));
-        appendLabelText(paneChildren.get(3), "" + df.format(signalParams[3]));
-        appendLabelText(paneChildren.get(4), "" + df.format(signalParams[4]));
-    }
-
-    /*--------------------------------------------------------------------------------------------*/
-    private void fillCustomTabPaneWithData(TabPane tabPane,
-                                           Collection<ChartRecord<Number, Number>> mainChartData,
-                                           Collection<ChartRecord<String, Number>> histogramData,
-                                           double[] signalParams, boolean isScatterChart) {
-        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
-
-        try {
-            clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
-                    .getContent(), histogramData);
-            switchTabToAnother(customTabPane, 1);
-            reportWriter.writeFxChart("history", Main.getMainArgs(), tabPane);
-
-            if (isScatterChart) {
-                changeLineChartToScatterChart(tabPane);
-                clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
-                        .getContent(), mainChartData);
-                switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
-
-            } else {
-                changeScatterChartToLineChart(tabPane);
-                clearAndFillLineChart((LineChart) customTabPane.getChartTab()
-                        .getContent(), mainChartData);
-                switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
-            }
-
-            fillParamsTab(customTabPane, signalParams);
-            latexGenerator = new LatexGenerator("Signal_Params");
-            latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
-                    signalParams[2], signalParams[3], signalParams[4]);
-            latexGenerator.generate(ReportType.SIGNAL);
-
-        } catch (FileOperationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void representSignal(Signal signal) {
-        /* remember signal */
-        int tabIndex = getSelectedTabIndex(tabPaneResults);
-        signals.put(tabIndex, signal);
-
-        /* generate discrete representation of signal */
-        List<Data> signalData = signal.generateDiscreteRepresentation();
-
-        /* prepare line/point chart data */
-        List<Data> data;
-        if (signal instanceof GaussianNoise || signal instanceof UniformNoise) {
-            data = new ArrayList<>();
-            for (int i = 0; i < signalData.size(); i++) {
-                if (i % (signalData.size() / 1000) == 0) {
-                    data.add(signalData.get(i));
-                }
-            }
-        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
-            DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
-            data = signalData;
-            data = new ArrayList<>(douglasPeucker
-                    .calculate(data, (data.get(data.size() - 1).getX() - data.get(0)
-                            .getX()) * 1.0 / 10000.0, 0, data.size() - 1));
-        } else {
-            data = signalData;
-        }
-
-        System.out.println("Wygenerowanu punktów: " + data.size());
-
-        List<ChartRecord<Number, Number>> chartData =
-                data.stream().map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
-                        .collect(Collectors.toList());
-
-        /* prepare barchart data */
-        DecimalFormat df = new DecimalFormat("#.##");
-        List<ChartRecord<String, Number>> histogramData =
-                Signal.generateHistogram((int) spinnerHistogramRange.getValue(), signalData)
-                        .stream()
-                        .map(range -> new ChartRecord<String, Number>(
-                                df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
-                                range.getQuantity()))
-                        .collect(Collectors.toList());
-
-        /* prepare params */
-        double[] signalParams = new double[5];
-        signalParams[0] = Signal.meanValue(signalData);
-        signalParams[1] = Signal.absMeanValue(signalData);
-        signalParams[2] = Signal.rmsValue(signalData);
-        signalParams[3] = Signal.varianceValue(signalData);
-        signalParams[4] = Signal.meanPowerValue(signalData);
-
-        /* render it all */
-        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams,
-                signal instanceof DiscreteSignal);
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -514,5 +406,113 @@ public class Loader {
                     "Nie można zapisać do wybranego pliku",
                     Alert.AlertType.WARNING);
         }
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    private void representSignal(Signal signal) {
+        /* remember signal */
+        int tabIndex = getSelectedTabIndex(tabPaneResults);
+        signals.put(tabIndex, signal);
+
+        /* generate discrete representation of signal */
+        List<Data> signalData = signal.generateDiscreteRepresentation();
+
+        /* prepare line/point chart data */
+        List<Data> data;
+        if (signal instanceof GaussianNoise || signal instanceof UniformNoise) {
+            data = new ArrayList<>();
+            for (int i = 0; i < signalData.size(); i++) {
+                if (i % (signalData.size() / 1000) == 0) {
+                    data.add(signalData.get(i));
+                }
+            }
+        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
+            DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
+            data = signalData;
+            data = new ArrayList<>(douglasPeucker
+                    .calculate(data, (data.get(data.size() - 1).getX() - data.get(0)
+                            .getX()) * 1.0 / 10000.0, 0, data.size() - 1));
+        } else {
+            data = signalData;
+        }
+
+        System.out.println("Wygenerowanu punktów: " + data.size());
+
+        List<ChartRecord<Number, Number>> chartData =
+                data.stream().map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
+                        .collect(Collectors.toList());
+
+        /* prepare barchart data */
+        DecimalFormat df = new DecimalFormat("#.##");
+        List<ChartRecord<String, Number>> histogramData =
+                Signal.generateHistogram((int) spinnerHistogramRange.getValue(), signalData)
+                        .stream()
+                        .map(range -> new ChartRecord<String, Number>(
+                                df.format(range.getBegin()) + " do " + df.format(range.getEnd()),
+                                range.getQuantity()))
+                        .collect(Collectors.toList());
+
+        /* prepare params */
+        double[] signalParams = new double[5];
+        signalParams[0] = Signal.meanValue(signalData);
+        signalParams[1] = Signal.absMeanValue(signalData);
+        signalParams[2] = Signal.rmsValue(signalData);
+        signalParams[3] = Signal.varianceValue(signalData);
+        signalParams[4] = Signal.meanPowerValue(signalData);
+
+        /* render it all */
+        fillCustomTabPaneWithData(tabPaneResults, chartData, histogramData, signalParams,
+                signal instanceof DiscreteSignal);
+    }
+
+    private void fillCustomTabPaneWithData(TabPane tabPane,
+                                           Collection<ChartRecord<Number, Number>> mainChartData,
+                                           Collection<ChartRecord<String, Number>> histogramData,
+                                           double[] signalParams, boolean isScatterChart) {
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+
+        try {
+            clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
+                    .getContent(), histogramData);
+            switchTabToAnother(customTabPane, 1);
+            reportWriter.writeFxChart("history", Main.getMainArgs(), tabPane);
+
+            if (isScatterChart) {
+                changeLineChartToScatterChart(tabPane);
+                clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
+                        .getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+
+            } else {
+                changeScatterChartToLineChart(tabPane);
+                clearAndFillLineChart((LineChart) customTabPane.getChartTab()
+                        .getContent(), mainChartData);
+                switchTabToAnother(customTabPane, 0);
+                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+            }
+
+            fillParamsTab(customTabPane, signalParams);
+            latexGenerator = new LatexGenerator("Signal_Params");
+            latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
+                    signalParams[2], signalParams[3], signalParams[4]);
+            latexGenerator.generate(ReportType.SIGNAL);
+
+        } catch (FileOperationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    private void fillParamsTab(CustomTabPane customTabPane, double[] signalParams) {
+        Pane pane = (Pane) customTabPane.getParamsTab().getContent();
+        List<Node> paneChildren = pane.getChildren();
+
+        DecimalFormat df = new DecimalFormat("##.####");
+        appendLabelText(paneChildren.get(0), "" + df.format(signalParams[0]));
+        appendLabelText(paneChildren.get(1), "" + df.format(signalParams[1]));
+        appendLabelText(paneChildren.get(2), "" + df.format(signalParams[2]));
+        appendLabelText(paneChildren.get(3), "" + df.format(signalParams[3]));
+        appendLabelText(paneChildren.get(4), "" + df.format(signalParams[4]));
     }
 }

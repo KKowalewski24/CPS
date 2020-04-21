@@ -15,9 +15,12 @@ import pl.jkkk.cps.view.fxml.StageController;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static pl.jkkk.cps.view.constant.Constants.PATH_ANIMATION_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
+import static pl.jkkk.cps.view.constant.Constants.TITLE_ANIMATION_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
+import static pl.jkkk.cps.view.fxml.FxHelper.changeTheme;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
 import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
@@ -112,30 +115,6 @@ public class MainPanel implements Initializable {
 
     /*--------------------------------------------------------------------------------------------*/
     @FXML
-    private void onActionButtonReloadStage(ActionEvent actionEvent) {
-        StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
-    }
-
-    @FXML
-    private void onActionButtonAddNewTab(ActionEvent actionEvent) {
-        initializer.prepareTabPaneResults(tabPaneResults.getTabs().size());
-
-        fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
-        fillComboBox(comboBoxSecondSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
-
-        fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
-
-        fillComboBox(comboBoxComparisonFirstSignal, getTabNameList(tabPaneResults.getTabs()));
-        fillComboBox(comboBoxComparisonSecondSignal, getTabNameList(tabPaneResults.getTabs()));
-    }
-
-    @FXML
-    private void onActionButtonCloseProgram(ActionEvent actionEvent) {
-        System.exit(0);
-    }
-
-    /*--------------------------------------------------------------------------------------------*/
-    @FXML
     private void onActionLoadChart(ActionEvent actionEvent) {
         loader.loadChart();
     }
@@ -143,6 +122,11 @@ public class MainPanel implements Initializable {
     @FXML
     private void onActionSaveChart(ActionEvent actionEvent) {
         loader.saveChart();
+    }
+
+    @FXML
+    private void onActionButtonGenerateComparison(ActionEvent actionEvent) {
+        loader.generateComparison();
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -167,18 +151,39 @@ public class MainPanel implements Initializable {
     }
 
     @FXML
-    private void onActionButtonGenerateComparison(ActionEvent actionEvent) {
-        loader.generateComparison();
+    private void onActionButtonAddNewTab(ActionEvent actionEvent) {
+        initializer.prepareTabPaneResults(tabPaneResults.getTabs().size());
+
+        fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxSecondSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
+
+        fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
+
+        fillComboBox(comboBoxComparisonFirstSignal, getTabNameList(tabPaneResults.getTabs()));
+        fillComboBox(comboBoxComparisonSecondSignal, getTabNameList(tabPaneResults.getTabs()));
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    @FXML
+    private void onActionButtonOpenAnimationWindow(ActionEvent actionEvent) {
+        StageController.reloadStage(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL);
+        StageController.getApplicationStage().setResizable(false);
     }
 
     @FXML
     private void onActionButtonChangeTheme(ActionEvent actionEvent) {
-        if (StageController.getGlobalCssStyling() != null) {
-            StageController.setGlobalCssStyling(null);
-            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
-        } else {
-            StageController.setGlobalCssStyling(PATH_CSS_STYLING);
-            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
-        }
+        changeTheme(PATH_MAIN_PANEL, TITLE_MAIN_PANEL, PATH_CSS_STYLING);
+        StageController.getApplicationStage().setResizable(false);
+    }
+
+    @FXML
+    private void onActionButtonReloadStage(ActionEvent actionEvent) {
+        StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+        StageController.getApplicationStage().setResizable(false);
+    }
+
+    @FXML
+    private void onActionButtonCloseProgram(ActionEvent actionEvent) {
+        System.exit(0);
     }
 }
