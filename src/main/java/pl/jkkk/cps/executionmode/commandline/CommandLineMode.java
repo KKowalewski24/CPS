@@ -24,7 +24,6 @@ import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.LowPassFilter;
-import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
@@ -294,7 +293,7 @@ public class CommandLineMode extends Application {
                     data.add(signalData.get(i));
                 }
             }
-        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
+        } else if (signal instanceof ContinuousSignal) {
             DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
             data = signalData;
             data = new ArrayList<>(douglasPeucker

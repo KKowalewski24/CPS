@@ -33,7 +33,8 @@ import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.LowPassFilter;
-import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
+import pl.jkkk.cps.logic.model.signal.OperationResultContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.OperationResultDiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
@@ -44,6 +45,7 @@ import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
+import pl.jkkk.cps.logic.model.Operation;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
 import pl.jkkk.cps.logic.report.LatexGenerator;
@@ -302,22 +304,34 @@ public class Loader {
         Signal resultSignal = null;
 
         try {
-            if (selectedOperation.equals(TwoArgsOperationType.ADDITION.getName())) {
-                resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a + b);
-            } else if (selectedOperation.equals(TwoArgsOperationType.SUBTRACTION.getName())) {
-                resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a - b);
-            } else if (selectedOperation.equals(TwoArgsOperationType.MULTIPLICATION.getName())) {
-                resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a * b);
-            } else if (selectedOperation.equals(TwoArgsOperationType.DIVISION.getName())) {
-                resultSignal = new OperationResultSignal(s1, s2, (a, b) -> a / b);
-            } else if (selectedOperation.equals(TwoArgsOperationType.CONVOLUTION.getName())) {
+            if (selectedOperation.equals(TwoArgsOperationType.CONVOLUTION.getName())) {
                 resultSignal = new ConvolutionSignal((DiscreteSignal) s1, (DiscreteSignal) s2);
             } else if (selectedOperation.equals(TwoArgsOperationType.CORRELATION.getName())) {
                 resultSignal = new CorrelationSignal((DiscreteSignal) s1, (DiscreteSignal) s2);
+            } else {
+                Operation operation;
+                if (selectedOperation.equals(TwoArgsOperationType.ADDITION.getName())) {
+                    operation = (a, b) -> a + b;
+                } else if (selectedOperation.equals(TwoArgsOperationType.SUBTRACTION.getName())) {
+                    operation = (a, b) -> a - b;
+                } else if (selectedOperation.equals(TwoArgsOperationType.MULTIPLICATION.getName())) {
+                    operation = (a, b) -> a * b;
+                } else {
+                    operation = (a, b) -> a / b;
+                }
+                if (s1 instanceof DiscreteSignal) {
+                    resultSignal = new OperationResultDiscreteSignal(
+                            (DiscreteSignal) s1,
+                            (DiscreteSignal) s2,
+                            operation);
+                } else {
+                    resultSignal = new OperationResultContinuousSignal(
+                            (ContinuousSignal) s1,
+                            (ContinuousSignal) s2,
+                            operation);
+                }
             }
-
             representSignal(resultSignal);
-
         } catch (ClassCastException e) {
             PopOutWindow.messageBox("Błędne dane",
                     "Wybrano niepoprawny typ sygnału",
@@ -426,7 +440,7 @@ public class Loader {
                     data.add(signalData.get(i));
                 }
             }
-        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
+        } else if (signal instanceof ContinuousSignal) {
             DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
             data = signalData;
             data = new ArrayList<>(douglasPeucker
