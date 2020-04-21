@@ -26,6 +26,7 @@ import static pl.jkkk.cps.view.fxml.FxHelper.getTextFieldValueToDouble;
 import static pl.jkkk.cps.view.fxml.FxHelper.getTextFieldValueToInteger;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetEditable;
+import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
 
 public class AnimationPanel implements Initializable {
 
@@ -48,6 +49,13 @@ public class AnimationPanel implements Initializable {
     private TextField textFieldReportTerm;
 
     @FXML
+    private TextField textFieldResultTimeStamp;
+    @FXML
+    private TextField textFieldResultRealDistance;
+    @FXML
+    private TextField textFieldResultCalculatedDistance;
+
+    @FXML
     private LineChart lineChartSignalProbe;
     @FXML
     private LineChart lineChartSignalFeedback;
@@ -59,6 +67,15 @@ public class AnimationPanel implements Initializable {
     /*------------------------ METHODS REGION ------------------------*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        textFieldSetValue(textFieldTimeStep, String.valueOf(5));
+        textFieldSetValue(textFieldSignalVelocity, String.valueOf(1000));
+        textFieldSetValue(textFieldItemVelocity, String.valueOf(0.5));
+        textFieldSetValue(textFieldStartItemDistance, String.valueOf(10));
+        textFieldSetValue(textFieldProbeSignalTerm, String.valueOf(0.5));
+        textFieldSetValue(textFieldSampleRate, String.valueOf(20));
+        textFieldSetValue(textFieldBufferLength, String.valueOf(30));
+        textFieldSetValue(textFieldReportTerm, String.valueOf(1));
+
         prepareLineChart(lineChartSignalProbe);
         prepareLineChart(lineChartSignalFeedback);
         prepareLineChart(lineChartCorrelation);

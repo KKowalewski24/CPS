@@ -110,48 +110,35 @@
                     </Tab>
                     <Tab text="Wyniki">
                         <AnchorPane layoutX="0.0" layoutY="0.0">
-                            <!--                            TODO-->
                             <children>
                                 <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="40.0"
                                             prefWidth="585.0">
                                     <children>
-                                        <Label layoutX="14.0" layoutY="11.0" text="Label"/>
-                                        <TextField editable="false" layoutX="409.0" layoutY="6.0"/>
+                                        <Label layoutX="14.0" layoutY="11.0" text="Czas (t)"/>
+                                        <TextField fx:id="textFieldResultTimeStamp"
+                                                   editable="false" layoutX="409.0"
+                                                   layoutY="6.0"/>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane layoutX="0.0" layoutY="40.0" prefHeight="40.0"
                                             prefWidth="585.0">
                                     <children>
-                                        <Label layoutX="14.0" layoutY="11.0" text="Label"/>
-                                        <TextField editable="false" layoutX="409.0" layoutY="6.0"/>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Rzeczywisty dystans"/>
+                                        <TextField fx:id="textFieldResultRealDistance"
+                                                   editable="false"
+                                                   layoutX="409.0"
+                                                   layoutY="6.0"/>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane layoutX="0.0" layoutY="80.0" prefHeight="40.0"
                                             prefWidth="585.0">
                                     <children>
-                                        <Label layoutX="14.0" layoutY="11.0" text="Label"/>
-                                        <TextField editable="false" layoutX="409.0" layoutY="6.0"/>
-                                    </children>
-                                </AnchorPane>
-                                <AnchorPane layoutX="0.0" layoutY="120.0" prefHeight="40.0"
-                                            prefWidth="585.0">
-                                    <children>
-                                        <Label layoutX="14.0" layoutY="11.0" text="Label"/>
-                                        <TextField editable="false" layoutX="409.0" layoutY="6.0"/>
-                                    </children>
-                                </AnchorPane>
-                                <AnchorPane layoutX="0.0" layoutY="160.0" prefHeight="40.0"
-                                            prefWidth="585.0">
-                                    <children>
-                                        <Label layoutX="14.0" layoutY="11.0" text="Label"/>
-                                        <TextField editable="false" layoutX="409.0" layoutY="6.0"/>
-                                    </children>
-                                </AnchorPane>
-                                <AnchorPane layoutX="0.0" layoutY="200.0" prefHeight="40.0"
-                                            prefWidth="585.0">
-                                    <children>
-                                        <Label layoutX="14.0" layoutY="11.0" text="Label"/>
-                                        <TextField editable="false" layoutX="409.0" layoutY="6.0"/>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Obliczony dystans"/>
+                                        <TextField fx:id="textFieldResultCalculatedDistance"
+                                                   editable="false" layoutX="409.0"
+                                                   layoutY="6.0"/>
                                     </children>
                                 </AnchorPane>
                             </children>
