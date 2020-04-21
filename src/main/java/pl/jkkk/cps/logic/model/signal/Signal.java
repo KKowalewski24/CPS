@@ -11,7 +11,7 @@ import pl.jkkk.cps.logic.model.Range;
 
 public abstract class Signal implements Serializable {
 
-    private final double rangeStart;
+    private double rangeStart;
     private final double rangeLength;
 
     public Signal(double rangeStart, double rangeLength) {
@@ -21,6 +21,10 @@ public abstract class Signal implements Serializable {
 
     public double getRangeStart() {
         return rangeStart;
+    }
+
+    public void setRangeStart(double rangeStart) {
+        this.rangeStart = rangeStart;
     }
 
     public double getRangeLength() {
