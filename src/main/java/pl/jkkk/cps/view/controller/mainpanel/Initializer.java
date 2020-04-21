@@ -145,22 +145,7 @@ public class Initializer {
         textFieldSetValue(textFieldCuttingFrequency, String.valueOf(4));
         textFieldSetValue(textFieldFilterRow, String.valueOf(15));
 
-        fillComboBox(comboBoxSignalTypes, Stream.of(
-                SignalType.UNIFORM_NOISE.getName(),
-                SignalType.GAUSSIAN_NOISE.getName(),
-                SignalType.SINUSOIDAL_SIGNAL.getName(),
-                SignalType.SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL.getName(),
-                SignalType.SINUSOIDAL_RECTIFIED_IN_TWO_HALVES.getName(),
-                SignalType.RECTANGULAR_SIGNAL.getName(),
-                SignalType.SYMMETRICAL_RECTANGULAR_SIGNAL.getName(),
-                SignalType.TRIANGULAR_SIGNAL.getName(),
-                SignalType.UNIT_JUMP.getName(),
-                SignalType.UNIT_IMPULSE.getName(),
-                SignalType.IMPULSE_NOISE.getName(),
-                SignalType.LOW_PASS_FILTER.getName(),
-                SignalType.BAND_PASS_FILTER.getName(),
-                SignalType.HIGH_PASS_FILTER.getName()
-        ).collect(Collectors.toCollection(ArrayList::new)));
+        fillComboBox(comboBoxSignalTypes, SignalType.getNamesList());
 
         List<Node> basicInputs = Stream.of(
                 prepareLabelWithPosition("Wybierz Parametry", 168, 14),
@@ -244,12 +229,7 @@ public class Initializer {
                 );
 
                 ComboBox comboBoxWindowType = (ComboBox) windowTypePane.getChildren().get(1);
-                fillComboBox(comboBoxWindowType, Stream.of(
-                        WindowType.RECTANGULAR_WINDOW.getName(),
-                        WindowType.HAMMING_WINDOW.getName(),
-                        WindowType.HANNING_WINDOW.getName(),
-                        WindowType.BLACKMAN_WINDOW.getName()
-                ).collect(Collectors.toList()));
+                fillComboBox(comboBoxWindowType, WindowType.getNamesList());
                 windowTypePane.setVisible(true);
             }
         }));
@@ -274,11 +254,7 @@ public class Initializer {
 
         } else {
             if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-                fillComboBox(comboBoxMethod, Stream.of(
-                        QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName(),
-                        QuantizationType.EVEN_QUANTIZATION_WITH_ROUNDING.getName()
-                ).collect(Collectors.toCollection(ArrayList::new)));
-
+                fillComboBox(comboBoxMethod, QuantizationType.getNamesList());
                 topPane.setVisible(true);
                 bottomPane.setVisible(true);
 
@@ -288,13 +264,7 @@ public class Initializer {
                 );
 
             } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
-
-                fillComboBox(comboBoxMethod, Stream.of(
-                        SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName(),
-                        SignalReconstructionType.FIRST_ORDER_INTERPOLATION.getName(),
-                        SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC.getName()
-                ).collect(Collectors.toCollection(ArrayList::new)));
-
+                fillComboBox(comboBoxMethod, SignalReconstructionType.getNamesList());
                 topPane.setVisible(true);
                 bottomPane.setVisible(true);
 
@@ -308,12 +278,7 @@ public class Initializer {
     }
 
     private void fillOneArgsTab() {
-        fillComboBox(comboBoxOperationTypesOneArgs, Stream.of(
-                OneArgsOperationType.SAMPLING.getName(),
-                OneArgsOperationType.QUANTIZATION.getName(),
-                OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName()
-        ).collect(Collectors.toCollection(ArrayList::new)));
-
+        fillComboBox(comboBoxOperationTypesOneArgs, OneArgsOperationType.getNamesList());
         textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
         textFieldSetValue(textFieldSampleRate, String.valueOf(10));
         textFieldSetValue(textFieldReconstructionSincParam, String.valueOf(1));
@@ -334,15 +299,7 @@ public class Initializer {
 
     /*--------------------------------------------------------------------------------------------*/
     private void fillTwoArgsTab() {
-        fillComboBox(comboBoxOperationTypesTwoArgs, Stream.of(
-                TwoArgsOperationType.ADDITION.getName(),
-                TwoArgsOperationType.SUBTRACTION.getName(),
-                TwoArgsOperationType.MULTIPLICATION.getName(),
-                TwoArgsOperationType.DIVISION.getName(),
-                TwoArgsOperationType.CONVOLUTION.getName(),
-                TwoArgsOperationType.CORRELATION.getName()
-        ).collect(Collectors.toCollection(ArrayList::new)));
-
+        fillComboBox(comboBoxOperationTypesTwoArgs, TwoArgsOperationType.getNamesList());
         fillComboBox(comboBoxFirstSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
         fillComboBox(comboBoxSecondSignalTwoArgs, getTabNameList(tabPaneResults.getTabs()));
     }
