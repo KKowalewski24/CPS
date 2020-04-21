@@ -5,17 +5,14 @@ import javafx.concurrent.Task;
 import javafx.scene.chart.LineChart;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
-import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.simulator.Environment;
-import pl.jkkk.cps.view.exception.AnimationNotStartedException;
 import pl.jkkk.cps.view.fxml.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.model.ChartRecord;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillLineChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
 
 public class AnimationThread {
 
@@ -36,42 +32,50 @@ public class AnimationThread {
         return isAnimationRunning;
     }
 
-    public void startAnimation(LineChart chartSignalX, LineChart chartSignalY,
+    public void startAnimation(LineChart chartSignalProbe, LineChart chartSignalFeedback,
                                LineChart chartCorrelation, Environment environment) {
         isAnimationRunning.set(true);
-        run(chartSignalX, chartSignalY, chartCorrelation, environment);
+        run(chartSignalProbe, chartSignalFeedback, chartCorrelation, environment);
     }
 
     public void stopAnimation() {
         isAnimationRunning.set(false);
     }
 
-    private void run(LineChart chartSignalX, LineChart chartSignalY,
+    private void run(LineChart chartSignalProbe, LineChart chartSignalFeedback,
                      LineChart chartCorrelation, Environment environment) {
+
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
                 while (isAnimationRunning.get()) {
-//                    long callTimePeriod = 0;
-//                    callTimePeriod += action(() -> environment.step());
-//                    callTimePeriod += action(() -> representSignal(chartSignalProbe,
-//                            environment.getDistanceSensor().getDiscreteProbeSignal()));
-//                    callTimePeriod += action(() -> representSignal(chartSignalFeedback,
-//                            environment.getDistanceSensor().getDiscreteFeedbackSignal()));
-//                    callTimePeriod += action(() -> representSignal(chartCorrelation,
-//                            environment.getDistanceSensor().getCorrelationSignal()));
-//                    System.out.println("abc");
-//                    long sleepTime = ((long) (environment.getTimeStep() * 1000)) - callTimePeriod;
-                    //                    start time
-                    //                   step()
+                    long callTimePeriod = 0;
+                    callTimePeriod += action(() -> environment.step());
+                    action(() -> {
+                        Platform.runLater(() -> {
+                            representSignal(chartSignalProbe,
+                                    environment.getDistanceSensor().getDiscreteProbeSignal());
+                            representSignal(chartSignalFeedback,
+                                    environment.getDistanceSensor().getDiscreteFeedbackSignal());
+                            representSignal(chartCorrelation,
+                                    environment.getDistanceSensor().getCorrelationSignal());
+                        });
 
-                    //        thread = new Thread(task);
-                    //        thread.start();
+                    });
+                    long sleepTime = ((long) (environment.getTimeStep() * 1000)) - callTimePeriod;
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(sleepTime > 0 ? sleepTime : 0);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 return null;
             }
         };
+
+        thread = new Thread(task);
+        thread.start();
     }
 
     private void representSignal(LineChart lineChart, Signal signal) {
