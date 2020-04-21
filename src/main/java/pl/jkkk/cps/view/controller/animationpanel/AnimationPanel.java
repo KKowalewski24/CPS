@@ -99,8 +99,10 @@ public class AnimationPanel implements Initializable {
         Environment environment = new Environment(timeStep, signalVelocity,
                 itemVelocity, distanceSensor, startItemDistance);
 
-        animationThread.startAnimation(lineChartSignalProbe,
-                lineChartSignalFeedback, lineChartCorrelation, environment);
+        animationThread.startAnimation(environment, lineChartSignalProbe,
+                lineChartSignalFeedback, lineChartCorrelation,
+                textFieldResultTimeStamp, textFieldResultRealDistance,
+                textFieldResultCalculatedDistance);
     }
 
     @FXML

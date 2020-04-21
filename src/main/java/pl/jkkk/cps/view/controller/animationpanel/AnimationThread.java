@@ -3,6 +3,7 @@ package pl.jkkk.cps.view.controller.animationpanel;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.chart.LineChart;
+import javafx.scene.control.TextField;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
@@ -20,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillLineChart;
+import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
 
 public class AnimationThread {
 
@@ -32,27 +34,45 @@ public class AnimationThread {
         return isAnimationRunning;
     }
 
-    public void startAnimation(LineChart chartSignalProbe, LineChart chartSignalFeedback,
-                               LineChart chartCorrelation, Environment environment) {
+    public void startAnimation(Environment environment,
+                               LineChart chartSignalProbe,
+                               LineChart chartSignalFeedback,
+                               LineChart chartCorrelation,
+                               TextField textFieldResultTimeStamp,
+                               TextField textFieldResultRealDistance,
+                               TextField textFieldResultCalculatedDistance) {
         isAnimationRunning.set(true);
-        run(chartSignalProbe, chartSignalFeedback, chartCorrelation, environment);
+        run(environment, chartSignalProbe, chartSignalFeedback,
+                chartCorrelation, textFieldResultTimeStamp, textFieldResultRealDistance,
+                textFieldResultCalculatedDistance);
     }
 
     public void stopAnimation() {
         isAnimationRunning.set(false);
     }
 
-    private void run(LineChart chartSignalProbe, LineChart chartSignalFeedback,
-                     LineChart chartCorrelation, Environment environment) {
-
+    private void run(Environment environment,
+                     LineChart chartSignalProbe,
+                     LineChart chartSignalFeedback,
+                     LineChart chartCorrelation,
+                     TextField textFieldResultTimeStamp,
+                     TextField textFieldResultRealDistance,
+                     TextField textFieldResultCalculatedDistance) {
         Task<Void> task = new Task<Void>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() {
                 while (isAnimationRunning.get()) {
                     long callTimePeriod = 0;
                     callTimePeriod += action(() -> environment.step());
                     action(() -> {
                         Platform.runLater(() -> {
+                            textFieldSetValue(textFieldResultTimeStamp,
+                                    String.valueOf(environment.getTimestamp()));
+                            textFieldSetValue(textFieldResultRealDistance,
+                                    String.valueOf(environment.getItemDistance()));
+                            textFieldSetValue(textFieldResultCalculatedDistance,
+                                    String.valueOf(environment.getDistanceSensor().getDistance()));
+
                             representSignal(chartSignalProbe,
                                     environment.getDistanceSensor().getDiscreteProbeSignal());
                             representSignal(chartSignalFeedback,
@@ -60,8 +80,8 @@ public class AnimationThread {
                             representSignal(chartCorrelation,
                                     environment.getDistanceSensor().getCorrelationSignal());
                         });
-
                     });
+
                     long sleepTime = ((long) (environment.getTimeStep() * 1000)) - callTimePeriod;
                     try {
                         TimeUnit.MILLISECONDS.sleep(sleepTime > 0 ? sleepTime : 0);
