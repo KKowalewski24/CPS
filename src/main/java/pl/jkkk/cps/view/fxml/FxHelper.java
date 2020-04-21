@@ -17,6 +17,7 @@ import pl.jkkk.cps.view.model.ChartRecord;
 import pl.jkkk.cps.view.model.CustomTabPane;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -68,6 +69,10 @@ public class FxHelper {
     public static void removeAndAddNewPaneChildren(Pane pane, Node... nodes) {
         pane.getChildren().clear();
         pane.getChildren().addAll(nodes);
+    }
+
+    public static void textFieldSetEditable(boolean value, TextField... textFields) {
+        Arrays.stream(textFields).forEach((it) -> it.setEditable(value));
     }
 
     public static void textFieldSetValue(TextField textField, String string) {

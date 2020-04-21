@@ -3,7 +3,7 @@ package pl.jkkk.cps.logic.model.simulator;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 
 public class Environment {
-    
+
     private final double timeStep;
     private final double signalVelocity;
     private final double itemVelocity;
@@ -13,7 +13,7 @@ public class Environment {
     private double timestamp = 0.0;
 
     public Environment(double timeStep, double signalVelocity, double itemVelocity,
-            DistanceSensor distanceSensor, double startItemDistance) {
+                       DistanceSensor distanceSensor, double startItemDistance) {
         this.timeStep = timeStep;
         this.signalVelocity = signalVelocity;
         this.itemVelocity = itemVelocity;
@@ -29,7 +29,11 @@ public class Environment {
         return timestamp;
     }
 
-    public void step(){
+    public DistanceSensor getDistanceSensor() {
+        return distanceSensor;
+    }
+
+    public void step() {
         /* update timestamp */
         timestamp += timeStep;
 

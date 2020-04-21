@@ -36,14 +36,14 @@ public class AnimationThread {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-
-                // TODO CHANGE FOR ANIMATION CODE
-                int i = 0;
                 while (isAnimationRunning.get()) {
-                    i++;
-                    System.out.println("acdedededed " + i);
+//                    start time
+//                   step()
+
+//                    end time
+//                    time-ile trwał call
+
                 }
-                System.out.println("koniec");
                 return null;
             }
         };

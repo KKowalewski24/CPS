@@ -7,7 +7,7 @@ import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.SinusoidalSignal;
 
 public class DistanceSensor {
-    
+
     private final ContinuousSignal probeSignal;
     private final double probeSignalTerm;
     private final double sampleRate;
@@ -22,7 +22,7 @@ public class DistanceSensor {
     private double distance;
 
     public DistanceSensor(double probeSignalTerm, double sampleRate,
-            int bufferLength, double reportTerm, double signalVelocity) {
+                          int bufferLength, double reportTerm, double signalVelocity) {
         this.probeSignal = new SinusoidalSignal(0.0, 0.0, 1.0, probeSignalTerm);
         this.probeSignalTerm = probeSignalTerm;
         this.sampleRate = sampleRate;
@@ -55,10 +55,10 @@ public class DistanceSensor {
     public void update(ContinuousSignal feedbackSignal, double timestamp) {
         /* fill buffers */
         double rangeStart = timestamp - bufferLength / sampleRate;
-        this.discreteProbeSignal = new ContinuousBasedDiscreteSignal(rangeStart, bufferLength, 
-                    sampleRate, probeSignal);
-        this.discreteFeedbackSignal = new ContinuousBasedDiscreteSignal(rangeStart, bufferLength, 
-                    sampleRate, feedbackSignal);
+        this.discreteProbeSignal = new ContinuousBasedDiscreteSignal(rangeStart, bufferLength,
+                sampleRate, probeSignal);
+        this.discreteFeedbackSignal = new ContinuousBasedDiscreteSignal(rangeStart, bufferLength,
+                sampleRate, feedbackSignal);
 
         /* check if it's time for distance calculation */
         if (timestamp - lastCalculationTimestamp >= reportTerm) {
@@ -78,10 +78,10 @@ public class DistanceSensor {
                 indexOfFirstMax = i;
             }
         }
-        
+
         /* calculate distance */
-        double delay = (indexOfFirstMax - correlationSignal.getNumberOfSamples() / 2) 
-            / sampleRate;
+        double delay = (indexOfFirstMax - correlationSignal.getNumberOfSamples() / 2)
+                / sampleRate;
         this.distance = (delay * signalVelocity) / 2.0;
     }
 }
