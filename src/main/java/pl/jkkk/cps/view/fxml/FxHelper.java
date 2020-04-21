@@ -75,6 +75,14 @@ public class FxHelper {
         Arrays.stream(textFields).forEach((it) -> it.setEditable(value));
     }
 
+    public static Double getTextFieldValueToDouble(TextField textField) {
+        return Double.parseDouble(textField.getText());
+    }
+
+    public static Integer getTextFieldValueToInteger(TextField textField) {
+        return Integer.parseInt(textField.getText());
+    }
+
     public static void textFieldSetValue(TextField textField, String string) {
         textField.setText(string);
     }

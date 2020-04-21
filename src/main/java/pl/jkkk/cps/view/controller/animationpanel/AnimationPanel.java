@@ -6,6 +6,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import pl.jkkk.cps.logic.model.simulator.DistanceSensor;
+import pl.jkkk.cps.logic.model.simulator.Environment;
 import pl.jkkk.cps.view.exception.AnimationNotStartedException;
 import pl.jkkk.cps.view.fxml.PopOutWindow;
 import pl.jkkk.cps.view.fxml.StageController;
@@ -20,6 +22,8 @@ import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_ANIMATION_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeTheme;
+import static pl.jkkk.cps.view.fxml.FxHelper.getTextFieldValueToDouble;
+import static pl.jkkk.cps.view.fxml.FxHelper.getTextFieldValueToInteger;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetEditable;
 
@@ -44,9 +48,9 @@ public class AnimationPanel implements Initializable {
     private TextField textFieldReportTerm;
 
     @FXML
-    private LineChart lineChartSignalX;
+    private LineChart lineChartSignalProbe;
     @FXML
-    private LineChart lineChartSignalY;
+    private LineChart lineChartSignalFeedback;
     @FXML
     private LineChart lineChartCorrelation;
 
@@ -55,15 +59,31 @@ public class AnimationPanel implements Initializable {
     /*------------------------ METHODS REGION ------------------------*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        prepareLineChart(lineChartSignalX);
-        prepareLineChart(lineChartSignalY);
+        prepareLineChart(lineChartSignalProbe);
+        prepareLineChart(lineChartSignalFeedback);
         prepareLineChart(lineChartCorrelation);
     }
 
     @FXML
     private void onActionButtonStartAnimation(ActionEvent actionEvent) {
         changeParamsTextFieldsEditable(false);
-        animationThread.startAnimation(lineChartSignalX, lineChartSignalY, lineChartCorrelation);
+
+        Double timeStep = getTextFieldValueToDouble(textFieldTimeStep);
+        Double signalVelocity = getTextFieldValueToDouble(textFieldSignalVelocity);
+        Double itemVelocity = getTextFieldValueToDouble(textFieldItemVelocity);
+        Double startItemDistance = getTextFieldValueToDouble(textFieldStartItemDistance);
+        Double probeSignalTerm = getTextFieldValueToDouble(textFieldProbeSignalTerm);
+        Double sampleRate = getTextFieldValueToDouble(textFieldSampleRate);
+        Integer bufferLength = getTextFieldValueToInteger(textFieldBufferLength);
+        Double reportTerm = getTextFieldValueToDouble(textFieldReportTerm);
+
+        DistanceSensor distanceSensor = new DistanceSensor(probeSignalTerm,
+                sampleRate, bufferLength, reportTerm, signalVelocity);
+        Environment environment = new Environment(timeStep, signalVelocity,
+                itemVelocity, distanceSensor, startItemDistance);
+
+        animationThread.startAnimation(lineChartSignalProbe,
+                lineChartSignalFeedback, lineChartCorrelation, environment);
     }
 
     @FXML

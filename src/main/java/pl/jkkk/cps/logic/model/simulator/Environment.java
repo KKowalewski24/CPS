@@ -21,16 +21,28 @@ public class Environment {
         this.itemDistance = startItemDistance;
     }
 
+    public double getTimeStep() {
+        return timeStep;
+    }
+
+    public double getSignalVelocity() {
+        return signalVelocity;
+    }
+
+    public double getItemVelocity() {
+        return itemVelocity;
+    }
+
+    public DistanceSensor getDistanceSensor() {
+        return distanceSensor;
+    }
+
     public double getItemDistance() {
         return itemDistance;
     }
 
     public double getTimestamp() {
         return timestamp;
-    }
-
-    public DistanceSensor getDistanceSensor() {
-        return distanceSensor;
     }
 
     public void step() {

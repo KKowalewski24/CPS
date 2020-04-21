@@ -65,7 +65,7 @@
                                             prefWidth="585.0">
                                     <children>
                                         <Label layoutX="14.0" layoutY="11.0"
-                                               text="Początkowy dystans przedmiotu"/>
+                                               text="Początkowy dystans"/>
                                         <TextField fx:id="textFieldStartItemDistance"
                                                    layoutX="409.0" layoutY="6.0"/>
                                     </children>
@@ -179,7 +179,7 @@
             <content>
                 <VBox layoutX="391.0" layoutY="19.0" prefHeight="630.0" prefWidth="882.0">
                     <children>
-                        <LineChart fx:id="lineChartSignalX" prefHeight="405.0" prefWidth="625.0"
+                        <LineChart fx:id="lineChartSignalProbe" prefHeight="405.0" prefWidth="625.0"
                                    title="Sygnał Sądujący">
                             <xAxis>
                                 <NumberAxis side="BOTTOM"/>
@@ -188,7 +188,7 @@
                                 <NumberAxis side="LEFT"/>
                             </yAxis>
                         </LineChart>
-                        <LineChart fx:id="lineChartSignalY" title="Sygnał Powrotny">
+                        <LineChart fx:id="lineChartSignalFeedback" title="Sygnał Powrotny">
                             <xAxis>
                                 <NumberAxis side="BOTTOM"/>
                             </xAxis>

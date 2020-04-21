@@ -18,7 +18,7 @@ public class DistanceSensor {
     private DiscreteSignal discreteProbeSignal;
     private DiscreteSignal discreteFeedbackSignal;
     private DiscreteSignal correlationSignal;
-    private double lastCalculationTimestamp = Double.MIN_VALUE;
+    private double lastCalculationTimestamp = -Double.MAX_VALUE;
     private double distance;
 
     public DistanceSensor(double probeSignalTerm, double sampleRate,
