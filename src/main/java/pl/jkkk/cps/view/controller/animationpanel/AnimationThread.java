@@ -93,14 +93,17 @@ public class AnimationThread {
                                     .getCorrelationSignal();
 
                             updateNumberAxis(axisXSignalProbe, probeSignal.getRangeStart(),
-                                    probeSignal.getRangeStart() + probeSignal.getRangeLength(),
+                                    probeSignal.getRangeStart()
+                                            + probeSignal.getRangeLength(),
                                     AXIS_TICK_UNIT);
                             updateNumberAxis(axisXSignalFeedback, feedbackSignal.getRangeStart(),
-                                    feedbackSignal.getRangeStart() + probeSignal.getRangeLength(),
+                                    feedbackSignal.getRangeStart()
+                                            + probeSignal.getRangeLength(),
                                     AXIS_TICK_UNIT);
                             updateNumberAxis(lineChartSignalCorrelation,
                                     correlationSignal.getRangeStart(),
-                                    correlationSignal.getRangeStart() + correlationSignal.getRangeLength(),
+                                    correlationSignal.getRangeStart()
+                                            + correlationSignal.getRangeLength(),
                                     AXIS_TICK_UNIT);
 
                             representSignal(chartSignalProbe, probeSignal);
