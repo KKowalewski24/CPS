@@ -24,7 +24,6 @@ import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
 import pl.jkkk.cps.logic.model.signal.LowPassFilter;
-import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
@@ -112,12 +111,28 @@ public class CommandLineMode extends Application {
                 caseDrawCharts();
                 break;
             }
+            case ADD: {
+                TwoArgOperationProcessor.add();
+                break;
+            }
+            case SUBTRACT: {
+                TwoArgOperationProcessor.subtract();
+                break;
+            }
+            case MULTIPLY: {
+                TwoArgOperationProcessor.multiply();
+                break;
+            }
+            case DIVIDE: {
+                TwoArgOperationProcessor.divide();
+                break;
+            }
             case CONVOLUTION: {
-                caseConvolution();
+                TwoArgOperationProcessor.convolution();
                 break;
             }
             case CORRELATION: {
-                caseCorrelation();
+                TwoArgOperationProcessor.correlation();
                 break;
             }
         }
@@ -261,28 +276,6 @@ public class CommandLineMode extends Application {
         }
     }
 
-    private void caseConvolution() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        Signal signal1 = readerWriter.read();
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-        Signal signal2 = readerWriter.read();
-
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(3));
-        readerWriter.write(new ConvolutionSignal((DiscreteSignal) signal1,
-                (DiscreteSignal) signal2));
-    }
-
-    private void caseCorrelation() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        Signal signal1 = readerWriter.read();
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-        Signal signal2 = readerWriter.read();
-
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(3));
-        readerWriter.write(new CorrelationSignal((DiscreteSignal) signal1,
-                (DiscreteSignal) signal2));
-    }
-
     private void drawChart(Signal signal) {
         List<Data> signalData = signal.generateDiscreteRepresentation();
 
@@ -294,7 +287,7 @@ public class CommandLineMode extends Application {
                     data.add(signalData.get(i));
                 }
             }
-        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
+        } else if (signal instanceof ContinuousSignal) {
             DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
             data = signalData;
             data = new ArrayList<>(douglasPeucker
