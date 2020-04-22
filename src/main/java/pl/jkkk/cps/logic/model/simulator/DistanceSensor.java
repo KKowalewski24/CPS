@@ -82,6 +82,6 @@ public class DistanceSensor {
         /* calculate distance */
         double delay = (indexOfFirstMax - correlationSignal.getNumberOfSamples() / 2)
                 / sampleRate;
-        this.distance = (delay * signalVelocity) / 2.0;
+        this.distance = delay * signalVelocity / 2.0;
     }
 }
