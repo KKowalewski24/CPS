@@ -111,12 +111,28 @@ public class CommandLineMode extends Application {
                 caseDrawCharts();
                 break;
             }
+            case ADD: {
+                TwoArgOperationProcessor.add();
+                break;
+            }
+            case SUBTRACT: {
+                TwoArgOperationProcessor.subtract();
+                break;
+            }
+            case MULTIPLY: {
+                TwoArgOperationProcessor.multiply();
+                break;
+            }
+            case DIVIDE: {
+                TwoArgOperationProcessor.divide();
+                break;
+            }
             case CONVOLUTION: {
-                caseConvolution();
+                TwoArgOperationProcessor.convolution();
                 break;
             }
             case CORRELATION: {
-                caseCorrelation();
+                TwoArgOperationProcessor.correlation();
                 break;
             }
         }
@@ -258,28 +274,6 @@ public class CommandLineMode extends Application {
         } catch (FileOperationException e) {
             e.printStackTrace();
         }
-    }
-
-    private void caseConvolution() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        Signal signal1 = readerWriter.read();
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-        Signal signal2 = readerWriter.read();
-
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(3));
-        readerWriter.write(new ConvolutionSignal((DiscreteSignal) signal1,
-                (DiscreteSignal) signal2));
-    }
-
-    private void caseCorrelation() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        Signal signal1 = readerWriter.read();
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-        Signal signal2 = readerWriter.read();
-
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(3));
-        readerWriter.write(new CorrelationSignal((DiscreteSignal) signal1,
-                (DiscreteSignal) signal2));
     }
 
     private void drawChart(Signal signal) {
