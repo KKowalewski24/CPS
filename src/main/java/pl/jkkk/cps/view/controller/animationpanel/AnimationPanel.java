@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import pl.jkkk.cps.logic.model.simulator.DistanceSensor;
@@ -58,9 +59,15 @@ public class AnimationPanel implements Initializable {
     @FXML
     private LineChart lineChartSignalProbe;
     @FXML
+    private NumberAxis axisXSignalProbe;
+    @FXML
     private LineChart lineChartSignalFeedback;
     @FXML
+    private NumberAxis axisXSignalFeedback;
+    @FXML
     private LineChart lineChartCorrelation;
+    @FXML
+    private NumberAxis axisXSignalCorrelation;
 
     private AnimationThread animationThread = new AnimationThread();
 
@@ -101,6 +108,7 @@ public class AnimationPanel implements Initializable {
 
         animationThread.startAnimation(environment, lineChartSignalProbe,
                 lineChartSignalFeedback, lineChartCorrelation,
+                axisXSignalProbe, axisXSignalFeedback,axisXSignalCorrelation,
                 textFieldResultTimeStamp, textFieldResultRealDistance,
                 textFieldResultCalculatedDistance);
     }

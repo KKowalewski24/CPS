@@ -144,6 +144,14 @@ public class FxHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    public static void updateNumberAxis(NumberAxis numberAxis, double lowerBound,
+                                        double upperBound, double tickUnit) {
+        numberAxis.setAutoRanging(false);
+        numberAxis.setLowerBound(lowerBound);
+        numberAxis.setUpperBound(upperBound);
+        numberAxis.setTickUnit(tickUnit);
+    }
+
     public static LineChart prepareLineChart(String... title) {
         LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
         lineChart.setCreateSymbols(false);

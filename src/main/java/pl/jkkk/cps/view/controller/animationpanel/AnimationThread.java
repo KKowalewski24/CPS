@@ -3,12 +3,15 @@ package pl.jkkk.cps.view.controller.animationpanel;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.TextField;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.Signal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
+import pl.jkkk.cps.logic.model.simulator.DistanceSensor;
 import pl.jkkk.cps.logic.model.simulator.Environment;
 import pl.jkkk.cps.view.fxml.DouglasPeuckerAlg;
 import pl.jkkk.cps.view.model.ChartRecord;
@@ -21,10 +24,13 @@ import java.util.stream.Collectors;
 
 import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
+import static pl.jkkk.cps.view.fxml.FxHelper.updateNumberAxis;
 
 public class AnimationThread {
 
     /*------------------------ FIELDS REGION ------------------------*/
+    public static final double AXIS_TICK_UNIT = 0.25;
+
     private AtomicBoolean isAnimationRunning = new AtomicBoolean(false);
     private Thread thread;
 
@@ -37,13 +43,17 @@ public class AnimationThread {
                                LineChart chartSignalProbe,
                                LineChart chartSignalFeedback,
                                LineChart chartCorrelation,
+                               NumberAxis axisXSignalProbe,
+                               NumberAxis axisXSignalFeedback,
+                               NumberAxis axisXSignalCorrelation,
                                TextField textFieldResultTimeStamp,
                                TextField textFieldResultRealDistance,
                                TextField textFieldResultCalculatedDistance) {
         isAnimationRunning.set(true);
         run(environment, chartSignalProbe, chartSignalFeedback,
-                chartCorrelation, textFieldResultTimeStamp, textFieldResultRealDistance,
-                textFieldResultCalculatedDistance);
+                chartCorrelation, axisXSignalProbe, axisXSignalFeedback,
+                axisXSignalCorrelation, textFieldResultTimeStamp,
+                textFieldResultRealDistance, textFieldResultCalculatedDistance);
     }
 
     public void stopAnimation() {
@@ -54,6 +64,9 @@ public class AnimationThread {
                      LineChart chartSignalProbe,
                      LineChart chartSignalFeedback,
                      LineChart chartCorrelation,
+                     NumberAxis axisXSignalProbe,
+                     NumberAxis axisXSignalFeedback,
+                     NumberAxis axisXSignalCorrelation,
                      TextField textFieldResultTimeStamp,
                      TextField textFieldResultRealDistance,
                      TextField textFieldResultCalculatedDistance) {
@@ -72,12 +85,27 @@ public class AnimationThread {
                             textFieldSetValue(textFieldResultCalculatedDistance,
                                     String.valueOf(environment.getDistanceSensor().getDistance()));
 
-                            representSignal(chartSignalProbe,
-                                    environment.getDistanceSensor().getDiscreteProbeSignal());
-                            representSignal(chartSignalFeedback,
-                                    environment.getDistanceSensor().getDiscreteFeedbackSignal());
-                            representSignal(chartCorrelation,
-                                    environment.getDistanceSensor().getCorrelationSignal());
+                            DiscreteSignal probeSignal = environment.getDistanceSensor()
+                                    .getDiscreteProbeSignal();
+                            DiscreteSignal feedbackSignal = environment.getDistanceSensor()
+                                    .getDiscreteFeedbackSignal();
+                            DiscreteSignal correlationSignal = environment.getDistanceSensor()
+                                    .getCorrelationSignal();
+
+                            updateNumberAxis(axisXSignalProbe, probeSignal.getRangeStart(),
+                                    probeSignal.getRangeStart() + probeSignal.getRangeLength(),
+                                    AXIS_TICK_UNIT);
+                            updateNumberAxis(axisXSignalFeedback, feedbackSignal.getRangeStart(),
+                                    feedbackSignal.getRangeStart() + probeSignal.getRangeLength(),
+                                    AXIS_TICK_UNIT);
+                            updateNumberAxis(axisXSignalCorrelation,
+                                    correlationSignal.getRangeStart(),
+                                    correlationSignal.getRangeStart() + correlationSignal.getRangeLength(),
+                                    AXIS_TICK_UNIT);
+
+                            representSignal(chartSignalProbe, probeSignal);
+                            representSignal(chartSignalFeedback, feedbackSignal);
+                            representSignal(chartCorrelation, correlationSignal);
                         });
                     });
 

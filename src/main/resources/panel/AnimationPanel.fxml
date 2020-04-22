@@ -169,7 +169,7 @@
                         <LineChart fx:id="lineChartSignalProbe" prefHeight="405.0" prefWidth="625.0"
                                    title="Sygnał Sądujący">
                             <xAxis>
-                                <NumberAxis side="BOTTOM"/>
+                                <NumberAxis fx:id="axisXSignalProbe" side="BOTTOM"/>
                             </xAxis>
                             <yAxis>
                                 <NumberAxis side="LEFT"/>
@@ -177,16 +177,17 @@
                         </LineChart>
                         <LineChart fx:id="lineChartSignalFeedback" title="Sygnał Powrotny">
                             <xAxis>
-                                <NumberAxis side="BOTTOM"/>
+                                <NumberAxis fx:id="axisXSignalFeedback" side="BOTTOM"/>
                             </xAxis>
                             <yAxis>
                                 <NumberAxis side="LEFT"/>
                             </yAxis>
                         </LineChart>
+                        <!--                        todo rename-->
                         <LineChart fx:id="lineChartCorrelation"
                                    title="Korelacja Sygnałów Sądującego oraz Powrotnego">
                             <xAxis>
-                                <NumberAxis side="BOTTOM"/>
+                                <NumberAxis fx:id="axisXSignalCorrelation" side="BOTTOM"/>
                             </xAxis>
                             <yAxis>
                                 <NumberAxis side="LEFT"/>
