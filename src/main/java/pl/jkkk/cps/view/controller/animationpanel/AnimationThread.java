@@ -7,7 +7,6 @@ import javafx.scene.control.TextField;
 import pl.jkkk.cps.logic.model.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
-import pl.jkkk.cps.logic.model.signal.OperationResultSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.simulator.Environment;
@@ -110,7 +109,7 @@ public class AnimationThread {
                     data.add(signalData.get(i));
                 }
             }
-        } else if (signal instanceof ContinuousSignal || signal instanceof OperationResultSignal) {
+        } else if (signal instanceof ContinuousSignal) {
             DouglasPeuckerAlg douglasPeucker = new DouglasPeuckerAlg();
             data = signalData;
             data = new ArrayList<>(douglasPeucker
