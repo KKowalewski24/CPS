@@ -64,7 +64,7 @@ public class AnimationThread {
                 while (isAnimationRunning.get()) {
                     long callTimePeriod = 0;
                     callTimePeriod += action(() -> environment.step());
-                    action(() -> {
+                    callTimePeriod += action(() -> {
                         Platform.runLater(() -> {
                             textFieldSetValue(textFieldResultTimeStamp,
                                     String.valueOf(environment.getTimestamp()));
@@ -82,6 +82,7 @@ public class AnimationThread {
                         });
                     });
 
+                    /*----- Counting sleep time in ms and converting TimeStep to ms -----*/
                     long sleepTime = ((long) (environment.getTimeStep() * 1000)) - callTimePeriod;
                     try {
                         TimeUnit.MILLISECONDS.sleep(sleepTime > 0 ? sleepTime : 0);
