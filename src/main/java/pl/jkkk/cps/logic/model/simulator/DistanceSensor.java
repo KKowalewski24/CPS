@@ -69,7 +69,7 @@ public class DistanceSensor {
 
     private void calculateDistance() {
         /* correlation */
-        this.correlationSignal = new CorrelationSignal(discreteProbeSignal, discreteFeedbackSignal);
+        this.correlationSignal = new CorrelationSignal(discreteFeedbackSignal, discreteProbeSignal);
 
         /* find max */
         int indexOfFirstMax = correlationSignal.getNumberOfSamples() / 2;
