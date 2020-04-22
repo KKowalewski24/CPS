@@ -67,13 +67,13 @@ public class AnimationPanel implements Initializable {
     /*------------------------ METHODS REGION ------------------------*/
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        textFieldSetValue(textFieldTimeStep, String.valueOf(5));
+        textFieldSetValue(textFieldTimeStep, String.valueOf(0.1));
         textFieldSetValue(textFieldSignalVelocity, String.valueOf(1000));
         textFieldSetValue(textFieldItemVelocity, String.valueOf(0.5));
         textFieldSetValue(textFieldStartItemDistance, String.valueOf(10));
-        textFieldSetValue(textFieldProbeSignalTerm, String.valueOf(0.5));
+        textFieldSetValue(textFieldProbeSignalTerm, String.valueOf(1));
         textFieldSetValue(textFieldSampleRate, String.valueOf(20));
-        textFieldSetValue(textFieldBufferLength, String.valueOf(30));
+        textFieldSetValue(textFieldBufferLength, String.valueOf(60));
         textFieldSetValue(textFieldReportTerm, String.valueOf(1));
 
         prepareLineChart(lineChartSignalProbe);
