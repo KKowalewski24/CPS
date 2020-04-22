@@ -65,7 +65,7 @@ public class AnimationPanel implements Initializable {
     @FXML
     private NumberAxis axisXSignalFeedback;
     @FXML
-    private LineChart lineChartCorrelation;
+    private LineChart lineChartSignalCorrelation;
     @FXML
     private NumberAxis axisXSignalCorrelation;
 
@@ -85,7 +85,7 @@ public class AnimationPanel implements Initializable {
 
         prepareLineChart(lineChartSignalProbe);
         prepareLineChart(lineChartSignalFeedback);
-        prepareLineChart(lineChartCorrelation);
+        prepareLineChart(lineChartSignalCorrelation);
     }
 
     @FXML
@@ -107,7 +107,7 @@ public class AnimationPanel implements Initializable {
                 itemVelocity, distanceSensor, startItemDistance);
 
         animationThread.startAnimation(environment, lineChartSignalProbe,
-                lineChartSignalFeedback, lineChartCorrelation,
+                lineChartSignalFeedback, lineChartSignalCorrelation,
                 axisXSignalProbe, axisXSignalFeedback,axisXSignalCorrelation,
                 textFieldResultTimeStamp, textFieldResultRealDistance,
                 textFieldResultCalculatedDistance);

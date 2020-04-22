@@ -45,14 +45,14 @@ public class AnimationThread {
                                LineChart chartCorrelation,
                                NumberAxis axisXSignalProbe,
                                NumberAxis axisXSignalFeedback,
-                               NumberAxis axisXSignalCorrelation,
+                               NumberAxis lineChartSignalCorrelation,
                                TextField textFieldResultTimeStamp,
                                TextField textFieldResultRealDistance,
                                TextField textFieldResultCalculatedDistance) {
         isAnimationRunning.set(true);
         run(environment, chartSignalProbe, chartSignalFeedback,
                 chartCorrelation, axisXSignalProbe, axisXSignalFeedback,
-                axisXSignalCorrelation, textFieldResultTimeStamp,
+                lineChartSignalCorrelation, textFieldResultTimeStamp,
                 textFieldResultRealDistance, textFieldResultCalculatedDistance);
     }
 
@@ -66,7 +66,7 @@ public class AnimationThread {
                      LineChart chartCorrelation,
                      NumberAxis axisXSignalProbe,
                      NumberAxis axisXSignalFeedback,
-                     NumberAxis axisXSignalCorrelation,
+                     NumberAxis lineChartSignalCorrelation,
                      TextField textFieldResultTimeStamp,
                      TextField textFieldResultRealDistance,
                      TextField textFieldResultCalculatedDistance) {
@@ -98,7 +98,7 @@ public class AnimationThread {
                             updateNumberAxis(axisXSignalFeedback, feedbackSignal.getRangeStart(),
                                     feedbackSignal.getRangeStart() + probeSignal.getRangeLength(),
                                     AXIS_TICK_UNIT);
-                            updateNumberAxis(axisXSignalCorrelation,
+                            updateNumberAxis(lineChartSignalCorrelation,
                                     correlationSignal.getRangeStart(),
                                     correlationSignal.getRangeStart() + correlationSignal.getRangeLength(),
                                     AXIS_TICK_UNIT);
