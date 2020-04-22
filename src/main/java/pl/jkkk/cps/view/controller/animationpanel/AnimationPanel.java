@@ -75,13 +75,13 @@ public class AnimationPanel implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         textFieldSetValue(textFieldTimeStep, String.valueOf(0.1));
-        textFieldSetValue(textFieldSignalVelocity, String.valueOf(1000));
+        textFieldSetValue(textFieldSignalVelocity, String.valueOf(100));
         textFieldSetValue(textFieldItemVelocity, String.valueOf(0.5));
-        textFieldSetValue(textFieldStartItemDistance, String.valueOf(10));
+        textFieldSetValue(textFieldStartItemDistance, String.valueOf(25));
         textFieldSetValue(textFieldProbeSignalTerm, String.valueOf(1));
         textFieldSetValue(textFieldSampleRate, String.valueOf(20));
         textFieldSetValue(textFieldBufferLength, String.valueOf(60));
-        textFieldSetValue(textFieldReportTerm, String.valueOf(1));
+        textFieldSetValue(textFieldReportTerm, String.valueOf(0.5));
 
         prepareLineChart(lineChartSignalProbe);
         prepareLineChart(lineChartSignalFeedback);
@@ -92,25 +92,31 @@ public class AnimationPanel implements Initializable {
     private void onActionButtonStartAnimation(ActionEvent actionEvent) {
         changeParamsTextFieldsEditable(false);
 
-        Double timeStep = getTextFieldValueToDouble(textFieldTimeStep);
-        Double signalVelocity = getTextFieldValueToDouble(textFieldSignalVelocity);
-        Double itemVelocity = getTextFieldValueToDouble(textFieldItemVelocity);
-        Double startItemDistance = getTextFieldValueToDouble(textFieldStartItemDistance);
-        Double probeSignalTerm = getTextFieldValueToDouble(textFieldProbeSignalTerm);
-        Double sampleRate = getTextFieldValueToDouble(textFieldSampleRate);
-        Integer bufferLength = getTextFieldValueToInteger(textFieldBufferLength);
-        Double reportTerm = getTextFieldValueToDouble(textFieldReportTerm);
+        try {
+            Double timeStep = getTextFieldValueToDouble(textFieldTimeStep);
+            Double signalVelocity = getTextFieldValueToDouble(textFieldSignalVelocity);
+            Double itemVelocity = getTextFieldValueToDouble(textFieldItemVelocity);
+            Double startItemDistance = getTextFieldValueToDouble(textFieldStartItemDistance);
+            Double probeSignalTerm = getTextFieldValueToDouble(textFieldProbeSignalTerm);
+            Double sampleRate = getTextFieldValueToDouble(textFieldSampleRate);
+            Integer bufferLength = getTextFieldValueToInteger(textFieldBufferLength);
+            Double reportTerm = getTextFieldValueToDouble(textFieldReportTerm);
 
-        DistanceSensor distanceSensor = new DistanceSensor(probeSignalTerm,
-                sampleRate, bufferLength, reportTerm, signalVelocity);
-        Environment environment = new Environment(timeStep, signalVelocity,
-                itemVelocity, distanceSensor, startItemDistance);
+            DistanceSensor distanceSensor = new DistanceSensor(probeSignalTerm,
+                    sampleRate, bufferLength, reportTerm, signalVelocity);
+            Environment environment = new Environment(timeStep, signalVelocity,
+                    itemVelocity, distanceSensor, startItemDistance);
 
-        animationThread.startAnimation(environment, lineChartSignalProbe,
-                lineChartSignalFeedback, lineChartSignalCorrelation,
-                axisXSignalProbe, axisXSignalFeedback,axisXSignalCorrelation,
-                textFieldResultTimeStamp, textFieldResultRealDistance,
-                textFieldResultCalculatedDistance);
+            animationThread.startAnimation(environment, lineChartSignalProbe,
+                    lineChartSignalFeedback, lineChartSignalCorrelation,
+                    axisXSignalProbe, axisXSignalFeedback, axisXSignalCorrelation,
+                    textFieldResultTimeStamp, textFieldResultRealDistance,
+                    textFieldResultCalculatedDistance);
+        } catch (NumberFormatException e) {
+            PopOutWindow.messageBox("Błędne Dane",
+                    "Wprowadzono błędne dane",
+                    Alert.AlertType.WARNING);
+        }
     }
 
     @FXML
