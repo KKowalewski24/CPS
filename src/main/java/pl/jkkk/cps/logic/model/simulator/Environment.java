@@ -53,7 +53,7 @@ public class Environment {
         itemDistance += itemVelocity * timeStep;
 
         /* retrieve feedback signal from probeSignal */
-        double delay = itemDistance / signalVelocity;
+        double delay = itemDistance / signalVelocity * 2.0;
         ContinuousSignal probeSignal = distanceSensor.generateProbeSignal();
         probeSignal.setRangeStart(probeSignal.getRangeStart() + delay);
         ContinuousSignal feedbackSignal = probeSignal;
