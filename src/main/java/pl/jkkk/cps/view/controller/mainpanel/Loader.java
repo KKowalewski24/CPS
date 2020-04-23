@@ -5,6 +5,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TabPane;
@@ -74,6 +75,7 @@ import static pl.jkkk.cps.view.fxml.FxHelper.getCurrentCustomTabPaneFromTabPane;
 import static pl.jkkk.cps.view.fxml.FxHelper.getIndexFromComboBox;
 import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.fxml.FxHelper.getValueFromComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.isCheckBoxSelected;
 import static pl.jkkk.cps.view.fxml.FxHelper.switchTabToAnother;
 
 public class Loader {
@@ -95,6 +97,11 @@ public class Loader {
 
     private TabPane tabPaneResults;
     private Spinner spinnerHistogramRange;
+
+    private CheckBox checkBoxDataChart;
+    private CheckBox checkBoxHistogram;
+    private CheckBox checkBoxSignalParams;
+    private CheckBox checkBoxComparison;
 
     private ComboBox comboBoxOperationTypesOneArgs;
     private ComboBox comboBoxSignalOneArgs;
@@ -131,7 +138,9 @@ public class Loader {
                   AnchorPane comparisonPane, AnchorPane oneArgsPane,
                   TextField textFieldQuantizationLevels, TextField textFieldSampleRate,
                   TextField textFieldReconstructionSincParam, AnchorPane windowTypePane,
-                  TextField textFieldCuttingFrequency, TextField textFieldFilterRow) {
+                  TextField textFieldCuttingFrequency, TextField textFieldFilterRow,
+                  CheckBox checkBoxDataChart, CheckBox checkBoxHistogram,
+                  CheckBox checkBoxSignalParams, CheckBox checkBoxComparison) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -158,6 +167,10 @@ public class Loader {
         this.windowTypePane = windowTypePane;
         this.textFieldCuttingFrequency = textFieldCuttingFrequency;
         this.textFieldFilterRow = textFieldFilterRow;
+        this.checkBoxDataChart = checkBoxDataChart;
+        this.checkBoxHistogram = checkBoxHistogram;
+        this.checkBoxSignalParams = checkBoxSignalParams;
+        this.checkBoxComparison = checkBoxComparison;
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -371,10 +384,13 @@ public class Loader {
             appendLabelText(paneChildren.get(4), "" + df.format(effectiveNumberOfBits));
             appendLabelText(paneChildren.get(5), "" + df.format(overallTime));
 
-            latexGenerator = new LatexGenerator("Comparison");
-            latexGenerator.createSummaryForComparison(meanSquaredError, signalToNoiseRatio,
-                    peakSignalToNoiseRatio, maximumDifference, effectiveNumberOfBits, overallTime);
-            latexGenerator.generate(ReportType.COMPARISON);
+            if (isCheckBoxSelected(checkBoxComparison)) {
+                latexGenerator = new LatexGenerator("Comparison");
+                latexGenerator.createSummaryForComparison(meanSquaredError, signalToNoiseRatio,
+                        peakSignalToNoiseRatio, maximumDifference, effectiveNumberOfBits,
+                        overallTime);
+                latexGenerator.generate(ReportType.COMPARISON);
+            }
 
         } catch (NotSameLengthException e) {
             PopOutWindow.messageBox("Błednie wybrane wykresy",
@@ -489,28 +505,40 @@ public class Loader {
             clearAndFillBarChart((BarChart) customTabPane.getHistogramTab()
                     .getContent(), histogramData);
             switchTabToAnother(customTabPane, 1);
-            reportWriter.writeFxChart("history", Main.getMainArgs(), tabPane);
+
+            if (isCheckBoxSelected(checkBoxHistogram)) {
+                reportWriter.writeFxChart("history", Main.getMainArgs(), tabPane);
+            }
 
             if (isScatterChart) {
                 changeLineChartToScatterChart(tabPane);
                 clearAndFillScatterChart((ScatterChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+
+                if (isCheckBoxSelected(checkBoxDataChart)) {
+                    reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+                }
 
             } else {
                 changeScatterChartToLineChart(tabPane);
                 clearAndFillLineChart((LineChart) customTabPane.getChartTab()
                         .getContent(), mainChartData);
                 switchTabToAnother(customTabPane, 0);
-                reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+
+                if (isCheckBoxSelected(checkBoxDataChart)) {
+                    reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+                }
             }
 
             fillParamsTab(customTabPane, signalParams);
-            latexGenerator = new LatexGenerator("Signal_Params");
-            latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
-                    signalParams[2], signalParams[3], signalParams[4]);
-            latexGenerator.generate(ReportType.SIGNAL);
+
+            if (isCheckBoxSelected(checkBoxSignalParams)) {
+                latexGenerator = new LatexGenerator("Signal_Params");
+                latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
+                        signalParams[2], signalParams[3], signalParams[4]);
+                latexGenerator.generate(ReportType.SIGNAL);
+            }
 
         } catch (FileOperationException e) {
             e.printStackTrace();

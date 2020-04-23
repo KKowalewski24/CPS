@@ -3,6 +3,7 @@ package pl.jkkk.cps.view.controller.mainpanel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -60,6 +61,15 @@ public class MainPanel implements Initializable {
     @FXML
     private AnchorPane comparisonPane;
 
+    @FXML
+    private CheckBox checkBoxDataChart;
+    @FXML
+    private CheckBox checkBoxHistogram;
+    @FXML
+    private CheckBox checkBoxSignalParams;
+    @FXML
+    private CheckBox checkBoxComparison;
+
     private TextField textFieldAmplitude = new TextField();
     private TextField textFieldStartTime = new TextField();
     private TextField textFieldSignalDuration = new TextField();
@@ -106,7 +116,8 @@ public class MainPanel implements Initializable {
                 comboBoxComparisonFirstSignal, comboBoxComparisonSecondSignal,
                 comparisonPane, oneArgsPane, textFieldQuantizationLevels,
                 textFieldSampleRate, textFieldReconstructionSincParam, windowTypePane,
-                textFieldCuttingFrequency, textFieldFilterRow
+                textFieldCuttingFrequency, textFieldFilterRow, checkBoxDataChart,
+                checkBoxHistogram, checkBoxSignalParams, checkBoxComparison
         );
 
         initializer.prepareTabPaneResults(0);

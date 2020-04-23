@@ -7,6 +7,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -107,6 +108,10 @@ public class FxHelper {
         Label label = (Label) node;
         String initialText = label.getText().substring(0, label.getText().indexOf(":") + 1);
         label.setText(initialText + "     " + text);
+    }
+
+    public static boolean isCheckBoxSelected(CheckBox checkBox) {
+        return checkBox.isSelected();
     }
 
     public static void fillComboBox(ComboBox comboBox, Collection collection) {

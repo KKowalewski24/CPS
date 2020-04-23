@@ -179,7 +179,6 @@
                                 <NumberAxis side="LEFT"/>
                             </yAxis>
                         </LineChart>
-                        <!--                        todo rename-->
                         <LineChart fx:id="lineChartSignalCorrelation"
                                    title="Korelacja Sygnałów Sondującego oraz Powrotnego">
                             <xAxis>

@@ -132,6 +132,29 @@
                             <Button layoutX="147.0" layoutY="111.0" mnemonicParsing="false"
                                     onAction="#onActionSaveChart" prefHeight="50.0"
                                     prefWidth="200.0" text="Zapisz Wykres"/>
+                            <AnchorPane layoutX="15.0" layoutY="321.0" prefHeight="200.0"
+                                        prefWidth="465.0">
+                                <children>
+                                    <Label layoutX="136.0" layoutY="14.0"
+                                           text="Wybierz Raporty Do Generowania"/>
+                                    <CheckBox fx:id="checkBoxDataChart" layoutX="55.0"
+                                              layoutY="50.0"
+                                              mnemonicParsing="false"
+                                              selected="true" text="Wykres Liniowy / Punktowy"/>
+                                    <CheckBox fx:id="checkBoxHistogram" layoutX="55.0"
+                                              layoutY="85.0"
+                                              mnemonicParsing="false" selected="true"
+                                              text="Histogram"/>
+                                    <CheckBox fx:id="checkBoxSignalParams" layoutX="55.0"
+                                              layoutY="120.0"
+                                              mnemonicParsing="false" selected="true"
+                                              text="Parametry Sygnału"/>
+                                    <CheckBox fx:id="checkBoxComparison" layoutX="55.0"
+                                              layoutY="155.0"
+                                              mnemonicParsing="false" selected="true"
+                                              text="Porównanie"/>
+                                </children>
+                            </AnchorPane>
                         </children>
                     </AnchorPane>
                 </Tab>
