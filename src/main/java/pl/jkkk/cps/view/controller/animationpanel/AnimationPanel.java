@@ -6,9 +6,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import pl.jkkk.cps.Main;
+import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.simulator.DistanceSensor;
 import pl.jkkk.cps.logic.model.simulator.Environment;
+import pl.jkkk.cps.logic.readerwriter.ReportWriter;
 import pl.jkkk.cps.view.exception.AnimationNotStartedException;
 import pl.jkkk.cps.view.fxml.PopOutWindow;
 import pl.jkkk.cps.view.fxml.StageController;
@@ -32,6 +37,11 @@ import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
 public class AnimationPanel implements Initializable {
 
     /*------------------------ FIELDS REGION ------------------------*/
+    @FXML
+    private HBox paneAnimationPanel;
+    @FXML
+    private CheckBox checkBoxAnimationPanelReport;
+
     @FXML
     private TextField textFieldTimeStep;
     @FXML
@@ -70,6 +80,7 @@ public class AnimationPanel implements Initializable {
     private NumberAxis axisXSignalCorrelation;
 
     private AnimationThread animationThread = new AnimationThread();
+    private ReportWriter reportWriter = new ReportWriter();
 
     /*------------------------ METHODS REGION ------------------------*/
     @Override
@@ -164,6 +175,15 @@ public class AnimationPanel implements Initializable {
     private void onActionButtonReloadStage(ActionEvent actionEvent) {
         StageController.reloadStage(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL);
         StageController.getApplicationStage().setResizable(false);
+    }
+
+    @FXML
+    private void onActionButtonGenerateReport(ActionEvent actionEvent) {
+        try {
+            reportWriter.writeFxChart("Animation", Main.getMainArgs(), paneAnimationPanel);
+        } catch (FileOperationException e) {
+            e.printStackTrace();
+        }
     }
 
     private void changeParamsTextFieldsEditable(boolean value) {

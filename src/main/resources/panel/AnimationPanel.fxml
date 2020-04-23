@@ -5,7 +5,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<HBox fx:id="paneAnimationPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity"
       prefHeight="700.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="pl.jkkk.cps.view.controller.animationpanel.AnimationPanel">
@@ -23,6 +24,9 @@
                     <Button layoutX="24.0" layoutY="14.0" mnemonicParsing="false"
                             onAction="#onActionButtonReloadStage" prefHeight="29.0"
                             prefWidth="109.0" text="Odśwież Stronę"/>
+                    <Button layoutX="24.0" layoutY="14.0" mnemonicParsing="false"
+                            onAction="#onActionButtonGenerateReport" prefHeight="29.0"
+                            prefWidth="106.0" text="Generuj Raport"/>
                     <Pane HBox.hgrow="ALWAYS"/>
                 </items>
                 <VBox.margin>
