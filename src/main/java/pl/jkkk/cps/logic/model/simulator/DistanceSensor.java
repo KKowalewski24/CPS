@@ -4,11 +4,11 @@ import pl.jkkk.cps.logic.model.signal.ContinuousBasedDiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
+import pl.jkkk.cps.logic.model.signal.OperationResultContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.SinusoidalSignal;
 
 public class DistanceSensor {
 
-    private final ContinuousSignal probeSignal;
     private final double probeSignalTerm;
     private final double sampleRate;
     private final int bufferLength;
@@ -23,7 +23,6 @@ public class DistanceSensor {
 
     public DistanceSensor(double probeSignalTerm, double sampleRate,
                           int bufferLength, double reportTerm, double signalVelocity) {
-        this.probeSignal = new SinusoidalSignal(0.0, 0.0, 1.0, probeSignalTerm);
         this.probeSignalTerm = probeSignalTerm;
         this.sampleRate = sampleRate;
         this.bufferLength = bufferLength;
@@ -31,9 +30,12 @@ public class DistanceSensor {
         this.signalVelocity = signalVelocity;
     }
 
-    public ContinuousSignal generateProbeSignal() {
+    public final ContinuousSignal generateProbeSignal() {
         /* always return new independent copy of probe signal */
-        return new SinusoidalSignal(0.0, 0.0, 1.0, probeSignalTerm);
+        return new OperationResultContinuousSignal(
+                new SinusoidalSignal(0.0, 0.0, 1.0, probeSignalTerm),
+                new SinusoidalSignal(0.0, 0.0, 0.6, probeSignalTerm / 3 * 2),
+                (a, b) -> a + b);
     }
 
     public DiscreteSignal getDiscreteProbeSignal() {
@@ -56,7 +58,7 @@ public class DistanceSensor {
         /* fill buffers */
         double rangeStart = timestamp - bufferLength / sampleRate;
         this.discreteProbeSignal = new ContinuousBasedDiscreteSignal(rangeStart, bufferLength,
-                sampleRate, probeSignal);
+                sampleRate, generateProbeSignal());
         this.discreteFeedbackSignal = new ContinuousBasedDiscreteSignal(rangeStart, bufferLength,
                 sampleRate, feedbackSignal);
 
