@@ -5,6 +5,7 @@ import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.OperationResultContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.RectangularSignal;
 import pl.jkkk.cps.logic.model.signal.SinusoidalSignal;
 
 public class DistanceSensor {
@@ -34,7 +35,7 @@ public class DistanceSensor {
         /* always return new independent copy of probe signal */
         return new OperationResultContinuousSignal(
                 new SinusoidalSignal(0.0, 0.0, 1.0, probeSignalTerm),
-                new SinusoidalSignal(0.0, 0.0, 0.6, probeSignalTerm / 3 * 2),
+                new RectangularSignal(0.0, 0.0, 0.6, probeSignalTerm / 6 * 2, 0.3),
                 (a, b) -> a + b);
     }
 
