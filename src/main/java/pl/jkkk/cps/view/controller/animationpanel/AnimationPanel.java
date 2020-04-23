@@ -39,8 +39,6 @@ public class AnimationPanel implements Initializable {
     /*------------------------ FIELDS REGION ------------------------*/
     @FXML
     private HBox paneAnimationPanel;
-    @FXML
-    private CheckBox checkBoxAnimationPanelReport;
 
     @FXML
     private TextField textFieldTimeStep;
