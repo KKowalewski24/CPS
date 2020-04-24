@@ -345,6 +345,10 @@ public class Loader {
                 }
             }
             representSignal(resultSignal);
+        } catch (NotSameLengthException e) {
+            PopOutWindow.messageBox("Błednie wybrane wykresy",
+                    "Wykresy mają błędnie dobraną długość",
+                    Alert.AlertType.WARNING);
         } catch (ClassCastException e) {
             PopOutWindow.messageBox("Błędne dane",
                     "Wybrano niepoprawny typ sygnału",
