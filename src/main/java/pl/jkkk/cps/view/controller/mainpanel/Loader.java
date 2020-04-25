@@ -300,7 +300,7 @@ public class Loader {
 
                 if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
                     if (decimation.equals(DecimationType.TIME_DOMAIN.getName())) {
-
+                        //TODO FILL WITH METHODS' CALL
                     } else if (decimation.equals(DecimationType.FREQUENCY_DOMAIN.getName())) {
 
                     }
