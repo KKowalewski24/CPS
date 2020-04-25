@@ -49,6 +49,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_LIGHT_STYLING;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeScatterChartToLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillBarChart;
@@ -255,7 +256,9 @@ public class CommandLineMode extends Application {
                 )));
 
         root.getChildren().addAll(tabPane);
-        commandLineStage.setScene(new Scene(root, 700, 600));
+        Scene scene = new Scene(root, 700, 600);
+        scene.getStylesheets().add(PATH_CSS_LIGHT_STYLING);
+        commandLineStage.setScene(scene);
         commandLineStage.show();
 
         for (int i = 1; i < Main.getMainArgs().size(); i++) {
