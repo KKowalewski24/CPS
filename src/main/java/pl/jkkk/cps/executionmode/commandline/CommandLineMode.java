@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.ScatterChart;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
@@ -14,28 +13,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;
-import pl.jkkk.cps.logic.model.ADC;
-import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.signal.BandPassFilter;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
-import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
-import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
-import pl.jkkk.cps.logic.model.signal.HighPassFilter;
-import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
-import pl.jkkk.cps.logic.model.signal.LowPassFilter;
-import pl.jkkk.cps.logic.model.signal.RectangularSignal;
-import pl.jkkk.cps.logic.model.signal.RectangularSymmetricSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
-import pl.jkkk.cps.logic.model.signal.SinusoidalRectifiedOneHalfSignal;
-import pl.jkkk.cps.logic.model.signal.SinusoidalRectifiedTwoHalfSignal;
-import pl.jkkk.cps.logic.model.signal.SinusoidalSignal;
-import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
-import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
-import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
 import pl.jkkk.cps.logic.report.LatexGenerator;
@@ -67,8 +50,6 @@ public class CommandLineMode extends Application {
     /*------------------------ FIELDS REGION ------------------------*/
     private static Stage commandLineStage;
 
-    private final ADC adc = new ADC();
-    private final DAC dac = new DAC();
     private ReportWriter reportWriter = new ReportWriter();
     private LatexGenerator latexGenerator;
 
@@ -94,15 +75,31 @@ public class CommandLineMode extends Application {
                 break;
             }
             case SAMPLING: {
-                caseSampling();
+                OneArgsOperationProcessor.caseSampling();
                 break;
             }
             case QUANTIZATION: {
-                caseQuantization();
+                OneArgsOperationProcessor.caseQuantization();
                 break;
             }
             case RECONSTRUCTION: {
-                caseReconstruction();
+                OneArgsOperationProcessor.caseReconstruction();
+                break;
+            }
+            case DISCRETE_FOURIER_TRANSFORMATION: {
+                OneArgsOperationProcessor.caseDiscreteFourierTransformation();
+                break;
+            }
+            case COSINE_TRANSFORMATION: {
+                OneArgsOperationProcessor.caseCosineTransformation();
+                break;
+            }
+            case WALSH_HADAMARD_TRANSFORMATION: {
+                OneArgsOperationProcessor.caseWalshHadamardTransformation();
+                break;
+            }
+            case WAVELET_TRANSFORMATION: {
+                OneArgsOperationProcessor.caseWaveletTransformation();
                 break;
             }
             case COMPARISON: {
@@ -141,87 +138,30 @@ public class CommandLineMode extends Application {
         System.exit(0);
     }
 
-    private void caseGenerate() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        Signal signal = generate(Main.getMainArgs().stream().toArray(String[]::new));
-        readerWriter.write(signal);
+    public static Signal readSignal(String filename) throws FileOperationException {
+        return new FileReaderWriter<Signal>(filename).read();
+    }
+
+    public static void writeSignal(Signal signal, String filename) throws FileOperationException {
+        new FileReaderWriter<>(filename).write(signal);
+    }
+
+    public void caseGenerate() throws FileOperationException {
+        Signal signal = SignalGenerator.generate(Main.getMainArgs()
+                .stream()
+                .toArray(String[]::new));
+        writeSignal(signal, Main.getMainArgs().get(1));
 
         latexGenerator = new LatexGenerator("Input_gene");
         latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 2);
         latexGenerator.generate(ReportType.INPUT_PARAMETERS);
     }
 
-    private void caseSampling() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        Signal signal = readerWriter.read();
-        signal = adc.sampling((ContinuousSignal) signal,
-                Double.valueOf(Main.getMainArgs().get(3)));
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-        readerWriter.write(signal);
-
-        latexGenerator = new LatexGenerator("Input_sampling");
-        latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 3);
-        latexGenerator.generate(ReportType.INPUT_PARAMETERS);
-    }
-
-    private void caseQuantization() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        Signal signal = readerWriter.read();
-
-        if (OperationCmd.EVEN_QUANTIZATION_WITH_TRUNCATION
-                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-
-            signal = adc.truncatingQuantization((DiscreteSignal) signal,
-                    Integer.valueOf(Main.getMainArgs().get(4)));
-
-        } else if (OperationCmd.EVEN_QUANTIZATION_WITH_ROUNDING
-                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-
-            signal = adc.roundingQuantization((DiscreteSignal) signal,
-                    Integer.valueOf(Main.getMainArgs().get(4)));
-
-        }
-
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-        readerWriter.write(signal);
-
-        latexGenerator = new LatexGenerator("Input_Quant");
-        latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 4);
-        latexGenerator.generate(ReportType.INPUT_PARAMETERS);
-    }
-
-    private void caseReconstruction() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        Signal signal = readerWriter.read();
-
-        if (OperationCmd.ZERO_ORDER_EXTRAPOLATION
-                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            signal = dac.zeroOrderHold((DiscreteSignal) signal);
-
-        } else if (OperationCmd.FIRST_ORDER_INTERPOLATION
-                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            signal = dac.firstOrderHold((DiscreteSignal) signal);
-
-        } else if (OperationCmd.RECONSTRUCTION_BASED_FUNCTION_SINC
-                == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-
-            signal = dac.sincBasic((DiscreteSignal) signal,
-                    Integer.valueOf(Main.getMainArgs().get(4)));
-        }
-
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-        readerWriter.write(signal);
-
-        latexGenerator = new LatexGenerator("Input_Recon");
-        latexGenerator.createSummaryForInputParameters(Main.getMainArgs(), 3);
-        latexGenerator.generate(ReportType.INPUT_PARAMETERS);
-    }
-
     private void caseComparison() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(1));
-        List<Data> firstSignalData = readerWriter.read().generateDiscreteRepresentation();
-        readerWriter = new FileReaderWriter<>(Main.getMainArgs().get(2));
-        List<Data> secondSignalData = readerWriter.read().generateDiscreteRepresentation();
+        List<Data> firstSignalData = readSignal(Main.getMainArgs().get(1))
+                .generateDiscreteRepresentation();
+        List<Data> secondSignalData = readSignal(Main.getMainArgs().get(2))
+                .generateDiscreteRepresentation();
 
         double meanSquaredError = Signal.meanSquaredError(secondSignalData,
                 firstSignalData);
@@ -271,10 +211,7 @@ public class CommandLineMode extends Application {
         commandLineStage.show();
 
         for (int i = 1; i < Main.getMainArgs().size(); i++) {
-            FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(Main.getMainArgs()
-                    .get(i));
-            Signal signalInLoop = readerWriter.read();
-            drawChart(signalInLoop);
+            drawChart(readSignal(Main.getMainArgs().get(i)));
         }
 
         try {
@@ -355,120 +292,11 @@ public class CommandLineMode extends Application {
                     .getContent(), mainChartData);
         }
 
+        //        TODO COPY GENERATING W1 AND W2 CHARTS FROM LOADER
+
         latexGenerator = new LatexGenerator("Signal_Params");
         latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
                 signalParams[2], signalParams[3], signalParams[4]);
         latexGenerator.generate(ReportType.SIGNAL);
-    }
-
-    private Signal generate(String[] args) {
-        switch (SignalTypeCmd.fromString(args[2])) {
-            case UNIFORM_NOISE: {
-                return new UniformNoise(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]));
-            }
-            case GAUSSIAN_NOISE: {
-                return new GaussianNoise(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]));
-            }
-            case SINUSOIDAL_SIGNAL: {
-                return new SinusoidalSignal(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
-            }
-            case SINUSOIDAL_RECTIFIED_ONE_HALF_SIGNAL: {
-                return new SinusoidalRectifiedOneHalfSignal(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
-            }
-            case SINUSOIDAL_RECTIFIED_IN_TWO_HALVES: {
-                return new SinusoidalRectifiedTwoHalfSignal(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
-            }
-            case RECTANGULAR_SIGNAL: {
-                return new RectangularSignal(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]),
-                        Double.parseDouble(args[7]));
-            }
-            case SYMMETRICAL_RECTANGULAR_SIGNAL: {
-                return new RectangularSymmetricSignal(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]),
-                        Double.parseDouble(args[7]));
-            }
-            case TRIANGULAR_SIGNAL: {
-                return new TriangularSignal(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]),
-                        Double.parseDouble(args[7]));
-            }
-            case UNIT_JUMP: {
-                return new UnitJumpSignal(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]));
-            }
-            case UNIT_IMPULSE: {
-                return new UnitImpulseSignal(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]),
-                        Integer.parseInt(args[7]));
-            }
-            case IMPULSE_NOISE: {
-                return new ImpulseNoise(
-                        Double.parseDouble(args[3]),
-                        Double.parseDouble(args[4]),
-                        Double.parseDouble(args[5]),
-                        Double.parseDouble(args[6]),
-                        Double.parseDouble(args[7]));
-            }
-            case LOW_PASS_FILTER: {
-                return new LowPassFilter(
-                        Double.parseDouble(args[3]),
-                        Integer.parseInt(args[4]),
-                        Double.parseDouble(args[5]),
-                        WindowTypeCmd.fromEnum(WindowTypeCmd.fromString(args[6]),
-                                Integer.parseInt(args[4])));
-            }
-            case BAND_PASS_FILTER: {
-                return new BandPassFilter(
-                        Double.parseDouble(args[3]),
-                        Integer.parseInt(args[4]),
-                        Double.parseDouble(args[5]),
-                        WindowTypeCmd.fromEnum(WindowTypeCmd.fromString(args[6]),
-                                Integer.parseInt(args[4])));
-            }
-            case HIGH_PASS_FILTER: {
-                return new HighPassFilter(
-                        Double.parseDouble(args[3]),
-                        Integer.parseInt(args[4]),
-                        Double.parseDouble(args[5]),
-                        WindowTypeCmd.fromEnum(WindowTypeCmd.fromString(args[6]),
-                                Integer.parseInt(args[4])));
-            }
-        }
-
-        return null;
     }
 }

@@ -45,12 +45,27 @@ public class Main {
      * Type abbreviation:
      * zero_order, first_order, sinc
      * <p>
+     * DiscreteFourierTransformation - fou_trans, filename to read, filename to save,
+     * algorithm type, decimation type
+     * ---
+     * algorithm type abbreviation: def, fast
+     * decimation type: time, freq
+     * <p>
+     * CosineTransformation - cos_trans, filename to read, filename to save, algorithm type
+     * algorithm type abbreviation: def, fast
+     * <p>
+     * WalshHadamardTransformation - wals_trans, filename to read, filename to save, algorithm type
+     * algorithm type abbreviation: def, fast
+     * <p>
+     * WaveletTransformation - wave_trans, filename to read, filename to save, wavelet type
+     * wavelet type abbreviation: DB4, DB6, DB8
+     * <p>
      * Comparison - comp, first filename to read, second filename to read
      * <p>
      * Draw charts - draw, filenames to read...
      * <p>
      * Convolution - conv, first filename to read, second filename to read, filename to save
-     *
+     * <p>
      * Correlation - corr, first filename to read, second filename to read, filename to save
      */
 
