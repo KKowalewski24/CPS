@@ -19,11 +19,14 @@ import pl.jkkk.cps.logic.exception.NotSameLengthException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
+import pl.jkkk.cps.logic.model.enumtype.DecimationType;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.WaveletType;
 import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.logic.model.signal.BandPassFilter;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
@@ -252,19 +255,22 @@ public class Loader {
         Integer selectedSignalIndex = getIndexFromComboBox(comboBoxSignalOneArgs);
         Signal selectedSignal = signals.get(selectedSignalIndex);
 
+        final Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
+        final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
+        final ComboBox comboBoxDecimation = (ComboBox) middlePane.getChildren().get(1);
+
         try {
             long startTime = System.currentTimeMillis();
 
             if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
                 double sampleRate = Double.valueOf(textFieldSampleRate.getText());
-
                 signal = adc.sampling((ContinuousSignal) selectedSignal, sampleRate);
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-                Integer quantizationLevels = Integer.valueOf(textFieldQuantizationLevels.getText());
-                String method = getValueFromComboBox(comboBoxMethod);
+                final Integer quantizationLevels = Integer
+                        .valueOf(textFieldQuantizationLevels.getText());
+                final String method = getValueFromComboBox(comboBoxMethodOrAlgorithm);
 
                 if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName())) {
                     signal = adc.truncatingQuantization((DiscreteSignal) selectedSignal,
@@ -275,9 +281,7 @@ public class Loader {
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
-                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-                String method = getValueFromComboBox(comboBoxMethod);
+                final String method = getValueFromComboBox(comboBoxMethodOrAlgorithm);
 
                 if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
                     signal = dac.zeroOrderHold((DiscreteSignal) selectedSignal);
@@ -286,21 +290,59 @@ public class Loader {
                 } else if (method.equals(SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC
                         .getName())) {
                     Integer sincParam = Integer.valueOf(textFieldReconstructionSincParam.getText());
-
                     signal = dac.sincBasic((DiscreteSignal) selectedSignal, sincParam);
+
                 }
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType
                     .DISCRETE_FOURIER_TRANSFORMATION.getName())) {
+                final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
+                final String decimation = getValueFromComboBox(comboBoxDecimation);
+
+                if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
+                    if (decimation.equals(DecimationType.TIME_DOMAIN.getName())) {
+
+                    } else if (decimation.equals(DecimationType.FREQUENCY_DOMAIN.getName())) {
+
+                    }
+                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION.getName())) {
+                    if (decimation.equals(DecimationType.TIME_DOMAIN.getName())) {
+
+                    } else if (decimation.equals(DecimationType.FREQUENCY_DOMAIN.getName())) {
+
+                    }
+                }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType
                     .COSINE_TRANSFORMATION.getName())) {
+                final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
+
+                if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
+
+                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION.getName())) {
+
+                }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType
                     .WALSH_HADAMARD_TRANSFORMATION.getName())) {
+                final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
+
+                if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
+
+                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION.getName())) {
+
+                }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType
                     .WAVELET_TRANSFORMATION.getName())) {
+                final String level = getValueFromComboBox(comboBoxMethodOrAlgorithm);
 
+                if (level.equals(WaveletType.DB4.getName())) {
+
+                } else if (level.equals(WaveletType.DB6.getName())) {
+
+                } else if (level.equals(WaveletType.DB8.getName())) {
+
+                }
             }
 
             overallTime += ((System.currentTimeMillis() - startTime) / 1000.0);

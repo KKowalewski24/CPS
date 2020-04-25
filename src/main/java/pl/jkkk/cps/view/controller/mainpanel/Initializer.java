@@ -267,6 +267,7 @@ public class Initializer {
                                                      Pane middlePane, Pane bottomPane) {
         final String methodLabelValue = "Wybierz Metodę";
         final String algorithmLabelValue = "Wybierz Typ Algorytmu";
+        final String algorithmLevelLabelValue = "Wybierz Poziom";
         final String decimationLabelValue = "Wybierz Typ Decymacji";
 
         final Label labelMethodOrAlgorithm = (Label) topPane.getChildren().get(0);
@@ -330,7 +331,7 @@ public class Initializer {
             } else if (selectedOperation.equals(OneArgsOperationType
                     .WAVELET_TRANSFORMATION.getName())) {
                 fillComboBox(comboBoxMethodOrAlgorithm, WaveletType.getNamesList());
-
+                labelMethodOrAlgorithm.setText(algorithmLevelLabelValue);
             }
         }
     }
