@@ -28,7 +28,7 @@ public class LowPassFilter extends DiscreteSignal {
             result = 2.0 / K;
         } else {
             result = Math.sin(2.0 * Math.PI * (n - c) / K)
-                    / Math.PI * (n - c);
+                    / (Math.PI * (n - c));
         }
         return result * window.w(n);
     }
