@@ -340,29 +340,34 @@ def task3_filter(filter_type, M, f_o, window, experiment_id):
     run_jar([DRAW_CHARTS, experiment_id + "_result.data"])
 
 
+def task3_filter_reconstr(filter_type, M, f_o, window, experiment_id):
+    run_jar([GENERATE, experiment_id + "_filter.data", filter_type, "400", M, f_o, window])
+    run_jar([CONVOLUTION, "filtered.data", experiment_id + "_filter.data", experiment_id + "_result.data"])
+    run_jar([RECONSTRUCTION, experiment_id + "_result.data", experiment_id + "_result_reconstr.data", "first_order"])
+    run_jar([DRAW_CHARTS, experiment_id + "_result_reconstr.data"])
+
+
 def task_3():
     task3_prepare_filtered()
 
     #windows
-    task3_filter("low_fil", "201", "5", "win_rect", "1a")
-    task3_filter("low_fil", "201", "5", "win_ham", "1b")
-    task3_filter("low_fil", "201", "5", "win_han", "1c")
-    task3_filter("low_fil", "201", "5", "win_bla", "1d")
+    task3_filter("low_fil", "51", "5", "win_rect", "1a")
+    task3_filter("low_fil", "51", "5", "win_ham", "1b")
+    task3_filter("low_fil", "51", "5", "win_han", "1c")
+    task3_filter("low_fil", "51", "5", "win_bla", "1d")
 
-    ##rows
-    task3_filter("low_fil", "401", "5", "win_ham", "2a")
-    task3_filter("low_fil", "201", "5", "win_ham", "2a")
-    task3_filter("low_fil", "101", "5", "win_ham", "2a")
-    task3_filter("low_fil", "51", "5", "win_ham", "2a")
-    task3_filter("low_fil", "21", "5", "win_ham", "2a")
+    #rows
+    task3_filter("low_fil", "41", "5", "win_ham", "2a")
+    task3_filter("low_fil", "31", "5", "win_ham", "2b")
+    task3_filter("low_fil", "21", "5", "win_ham", "2c")
 
     ##frequencies and filters
-    task3_filter("low_fil", "101", "7", "win_ham", "3a")
-    task3_filter("low_fil", "101", "3", "win_ham", "3b")
-    task3_filter("high_fil", "101", "191", "win_ham", "3c")
-    task3_filter("high_fil", "101", "195", "win_ham", "3d")
-    task3_filter("band_fil", "101", "96", "win_ham", "3e")
-    task3_filter("band_fil", "101", "90", "win_ham", "3f")
+    task3_filter("low_fil", "51", "3", "win_ham", "3a")
+    task3_filter("low_fil", "51", "2", "win_ham", "3b")
+    task3_filter_reconstr("high_fil", "51", "190", "win_ham", "3c")
+    task3_filter_reconstr("high_fil", "51", "195", "win_ham", "3d")
+    task3_filter_reconstr("band_fil", "51", "90", "win_ham", "3e")
+    task3_filter_reconstr("band_fil", "51", "80", "win_ham", "3f")
     
 
 

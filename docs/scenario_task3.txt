@@ -3,25 +3,24 @@ Filtracja
     Jeden sygnał filtrowany: sin (f=20Hz,A=0.5) + sin (f=3Hz,A=2), czas trwanie - 1s, częstotliwość próbkowania - 400Hz
 
     Dane wejściowe: typ filtra, rząd filtra, częstotliwość odcięcia, funkcja okna
-    Dane wyjściowe: wykres filtra i wykres przefiltrowanego sygnału
+    Dane wyjściowe: wykres filtra i wykres przefiltrowanego sygnału (w przypadku czterech 
+      ostatnich eksperymentów wykonać rekonstrukcję interpolacją pierwszego rzędu dla przejrzystości)
 
     1. Różne okna
-        a. dolnoprzepustowy/201/5Hz/kwadratowe
-        b. dolnoprzepustowy/201/5Hz/hamminga
-        c. dolnoprzepustowy/201/5Hz/hanninga
-        d. dolnoprzepustowy/201/5Hz/blackmana
+        a. dolnoprzepustowy/51/5Hz/kwadratowe
+        b. dolnoprzepustowy/51/5Hz/hamminga
+        c. dolnoprzepustowy/51/5Hz/hanninga
+        d. dolnoprzepustowy/51/5Hz/blackmana
 
     2. Różne rzędy
-        a. dolnoprzepustowy/401/5Hz/hamminga
-        b. dolnoprzepustowy/201/5Hz/hamminga
-        c. dolnoprzepustowy/101/5Hz/hamminga
-        d. dolnoprzepustowy/51/5Hz/hamminga
-        e. dolnoprzepustowy/21/5Hz/hamminga
+        a. dolnoprzepustowy/41/5Hz/hamminga
+        b. dolnoprzepustowy/31/5Hz/hamminga
+        c. dolnoprzepustowy/21/5Hz/hamminga
 
     3. Różne częstotliwości i filtry
-        a. dolnoprzepustowy/101/7Hz/hamminga
-        b. dolnoprzepustowy/101/3Hz/hamminga
-        c. górnoprzepustowy/101/191Hz/hamminga
-        d. górnoprzeupstowy/101/195Hz/hamminga
-        e. pasmowoprzepustowy/101/96Hz/hamminga
-        f. pasmowoprzepustowy/101/90Hz/hamminga
+        a. dolnoprzepustowy/51/3Hz/hamminga
+        b. dolnoprzepustowy/51/2Hz/hamminga
+        c. górnoprzepustowy/51/190Hz/hamminga
+        d. górnoprzeupstowy/51/195Hz/hamminga
+        e. pasmowoprzepustowy/51/90Hz/hamminga
+        f. pasmowoprzepustowy/51/80Hz/hamminga
