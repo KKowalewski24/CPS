@@ -2,16 +2,20 @@ package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
+import pl.jkkk.cps.logic.model.enumtype.DecimationType;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.WaveletType;
 import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
@@ -28,6 +32,7 @@ import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLabelWithPosition;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.removeAndAddNewPaneChildren;
+import static pl.jkkk.cps.view.fxml.FxHelper.setPaneVisability;
 import static pl.jkkk.cps.view.fxml.FxHelper.setTextFieldPosition;
 import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
 
@@ -159,11 +164,11 @@ public class Initializer {
         ).collect(Collectors.toCollection(ArrayList::new));
 
         chooseParamsTab.getChildren().setAll(basicInputs);
-        windowTypePane.setVisible(false);
+        setPaneVisability(false, windowTypePane);
 
         comboBoxSignalTypes.setOnAction((event -> {
             String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
-            windowTypePane.setVisible(false);
+            setPaneVisability(false, windowTypePane);
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())
                     || selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
@@ -231,7 +236,7 @@ public class Initializer {
 
                 ComboBox comboBoxWindowType = (ComboBox) windowTypePane.getChildren().get(1);
                 fillComboBox(comboBoxWindowType, WindowType.getNamesList());
-                windowTypePane.setVisible(true);
+                setPaneVisability(true, windowTypePane);
             }
         }));
     }
@@ -244,54 +249,88 @@ public class Initializer {
         textFieldSetValue(textFieldReconstructionSincParam, String.valueOf(1));
         fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
 
-        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
-        topPane.setVisible(false);
+        final Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
+        final Pane bottomPane = (Pane) oneArgsPane.getChildren().get(2);
+
+        setPaneVisability(false, topPane, middlePane);
         removeAndAddNewPaneChildren(bottomPane,
                 prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
                 setTextFieldPosition(textFieldSampleRate, 250, 30)
         );
 
-        comboBoxOperationTypesOneArgs.setOnAction((event -> actionComboBoxOperationTypesOneArgs()));
+        comboBoxOperationTypesOneArgs.setOnAction((event ->
+                actionComboBoxOperationTypesOneArgs(topPane, middlePane, bottomPane)));
     }
 
-    private void actionComboBoxOperationTypesOneArgs() {
-        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
+    private void actionComboBoxOperationTypesOneArgs(Pane topPane,
+                                                     Pane middlePane, Pane bottomPane) {
+        final String methodLabelValue = "Wybierz Metodę";
+        final String algorithmLabelValue = "Wybierz Typ Algorytmu";
+        final String decimationLabelValue = "Wybierz Typ Decymacji";
+
+        final Label labelMethodOrAlgorithm = (Label) topPane.getChildren().get(0);
+        final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
+
+        final Label labelDecimation = (Label) middlePane.getChildren().get(0);
+        final ComboBox comboBoxDecimation = (ComboBox) middlePane.getChildren().get(1);
 
         String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
-        topPane.setVisible(false);
+        setPaneVisability(false, topPane, middlePane);
 
         if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
-            bottomPane.setVisible(true);
+            setPaneVisability(true, bottomPane);
 
             removeAndAddNewPaneChildren(bottomPane,
                     prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
                     setTextFieldPosition(textFieldSampleRate, 250, 30)
             );
 
-        } else {
-            if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-                fillComboBox(comboBoxMethod, QuantizationType.getNamesList());
-                topPane.setVisible(true);
-                bottomPane.setVisible(true);
+        } else if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())
+                || selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
 
+            labelMethodOrAlgorithm.setText(methodLabelValue);
+            setPaneVisability(true, topPane, bottomPane);
+            setPaneVisability(false, middlePane);
+
+            if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+                fillComboBox(comboBoxMethodOrAlgorithm, QuantizationType.getNamesList());
                 removeAndAddNewPaneChildren(bottomPane,
                         prepareLabelWithPosition("Liczba Poziomów Kwantyzacji", 14, 33),
                         setTextFieldPosition(textFieldQuantizationLevels, 250, 30)
                 );
-
             } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
-                fillComboBox(comboBoxMethod, SignalReconstructionType.getNamesList());
-                topPane.setVisible(true);
-                bottomPane.setVisible(true);
-
+                fillComboBox(comboBoxMethodOrAlgorithm, SignalReconstructionType.getNamesList());
                 removeAndAddNewPaneChildren(bottomPane,
                         prepareLabelWithPosition("Parametr funkcji sinc", 14, 33),
                         setTextFieldPosition(textFieldReconstructionSincParam,
                                 250, 30)
                 );
+            }
+        } else if (selectedOperation.equals(OneArgsOperationType.DISCRETE_FOURIER_TRANSFORMATION.getName())
+                || selectedOperation.equals(OneArgsOperationType.COSINE_TRANSFORMATION.getName())
+                || selectedOperation.equals(OneArgsOperationType.WALSH_HADAMARD_TRANSFORMATION.getName())
+                || selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
+
+            setPaneVisability(false, bottomPane);
+            setPaneVisability(true, topPane);
+
+            labelMethodOrAlgorithm.setText(algorithmLabelValue);
+            labelDecimation.setText(decimationLabelValue);
+
+            if (!selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
+                fillComboBox(comboBoxMethodOrAlgorithm, AlgorithmType.getNamesList());
+            }
+
+            if (selectedOperation.equals(OneArgsOperationType
+                    .DISCRETE_FOURIER_TRANSFORMATION.getName())) {
+                fillComboBox(comboBoxDecimation, DecimationType.getNamesList());
+                setPaneVisability(true, middlePane);
+
+            } else if (selectedOperation.equals(OneArgsOperationType
+                    .WAVELET_TRANSFORMATION.getName())) {
+                fillComboBox(comboBoxMethodOrAlgorithm, WaveletType.getNamesList());
+
             }
         }
     }

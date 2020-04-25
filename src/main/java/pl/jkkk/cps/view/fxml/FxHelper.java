@@ -72,6 +72,10 @@ public class FxHelper {
         pane.getChildren().addAll(nodes);
     }
 
+    public static void setPaneVisability(boolean value, Pane... panes) {
+        Arrays.stream(panes).forEach((it) -> it.setVisible(value));
+    }
+
     public static void textFieldSetEditable(boolean value, TextField... textFields) {
         Arrays.stream(textFields).forEach((it) -> it.setEditable(value));
     }

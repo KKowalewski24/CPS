@@ -289,6 +289,18 @@ public class Loader {
 
                     signal = dac.sincBasic((DiscreteSignal) selectedSignal, sincParam);
                 }
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .DISCRETE_FOURIER_TRANSFORMATION.getName())) {
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .COSINE_TRANSFORMATION.getName())) {
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .WALSH_HADAMARD_TRANSFORMATION.getName())) {
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .WAVELET_TRANSFORMATION.getName())) {
+
             }
 
             overallTime += ((System.currentTimeMillis() - startTime) / 1000.0);
@@ -296,11 +308,9 @@ public class Loader {
             representSignal(signal);
 
         } catch (NullPointerException | NumberFormatException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błędne dane", "Wprowadzono błędne dane",
                     Alert.AlertType.WARNING);
         } catch (ClassCastException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błędne dane", "Wybrano niepoprawny typ sygnału",
                     Alert.AlertType.WARNING);
         }
@@ -344,7 +354,9 @@ public class Loader {
                             operation);
                 }
             }
+
             representSignal(resultSignal);
+
         } catch (NotSameLengthException e) {
             PopOutWindow.messageBox("Błednie wybrane wykresy",
                     "Wykresy mają błędnie dobraną długość",
@@ -546,7 +558,9 @@ public class Loader {
             }
 
         } catch (FileOperationException e) {
-            e.printStackTrace();
+            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+                    "Nie można zapisać raportu do pliku",
+                    Alert.AlertType.WARNING);
         }
     }
 
