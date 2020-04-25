@@ -78,20 +78,67 @@ public final class OneArgsOperationProcessor {
         latexGenerator.generate(ReportType.INPUT_PARAMETERS);
     }
 
-    public static void caseDiscreteFourierTransformation() {
+    public static void caseDiscreteFourierTransformation() throws FileOperationException {
+        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
+        if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
+            if (OperationCmd.TIME_DOMAIN == OperationCmd.fromString(Main.getMainArgs().get(4))) {
+                //signal=
+            } else if (OperationCmd.FREQUENCY_DOMAIN == OperationCmd
+                    .fromString(Main.getMainArgs().get(4))) {
+                //signal=
+            }
+        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+                .fromString(Main.getMainArgs().get(3))) {
+            if (OperationCmd.TIME_DOMAIN == OperationCmd.fromString(Main.getMainArgs().get(4))) {
+                //signal=
+            } else if (OperationCmd.FREQUENCY_DOMAIN == OperationCmd
+                    .fromString(Main.getMainArgs().get(4))) {
+                //signal=
+            }
+        }
+
+        CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
-    public static void caseCosineTransformation() {
+    public static void caseCosineTransformation() throws FileOperationException {
+        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
+        if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
+            //signal=
+        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+                .fromString(Main.getMainArgs().get(3))) {
+            //signal=
+        }
+
+        CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
-    public static void caseWalshHadamardTransformation() {
+    public static void caseWalshHadamardTransformation() throws FileOperationException {
+        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
+        if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
+            //signal=
+        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+                .fromString(Main.getMainArgs().get(3))) {
+            //signal=
+        }
+
+        CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
-    public static void caseWaveletTransformation() {
+    public static void caseWaveletTransformation() throws FileOperationException {
+        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
+        if (OperationCmd.DB4 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
+            //signal=
+        } else if (OperationCmd.DB6 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
+            //signal=
+        } else if (OperationCmd.DB8 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
+            //signal=
+        }
+
+        CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 }
     
