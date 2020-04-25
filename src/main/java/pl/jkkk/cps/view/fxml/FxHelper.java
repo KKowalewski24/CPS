@@ -31,12 +31,13 @@ public class FxHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
-    public static void changeTheme(String pathPanel, String title, String pathCss) {
-        if (StageController.getGlobalCssStyling() != null) {
-            StageController.setGlobalCssStyling(null);
+    public static void changeTheme(String pathPanel, String title,
+                                   String pathCssDarkTheme, String pathCssLightTheme) {
+        if (StageController.getGlobalCssStyling().equals(pathCssDarkTheme)) {
+            StageController.setGlobalCssStyling(pathCssLightTheme);
             StageController.reloadStage(pathPanel, title);
-        } else {
-            StageController.setGlobalCssStyling(pathCss);
+        } else if (StageController.getGlobalCssStyling().equals(pathCssLightTheme)) {
+            StageController.setGlobalCssStyling(pathCssDarkTheme);
             StageController.reloadStage(pathPanel, title);
         }
     }

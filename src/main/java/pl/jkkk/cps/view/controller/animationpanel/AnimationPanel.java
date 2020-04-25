@@ -6,7 +6,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import pl.jkkk.cps.Main;
@@ -23,7 +22,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_ANIMATION_PANEL;
-import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_DARK_STYLING;
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_LIGHT_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_ANIMATION_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
@@ -165,7 +165,8 @@ public class AnimationPanel implements Initializable {
 
     @FXML
     private void onActionButtonChangeTheme(ActionEvent actionEvent) {
-        changeTheme(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL, PATH_CSS_STYLING);
+        changeTheme(PATH_ANIMATION_PANEL, TITLE_ANIMATION_PANEL,
+                PATH_CSS_DARK_STYLING, PATH_CSS_LIGHT_STYLING);
         StageController.getApplicationStage().setResizable(false);
     }
 

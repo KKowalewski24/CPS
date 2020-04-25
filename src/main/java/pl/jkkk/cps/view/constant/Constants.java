@@ -11,7 +11,8 @@ public class Constants {
     public static final Integer PANEL_WIDTH = 1300;
     public static final Integer PANEL_HEIGHT = 700;
 
-    public static final String PATH_CSS_STYLING = "/Styles.css";
+    public static final String PATH_CSS_DARK_STYLING = "/DarkStyles.css";
+    public static final String PATH_CSS_LIGHT_STYLING = "/LightStyles.css";
 
     /*------------------------ METHODS REGION ------------------------*/
     private Constants() {

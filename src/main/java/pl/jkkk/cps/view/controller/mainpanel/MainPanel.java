@@ -17,7 +17,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import static pl.jkkk.cps.view.constant.Constants.PATH_ANIMATION_PANEL;
-import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_STYLING;
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_DARK_STYLING;
+import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_LIGHT_STYLING;
 import static pl.jkkk.cps.view.constant.Constants.PATH_MAIN_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_ANIMATION_PANEL;
 import static pl.jkkk.cps.view.constant.Constants.TITLE_MAIN_PANEL;
@@ -183,7 +184,8 @@ public class MainPanel implements Initializable {
 
     @FXML
     private void onActionButtonChangeTheme(ActionEvent actionEvent) {
-        changeTheme(PATH_MAIN_PANEL, TITLE_MAIN_PANEL, PATH_CSS_STYLING);
+        changeTheme(PATH_MAIN_PANEL, TITLE_MAIN_PANEL,
+                PATH_CSS_DARK_STYLING, PATH_CSS_LIGHT_STYLING);
         StageController.getApplicationStage().setResizable(false);
     }
 
