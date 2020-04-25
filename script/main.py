@@ -328,23 +328,42 @@ def task_2() -> None:
 
 # TASK3 ----------------------------------------------------------------------- #
 def task3_prepare_filtered():
-    run_jar([GENERATE, "sin1", "sin", "0", "1", "2", "0.333333"])
-    run_jar([GENERATE, "sin2", "sin", "0", "1", "0.5", "0.05"])
-    run_jar(["add", "sin1", "sin2", "filtered_continuous"])
-    run_jar([SAMPLING, "filtered_continuous", "filtered", "400"])
+    run_jar([GENERATE, "sin1.data", "sin", "0", "1", "2", "0.333333"])
+    run_jar([GENERATE, "sin2.data", "sin", "0", "1", "2", "0.05"])
+    run_jar(["add", "sin1.data", "sin2.data", "filtered_continuous.data"])
+    run_jar([SAMPLING, "filtered_continuous.data", "filtered.data", "400"])
 
 
 def task3_filter(filter_type, M, f_o, window, experiment_id):
-    run_jar([GENERATE, experiment_id + "_filter", filter_type, "400", M, f_o, window])
-    run_jar([CONVOLUTION, "filtered", experiment_id + "_filter", experiment_id + "_result"])
+    run_jar([GENERATE, experiment_id + "_filter.data", filter_type, "400", M, f_o, window])
+    run_jar([CONVOLUTION, "filtered.data", experiment_id + "_filter.data", experiment_id + "_result.data"])
+    run_jar([DRAW_CHARTS, experiment_id + "_result.data"])
 
 
 def task_3():
     task3_prepare_filtered()
+
+    #windows
     task3_filter("low_fil", "201", "5", "win_rect", "1a")
     task3_filter("low_fil", "201", "5", "win_ham", "1b")
     task3_filter("low_fil", "201", "5", "win_han", "1c")
     task3_filter("low_fil", "201", "5", "win_bla", "1d")
+
+    ##rows
+    task3_filter("low_fil", "401", "5", "win_ham", "2a")
+    task3_filter("low_fil", "201", "5", "win_ham", "2a")
+    task3_filter("low_fil", "101", "5", "win_ham", "2a")
+    task3_filter("low_fil", "51", "5", "win_ham", "2a")
+    task3_filter("low_fil", "21", "5", "win_ham", "2a")
+
+    ##frequencies and filters
+    task3_filter("low_fil", "101", "7", "win_ham", "3a")
+    task3_filter("low_fil", "101", "3", "win_ham", "3b")
+    task3_filter("high_fil", "101", "191", "win_ham", "3c")
+    task3_filter("high_fil", "101", "195", "win_ham", "3d")
+    task3_filter("band_fil", "101", "96", "win_ham", "3e")
+    task3_filter("band_fil", "101", "90", "win_ham", "3f")
+    
 
 
 # TASK4 ----------------------------------------------------------------------- #

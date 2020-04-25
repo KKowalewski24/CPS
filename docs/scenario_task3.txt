@@ -11,7 +11,17 @@ Filtracja
         c. dolnoprzepustowy/201/5Hz/hanninga
         d. dolnoprzepustowy/201/5Hz/blackmana
 
-    2. Różne rzędy i częstotliwości
-        a. dolnoprzepustowy/101/5Hz/
+    2. Różne rzędy
+        a. dolnoprzepustowy/401/5Hz/hamminga
+        b. dolnoprzepustowy/201/5Hz/hamminga
+        c. dolnoprzepustowy/101/5Hz/hamminga
+        d. dolnoprzepustowy/51/5Hz/hamminga
+        e. dolnoprzepustowy/21/5Hz/hamminga
 
-
+    3. Różne częstotliwości i filtry
+        a. dolnoprzepustowy/101/7Hz/hamminga
+        b. dolnoprzepustowy/101/3Hz/hamminga
+        c. górnoprzepustowy/101/191Hz/hamminga
+        d. górnoprzeupstowy/101/195Hz/hamminga
+        e. pasmowoprzepustowy/101/96Hz/hamminga
+        f. pasmowoprzepustowy/101/90Hz/hamminga
