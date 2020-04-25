@@ -72,8 +72,27 @@ public class FxHelper {
         pane.getChildren().addAll(nodes);
     }
 
-    public static void setPaneVisability(boolean value, Pane... panes) {
+    public static void switchTabToAnother(TabPane tabPane, int index) {
+        tabPane.getSelectionModel().select(index);
+    }
+
+    public static void removeSelectedTabFromTabPane(TabPane tabPane) {
+        tabPane.getTabs().remove(getSelectedTabIndex(tabPane));
+    }
+
+    public static void setPaneVisibility(boolean value, Pane... panes) {
         Arrays.stream(panes).forEach((it) -> it.setVisible(value));
+    }
+
+    public static int getSelectedTabIndex(TabPane tabPane) {
+        return tabPane.getSelectionModel().getSelectedIndex();
+    }
+
+    public static List<String> getTabNameList(List<Tab> tabList) {
+        List<String> names = new ArrayList<>();
+        tabList.forEach((it) -> names.add(it.getText()));
+
+        return names;
     }
 
     public static void textFieldSetEditable(boolean value, TextField... textFields) {
@@ -130,17 +149,6 @@ public class FxHelper {
 
     public static Integer getIndexFromComboBox(ComboBox comboBox) {
         return comboBox.getSelectionModel().getSelectedIndex();
-    }
-
-    public static Integer getSelectedTabIndex(TabPane tabPane) {
-        return tabPane.getSelectionModel().getSelectedIndex();
-    }
-
-    public static List<String> getTabNameList(List<Tab> tabList) {
-        List<String> names = new ArrayList<>();
-        tabList.forEach((it) -> names.add(it.getText()));
-
-        return names;
     }
 
     public static void clearAndAddNewDataToChart(XYChart chart, XYChart.Series series) {
@@ -201,10 +209,6 @@ public class FxHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
-    public static void switchTabToAnother(TabPane tabPane, int index) {
-        tabPane.getSelectionModel().select(index);
-    }
-
     public static void changeLineChartToScatterChart(TabPane tabPane) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
         customTabPane.getChartTab().setContent(prepareScatterChart());

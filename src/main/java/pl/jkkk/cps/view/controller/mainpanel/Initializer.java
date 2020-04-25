@@ -20,6 +20,7 @@ import pl.jkkk.cps.logic.model.enumtype.WaveletType;
 import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
+import pl.jkkk.cps.view.model.InnerDualCustomTab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +28,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
+import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
 import static pl.jkkk.cps.view.fxml.FxHelper.getValueFromComboBox;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLabelWithPosition;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.removeAndAddNewPaneChildren;
-import static pl.jkkk.cps.view.fxml.FxHelper.setPaneVisability;
+import static pl.jkkk.cps.view.fxml.FxHelper.removeSelectedTabFromTabPane;
+import static pl.jkkk.cps.view.fxml.FxHelper.setPaneVisibility;
 import static pl.jkkk.cps.view.fxml.FxHelper.setTextFieldPosition;
 import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
 
@@ -121,7 +124,7 @@ public class Initializer {
         fillComparisonTab();
     }
 
-    public void prepareTabPaneResults(int index) {
+    public void prepareTabPaneResults(int index, Tab... optionalTab) {
         Pane pane = new Pane(
                 prepareLabelWithPosition("Wartość średnia sygnału: ", 25, 40),
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
@@ -133,7 +136,9 @@ public class Initializer {
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
-                        new CustomTab("Wykres", prepareLineChart(), false),
+                        optionalTab.length == 1 ?
+                                optionalTab[0]
+                                : new CustomTab("Wykres", prepareLineChart(), false),
                         new CustomTab("Histogram", prepareBarChart(), false),
                         new CustomTab("Parametry", pane, false),
                         new CustomTab("W1", new VBox(
@@ -175,11 +180,11 @@ public class Initializer {
         ).collect(Collectors.toCollection(ArrayList::new));
 
         chooseParamsTab.getChildren().setAll(basicInputs);
-        setPaneVisability(false, windowTypePane);
+        setPaneVisibility(false, windowTypePane);
 
         comboBoxSignalTypes.setOnAction((event -> {
             String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
-            setPaneVisability(false, windowTypePane);
+            setPaneVisibility(false, windowTypePane);
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())
                     || selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
@@ -247,7 +252,7 @@ public class Initializer {
 
                 ComboBox comboBoxWindowType = (ComboBox) windowTypePane.getChildren().get(1);
                 fillComboBox(comboBoxWindowType, WindowType.getNamesList());
-                setPaneVisability(true, windowTypePane);
+                setPaneVisibility(true, windowTypePane);
             }
         }));
     }
@@ -264,7 +269,7 @@ public class Initializer {
         final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
         final Pane bottomPane = (Pane) oneArgsPane.getChildren().get(2);
 
-        setPaneVisability(false, topPane, middlePane);
+        setPaneVisibility(false, topPane, middlePane);
         removeAndAddNewPaneChildren(bottomPane,
                 prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
                 setTextFieldPosition(textFieldSampleRate, 250, 30)
@@ -288,10 +293,15 @@ public class Initializer {
         final ComboBox comboBoxDecimation = (ComboBox) middlePane.getChildren().get(1);
 
         String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
-        setPaneVisability(false, topPane, middlePane);
+        setPaneVisibility(false, topPane, middlePane);
 
         if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
-            setPaneVisability(true, bottomPane);
+
+            removeSelectedTabFromTabPane(tabPaneResults);
+            prepareTabPaneResults(getSelectedTabIndex(tabPaneResults) + 1,
+                    new CustomTab("Wykres", prepareLineChart(), false));
+
+            setPaneVisibility(true, bottomPane);
 
             removeAndAddNewPaneChildren(bottomPane,
                     prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
@@ -301,9 +311,13 @@ public class Initializer {
         } else if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
 
+            removeSelectedTabFromTabPane(tabPaneResults);
+            prepareTabPaneResults(getSelectedTabIndex(tabPaneResults) + 1,
+                    new CustomTab("Wykres", prepareLineChart(), false));
+
             labelMethodOrAlgorithm.setText(methodLabelValue);
-            setPaneVisability(true, topPane, bottomPane);
-            setPaneVisability(false, middlePane);
+            setPaneVisibility(true, topPane, bottomPane);
+            setPaneVisibility(false, middlePane);
 
             if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
                 fillComboBox(comboBoxMethodOrAlgorithm, QuantizationType.getNamesList());
@@ -324,8 +338,13 @@ public class Initializer {
                 || selectedOperation.equals(OneArgsOperationType.WALSH_HADAMARD_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
 
-            setPaneVisability(false, bottomPane);
-            setPaneVisability(true, topPane);
+            //            TODO
+            removeSelectedTabFromTabPane(tabPaneResults);
+            prepareTabPaneResults(getSelectedTabIndex(tabPaneResults) + 1,
+                    new InnerDualCustomTab("TODO", prepareLineChart(), false));
+
+            setPaneVisibility(false, bottomPane);
+            setPaneVisibility(true, topPane);
 
             labelMethodOrAlgorithm.setText(algorithmLabelValue);
             labelDecimation.setText(decimationLabelValue);
@@ -337,7 +356,7 @@ public class Initializer {
             if (selectedOperation.equals(OneArgsOperationType
                     .DISCRETE_FOURIER_TRANSFORMATION.getName())) {
                 fillComboBox(comboBoxDecimation, DecimationType.getNamesList());
-                setPaneVisability(true, middlePane);
+                setPaneVisibility(true, middlePane);
 
             } else if (selectedOperation.equals(OneArgsOperationType
                     .WAVELET_TRANSFORMATION.getName())) {
