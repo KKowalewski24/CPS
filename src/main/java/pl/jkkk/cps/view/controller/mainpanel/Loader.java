@@ -539,6 +539,7 @@ public class Loader {
 
             if (isCheckBoxSelected(checkBoxSignalParams)) {
                 latexGenerator = new LatexGenerator("Signal_Params");
+                //                TODO ADD TIME
                 latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
                         signalParams[2], signalParams[3], signalParams[4]);
                 latexGenerator.generate(ReportType.SIGNAL);
@@ -560,5 +561,7 @@ public class Loader {
         appendLabelText(paneChildren.get(2), "" + df.format(signalParams[2]));
         appendLabelText(paneChildren.get(3), "" + df.format(signalParams[3]));
         appendLabelText(paneChildren.get(4), "" + df.format(signalParams[4]));
+        //        TODO ADD FILLING WITH PROPER VALUE
+        //        appendLabelText(paneChildren.get(5), "" + df.format(signalParams[5]));
     }
 }

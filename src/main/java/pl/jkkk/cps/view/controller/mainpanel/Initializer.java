@@ -121,7 +121,8 @@ public class Initializer {
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
                 prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
                 prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
-                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
+                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200),
+                prepareLabelWithPosition("Czas obliczeń: ", 25, 240)
         );
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
