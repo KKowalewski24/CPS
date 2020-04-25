@@ -327,51 +327,24 @@ def task_2() -> None:
 
 
 # TASK3 ----------------------------------------------------------------------- #
-def task3_generate_signals(filename_first_signal: str, signal_type_first: str,
-                           signal_args_first: str, filename_second_signal: str,
-                           signal_type_second: str, signal_args_second: str) -> None:
-    run_jar(append_array([GENERATE, filename_first_signal,
-                          signal_type_first], signal_args_first))
-    run_jar(append_array([GENERATE, filename_second_signal,
-                          signal_type_second], signal_args_second))
-
-    pass
+def task3_prepare_filtered():
+    run_jar([GENERATE, "sin1", "sin", "0", "1", "2", "0.333333"])
+    run_jar([GENERATE, "sin2", "sin", "0", "1", "0.5", "0.05"])
+    run_jar(["add", "sin1", "sin2", "filtered_continuous"])
+    run_jar([SAMPLING, "filtered_continuous", "filtered", "400"])
 
 
-def task3_convolution(signal_type_first: str, signal_args_first: [],
-                      signal_type_second: str, signal_args_second: []) -> None:
-    filename_first_signal = "first_signal"
-    filename_second_signal = "second_signal"
-    filename_result_signal = "result_signal"
-    task3_generate_signals(filename_first_signal, signal_type_first, signal_args_first,
-                           filename_second_signal, signal_type_second, signal_args_second)
-    run_jar([CONVOLUTION, filename_first_signal, filename_second_signal, filename_result_signal])
-    run_jar([DRAW_CHARTS, filename_result_signal])
-    remove_files([filename_first_signal, filename_second_signal])
-    pass
+def task3_filter(filter_type, M, f_o, window, experiment_id):
+    run_jar([GENERATE, experiment_id + "_filter", filter_type, "400", M, f_o, window])
+    run_jar([CONVOLUTION, "filtered", experiment_id + "_filter", experiment_id + "_result"])
 
 
-def task3_correlation(signal_type_first: str, signal_args_first: [],
-                      signal_type_second: str, signal_args_second: []) -> None:
-    filename_first_signal = "first_signal"
-    filename_second_signal = "second_signal"
-    filename_result_signal = "result_signal"
-    task3_generate_signals(filename_first_signal, signal_type_first, signal_args_first,
-                           filename_second_signal, signal_type_second, signal_args_second)
-    run_jar([CONVOLUTION, filename_first_signal, filename_second_signal, filename_result_signal])
-    run_jar([DRAW_CHARTS, filename_result_signal])
-    remove_files([filename_first_signal, filename_second_signal])
-    pass
-
-
-def task_3() -> None:
-    task3_convolution(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
-                      IMPULSE_NOISE, ["0", "5", "16", "1", "0.5"])
-    task3_convolution(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
-                      LOW_PASS_FILTER, ["16", "15", "4", HAMMING_WINDOW, "15"])
-    task3_correlation(UNIT_IMPULSE, ["0", "5", "16", "1", "2"],
-                      IMPULSE_NOISE, ["0", "5", "16", "1", "0.5"])
-    pass
+def task_3():
+    task3_prepare_filtered()
+    task3_filter("low_fil", "201", "5", "win_rect", "1a")
+    task3_filter("low_fil", "201", "5", "win_ham", "1b")
+    task3_filter("low_fil", "201", "5", "win_han", "1c")
+    task3_filter("low_fil", "201", "5", "win_bla", "1d")
 
 
 # TASK4 ----------------------------------------------------------------------- #
