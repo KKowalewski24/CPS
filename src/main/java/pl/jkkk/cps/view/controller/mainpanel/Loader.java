@@ -301,7 +301,7 @@ public class Loader {
 
                 if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
                     if (decimation.equals(DecimationType.TIME_DOMAIN.getName())) {
-                        //TODO FILL WITH METHODS' CALL
+
                     } else if (decimation.equals(DecimationType.FREQUENCY_DOMAIN.getName())) {
 
                     }
@@ -558,10 +558,10 @@ public class Loader {
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
                                            double[] signalParams, boolean isScatterChart//,
-            //           Collection<ChartRecord<Number, Number>> dataW1First,
-            //           Collection<ChartRecord<Number, Number>> dataW1Second,
-            //           Collection<ChartRecord<Number, Number>> dataW2First,
-            //           Collection<ChartRecord<Number, Number>> dataW2Second,
+                                           //           Collection<ChartRecord<Number, Number>> dataW1First,
+                                           //           Collection<ChartRecord<Number, Number>> dataW1Second,
+                                           //           Collection<ChartRecord<Number, Number>> dataW2First,
+                                           //           Collection<ChartRecord<Number, Number>> dataW2Second,
     ) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 

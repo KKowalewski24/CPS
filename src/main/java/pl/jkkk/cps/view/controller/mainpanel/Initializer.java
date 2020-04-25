@@ -20,7 +20,6 @@ import pl.jkkk.cps.logic.model.enumtype.WaveletType;
 import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
-import pl.jkkk.cps.view.model.InnerDualCustomTab;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,14 +27,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static pl.jkkk.cps.view.fxml.FxHelper.fillComboBox;
-import static pl.jkkk.cps.view.fxml.FxHelper.getSelectedTabIndex;
 import static pl.jkkk.cps.view.fxml.FxHelper.getTabNameList;
 import static pl.jkkk.cps.view.fxml.FxHelper.getValueFromComboBox;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLabelWithPosition;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.removeAndAddNewPaneChildren;
-import static pl.jkkk.cps.view.fxml.FxHelper.removeSelectedTabFromTabPane;
 import static pl.jkkk.cps.view.fxml.FxHelper.setPaneVisibility;
 import static pl.jkkk.cps.view.fxml.FxHelper.setTextFieldPosition;
 import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
@@ -124,7 +121,7 @@ public class Initializer {
         fillComparisonTab();
     }
 
-    public void prepareTabPaneResults(int index, Tab... optionalTab) {
+    public void prepareTabPaneResults(int index) {
         Pane pane = new Pane(
                 prepareLabelWithPosition("Wartość średnia sygnału: ", 25, 40),
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
@@ -136,9 +133,7 @@ public class Initializer {
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
-                        optionalTab.length == 1 ?
-                                optionalTab[0]
-                                : new CustomTab("Wykres", prepareLineChart(), false),
+                        new CustomTab("Wykres", prepareLineChart(), false),
                         new CustomTab("Histogram", prepareBarChart(), false),
                         new CustomTab("Parametry", pane, false),
                         new CustomTab("W1", new VBox(
@@ -296,11 +291,6 @@ public class Initializer {
         setPaneVisibility(false, topPane, middlePane);
 
         if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
-
-            removeSelectedTabFromTabPane(tabPaneResults);
-            prepareTabPaneResults(getSelectedTabIndex(tabPaneResults) + 1,
-                    new CustomTab("Wykres", prepareLineChart(), false));
-
             setPaneVisibility(true, bottomPane);
 
             removeAndAddNewPaneChildren(bottomPane,
@@ -310,10 +300,6 @@ public class Initializer {
 
         } else if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
-
-            removeSelectedTabFromTabPane(tabPaneResults);
-            prepareTabPaneResults(getSelectedTabIndex(tabPaneResults) + 1,
-                    new CustomTab("Wykres", prepareLineChart(), false));
 
             labelMethodOrAlgorithm.setText(methodLabelValue);
             setPaneVisibility(true, topPane, bottomPane);
@@ -337,11 +323,6 @@ public class Initializer {
                 || selectedOperation.equals(OneArgsOperationType.COSINE_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.WALSH_HADAMARD_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
-
-            //            TODO
-            removeSelectedTabFromTabPane(tabPaneResults);
-            prepareTabPaneResults(getSelectedTabIndex(tabPaneResults) + 1,
-                    new InnerDualCustomTab("TODO", prepareLineChart(), false));
 
             setPaneVisibility(false, bottomPane);
             setPaneVisibility(true, topPane);
