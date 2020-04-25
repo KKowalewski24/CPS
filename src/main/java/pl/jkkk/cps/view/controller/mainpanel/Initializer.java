@@ -237,6 +237,24 @@ public class Initializer {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    private void fillOneArgsTab() {
+        fillComboBox(comboBoxOperationTypesOneArgs, OneArgsOperationType.getNamesList());
+        textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
+        textFieldSetValue(textFieldSampleRate, String.valueOf(10));
+        textFieldSetValue(textFieldReconstructionSincParam, String.valueOf(1));
+        fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
+
+        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
+        topPane.setVisible(false);
+        removeAndAddNewPaneChildren(bottomPane,
+                prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
+                setTextFieldPosition(textFieldSampleRate, 250, 30)
+        );
+
+        comboBoxOperationTypesOneArgs.setOnAction((event -> actionComboBoxOperationTypesOneArgs()));
+    }
+
     private void actionComboBoxOperationTypesOneArgs() {
         Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
         ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
@@ -276,26 +294,6 @@ public class Initializer {
                 );
             }
         }
-    }
-
-    private void fillOneArgsTab() {
-        fillComboBox(comboBoxOperationTypesOneArgs, OneArgsOperationType.getNamesList());
-        textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
-        textFieldSetValue(textFieldSampleRate, String.valueOf(10));
-        textFieldSetValue(textFieldReconstructionSincParam, String.valueOf(1));
-        fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
-
-        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
-        topPane.setVisible(false);
-        removeAndAddNewPaneChildren(bottomPane,
-                prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
-                setTextFieldPosition(textFieldSampleRate, 250, 30)
-        );
-
-        comboBoxOperationTypesOneArgs.setOnAction((event -> {
-            actionComboBoxOperationTypesOneArgs();
-        }));
     }
 
     /*--------------------------------------------------------------------------------------------*/
