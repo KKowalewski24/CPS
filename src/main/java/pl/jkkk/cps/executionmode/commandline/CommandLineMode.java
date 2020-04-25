@@ -5,10 +5,12 @@ import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.ScatterChart;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;
@@ -251,7 +253,17 @@ public class CommandLineMode extends Application {
                 new CustomTabPane(
                         new CustomTab("Wykres", lineChart, false),
                         new CustomTab("Histogram", barChart, false),
-                        new CustomTab("Parametry", new Pane(), false)
+                        new CustomTab("Parametry", new Pane(), false),
+                        new CustomTab("W1", new VBox(
+                                prepareLineChart(
+                                        "Część rzeczywista amplitudy w funkcji częstotliwości"),
+                                prepareLineChart(
+                                        "Część urojona amplitudy w funkcji częstotliwości")),
+                                false),
+                        new CustomTab("W2", new VBox(
+                                prepareLineChart("Moduł liczby zespolonej"),
+                                prepareLineChart("Argument liczby w funkcji częstotliwości")),
+                                false)
                 )));
 
         root.getChildren().addAll(tabPane);

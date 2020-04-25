@@ -12,6 +12,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;
@@ -556,7 +557,12 @@ public class Loader {
     private void fillCustomTabPaneWithData(TabPane tabPane,
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
-                                           double[] signalParams, boolean isScatterChart) {
+                                           double[] signalParams, boolean isScatterChart//,
+            //           Collection<ChartRecord<Number, Number>> dataW1First,
+            //           Collection<ChartRecord<Number, Number>> dataW1Second,
+            //           Collection<ChartRecord<Number, Number>> dataW2First,
+            //           Collection<ChartRecord<Number, Number>> dataW2Second,
+    ) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
         try {
@@ -598,6 +604,18 @@ public class Loader {
                         signalParams[2], signalParams[3], signalParams[4]);
                 latexGenerator.generate(ReportType.SIGNAL);
             }
+            //                TODO UNCOMMENT
+            //            VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
+            //            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0),
+            //            dataW1First);
+            //            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1),
+            //            dataW1Second);
+            //
+            //            VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
+            //            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0),
+            //            dataW2First);
+            //            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1),
+            //            dataW2Second);
 
         } catch (FileOperationException e) {
             PopOutWindow.messageBox("Błąd Zapisu Do Pliku",

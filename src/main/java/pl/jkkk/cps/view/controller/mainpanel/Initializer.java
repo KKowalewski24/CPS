@@ -8,6 +8,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
 import pl.jkkk.cps.logic.model.enumtype.DecimationType;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
@@ -134,7 +135,17 @@ public class Initializer {
                 new CustomTabPane(
                         new CustomTab("Wykres", prepareLineChart(), false),
                         new CustomTab("Histogram", prepareBarChart(), false),
-                        new CustomTab("Parametry", pane, false)
+                        new CustomTab("Parametry", pane, false),
+                        new CustomTab("W1", new VBox(
+                                prepareLineChart(
+                                        "Część rzeczywista amplitudy w funkcji częstotliwości"),
+                                prepareLineChart(
+                                        "Część urojona amplitudy w funkcji częstotliwości")),
+                                false),
+                        new CustomTab("W2", new VBox(
+                                prepareLineChart("Moduł liczby zespolonej"),
+                                prepareLineChart("Argument liczby w funkcji częstotliwości")),
+                                false)
                 )));
     }
 
