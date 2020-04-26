@@ -65,6 +65,7 @@ JAR_NAME = "cps-0.0.1-jar-with-dependencies.jar"
 TXT = "*.txt"
 PNG = "*.png"
 JAR = "*.jar"
+DATA_EXTENSION = "*data"
 
 GENERATE = "generate"
 SAMPLING = "sampl"
@@ -121,6 +122,7 @@ def clean_project_directories():
     script_directory = pathlib.Path(os.getcwd())
     remove_files(glob.glob(TXT))
     remove_files(glob.glob(PNG))
+    remove_files(glob.glob(DATA_EXTENSION))
     remove_files(glob.glob(JAR))
 
     os.chdir(script_directory.parent)
@@ -341,6 +343,8 @@ def task3_filter(filter_type, M, f_o, window, experiment_id):
     run_jar([DRAW_CHARTS, experiment_id + "_filter.data"])
     run_jar([DRAW_CHARTS, experiment_id + "_result.data"])
 
+    remove_files([experiment_id + "_filter.data", experiment_id + "_result.data"])
+
 
 def task3_filter_reconstr(filter_type, M, f_o, window, experiment_id):
     run_jar([GENERATE, experiment_id + "_filter.data", filter_type, "400", M, f_o, window])
@@ -350,6 +354,9 @@ def task3_filter_reconstr(filter_type, M, f_o, window, experiment_id):
              experiment_id + "_result_reconstr.data", "first_order"])
     run_jar([DRAW_CHARTS, experiment_id + "_filter.data"])
     run_jar([DRAW_CHARTS, experiment_id + "_result_reconstr.data"])
+
+    remove_files([experiment_id + "_filter.data", experiment_id + "_result.data",
+                  experiment_id + "_result_reconstr.data"])
 
 
 def task_3():
