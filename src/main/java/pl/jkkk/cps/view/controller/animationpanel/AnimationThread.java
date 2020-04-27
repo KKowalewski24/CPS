@@ -32,11 +32,17 @@ public class AnimationThread {
     public static final double AXIS_TICK_UNIT = 0.25;
 
     private AtomicBoolean isAnimationRunning = new AtomicBoolean(false);
+    private AtomicBoolean isAnimationPaused = new AtomicBoolean(false);
+
     private Thread thread;
 
     /*------------------------ METHODS REGION ------------------------*/
     public AtomicBoolean getIsAnimationRunning() {
         return isAnimationRunning;
+    }
+
+    public AtomicBoolean getIsAnimationPaused() {
+        return isAnimationPaused;
     }
 
     public void startAnimation(Environment environment,
@@ -54,6 +60,14 @@ public class AnimationThread {
                 chartCorrelation, axisXSignalProbe, axisXSignalFeedback,
                 lineChartSignalCorrelation, textFieldResultTimeStamp,
                 textFieldResultRealDistance, textFieldResultCalculatedDistance);
+    }
+
+    public void pauseAnimation() {
+        isAnimationPaused.set(true);
+    }
+
+    public void repauseAnimation() {
+        isAnimationPaused.set(false);
     }
 
     public void stopAnimation() {
@@ -75,42 +89,46 @@ public class AnimationThread {
             protected Void call() {
                 while (isAnimationRunning.get()) {
                     long callTimePeriod = 0;
-                    callTimePeriod += action(() -> environment.step());
-                    callTimePeriod += action(() -> {
-                        Platform.runLater(() -> {
-                            textFieldSetValue(textFieldResultTimeStamp,
-                                    String.valueOf(environment.getTimestamp()));
-                            textFieldSetValue(textFieldResultRealDistance,
-                                    String.valueOf(environment.getItemDistance()));
-                            textFieldSetValue(textFieldResultCalculatedDistance,
-                                    String.valueOf(environment.getDistanceSensor().getDistance()));
+                    if (!isAnimationPaused.get()) {
+                        callTimePeriod += action(() -> environment.step());
+                        callTimePeriod += action(() -> {
+                            Platform.runLater(() -> {
+                                textFieldSetValue(textFieldResultTimeStamp,
+                                        String.valueOf(environment.getTimestamp()));
+                                textFieldSetValue(textFieldResultRealDistance,
+                                        String.valueOf(environment.getItemDistance()));
+                                textFieldSetValue(textFieldResultCalculatedDistance,
+                                        String.valueOf(environment.getDistanceSensor()
+                                                .getDistance()));
 
-                            DiscreteSignal probeSignal = environment.getDistanceSensor()
-                                    .getDiscreteProbeSignal();
-                            DiscreteSignal feedbackSignal = environment.getDistanceSensor()
-                                    .getDiscreteFeedbackSignal();
-                            DiscreteSignal correlationSignal = environment.getDistanceSensor()
-                                    .getCorrelationSignal();
+                                DiscreteSignal probeSignal = environment.getDistanceSensor()
+                                        .getDiscreteProbeSignal();
+                                DiscreteSignal feedbackSignal = environment.getDistanceSensor()
+                                        .getDiscreteFeedbackSignal();
+                                DiscreteSignal correlationSignal = environment.getDistanceSensor()
+                                        .getCorrelationSignal();
 
-                            updateNumberAxis(axisXSignalProbe, probeSignal.getRangeStart(),
-                                    probeSignal.getRangeStart()
-                                            + probeSignal.getRangeLength(),
-                                    AXIS_TICK_UNIT);
-                            updateNumberAxis(axisXSignalFeedback, feedbackSignal.getRangeStart(),
-                                    feedbackSignal.getRangeStart()
-                                            + probeSignal.getRangeLength(),
-                                    AXIS_TICK_UNIT);
-                            updateNumberAxis(lineChartSignalCorrelation,
-                                    correlationSignal.getRangeStart(),
-                                    correlationSignal.getRangeStart()
-                                            + correlationSignal.getRangeLength(),
-                                    AXIS_TICK_UNIT);
+                                updateNumberAxis(axisXSignalProbe, probeSignal.getRangeStart(),
+                                        probeSignal.getRangeStart()
+                                                + probeSignal.getRangeLength(),
+                                        AXIS_TICK_UNIT);
+                                updateNumberAxis(axisXSignalFeedback,
+                                        feedbackSignal.getRangeStart(),
+                                        feedbackSignal.getRangeStart()
+                                                + probeSignal.getRangeLength(),
+                                        AXIS_TICK_UNIT);
+                                updateNumberAxis(lineChartSignalCorrelation,
+                                        correlationSignal.getRangeStart(),
+                                        correlationSignal.getRangeStart()
+                                                + correlationSignal.getRangeLength(),
+                                        AXIS_TICK_UNIT);
 
-                            representSignal(chartSignalProbe, probeSignal);
-                            representSignal(chartSignalFeedback, feedbackSignal);
-                            representSignal(chartCorrelation, correlationSignal);
+                                representSignal(chartSignalProbe, probeSignal);
+                                representSignal(chartSignalFeedback, feedbackSignal);
+                                representSignal(chartCorrelation, correlationSignal);
+                            });
                         });
-                    });
+                    }
 
                     /*----- Counting sleep time in ms and converting TimeStep to ms -----*/
                     long sleepTime = ((long) (environment.getTimeStep() * 1000)) - callTimePeriod;

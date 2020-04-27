@@ -98,6 +98,29 @@ public class AnimationPanel implements Initializable {
     }
 
     @FXML
+    private void onActionButtonReturn(ActionEvent actionEvent) {
+        if (!animationThread.getIsAnimationRunning().get()) {
+            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+        } else {
+            try {
+                animationThread.stopAnimation();
+                TimeUnit.MILLISECONDS.sleep(200);
+                StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
+            } catch (AnimationNotStartedException e) {
+                PopOutWindow.messageBox("Błąd Zatrzymania",
+                        "Animacja nie została rozpoczęta",
+                        Alert.AlertType.WARNING);
+            } catch (InterruptedException e) {
+                PopOutWindow.messageBox("Błąd Zatrzymania",
+                        "Nie udało się poprawnie zatrzymać animacji",
+                        Alert.AlertType.WARNING);
+            }
+        }
+        changeParamsTextFieldsEditable(true);
+        StageController.getApplicationStage().setResizable(false);
+    }
+
+    @FXML
     private void onActionButtonStartAnimation(ActionEvent actionEvent) {
         changeParamsTextFieldsEditable(false);
 
@@ -129,26 +152,18 @@ public class AnimationPanel implements Initializable {
     }
 
     @FXML
-    private void onActionButtonReturn(ActionEvent actionEvent) {
-        if (!animationThread.getIsAnimationRunning().get()) {
-            StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
-        } else {
-            try {
-                animationThread.stopAnimation();
-                TimeUnit.MILLISECONDS.sleep(200);
-                StageController.reloadStage(PATH_MAIN_PANEL, TITLE_MAIN_PANEL);
-            } catch (AnimationNotStartedException e) {
-                PopOutWindow.messageBox("Błąd Zatrzymania",
-                        "Animacja nie została rozpoczęta",
-                        Alert.AlertType.WARNING);
-            } catch (InterruptedException e) {
-                PopOutWindow.messageBox("Błąd Zatrzymania",
-                        "Nie udało się poprawnie zatrzymać animacji",
-                        Alert.AlertType.WARNING);
+    private void onActionButtonPauseAnimation(ActionEvent actionEvent) {
+        if (animationThread.getIsAnimationRunning().get()) {
+            if (!animationThread.getIsAnimationPaused().get()) {
+                animationThread.pauseAnimation();
+            } else {
+                animationThread.repauseAnimation();
             }
+        } else {
+            PopOutWindow.messageBox("",
+                    "Animacja nie została rozpoczęta",
+                    Alert.AlertType.WARNING);
         }
-        changeParamsTextFieldsEditable(true);
-        StageController.getApplicationStage().setResizable(false);
     }
 
     @FXML

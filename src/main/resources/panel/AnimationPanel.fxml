@@ -6,9 +6,8 @@
 <?import javafx.scene.layout.*?>
 
 <HBox fx:id="paneAnimationPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity"
-      prefHeight="700.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
-      xmlns:fx="http://javafx.com/fxml/1"
+      minWidth="-Infinity" prefHeight="700.0" prefWidth="1300.0"
+      xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="pl.jkkk.cps.view.controller.animationpanel.AnimationPanel">
     <children>
         <VBox prefHeight="680.0" prefWidth="585.0">
@@ -151,8 +150,10 @@
                     <Pane HBox.hgrow="ALWAYS"/>
                     <Button mnemonicParsing="false" onAction="#onActionButtonStartAnimation"
                             prefHeight="29.0" prefWidth="141.0" text="Rozpocznij Animacje"/>
+                    <Button mnemonicParsing="false" onAction="#onActionButtonPauseAnimation"
+                            prefHeight="29.0" prefWidth="182.0" text="Wstrzymaj/Wznów Animacje"/>
                     <Button mnemonicParsing="false" onAction="#onActionButtonStopAnimation"
-                            prefHeight="29.0" prefWidth="141.0" text="Zatrzymaj Animacje"/>
+                            prefHeight="29.0" prefWidth="141.0" text="Zakończ Animacje"/>
                     <Pane HBox.hgrow="ALWAYS"/>
                 </items>
             </ToolBar>
