@@ -5,19 +5,32 @@ import java.util.List;
 
 import pl.jkkk.cps.logic.model.Data;
 
-public class DiscreteSignal extends Signal {
+public abstract class DiscreteSignal extends Signal {
 
     private final double sampleRate;
     private final int numberOfSamples;
-    private final double step;
-    private ContinuousSignal continuousSignal;
 
-    public DiscreteSignal(double rangeStart, double rangeLength, double sampleRate, ContinuousSignal continuousSignal) {
+    /**
+     * This constructor initiate numberOfSamples basing on rangeLength,
+     * in that case rangeLength can be a little bit greater than x-distance
+     * between first and last sample.
+     */
+    public DiscreteSignal(double rangeStart, double rangeLength, double sampleRate) {
         super(rangeStart, rangeLength);
         this.sampleRate = sampleRate;
+        /* how many whole samples does this rangeLength contain */
         this.numberOfSamples = (int) (rangeLength * sampleRate);
-        this.step = 1.0 / sampleRate;
-        this.continuousSignal = continuousSignal;
+    }
+
+    /**
+     * This constructor initiate rangeLength basing on numberOfSamples,
+     * in that case rangeLength always equals x-distance between first
+     * and last sample.
+     */
+    public DiscreteSignal(double rangeStart, int numberOfSamples, double sampleRate) {
+        super(rangeStart, numberOfSamples * (1.0 / sampleRate));
+        this.sampleRate = sampleRate;
+        this.numberOfSamples = numberOfSamples;
     }
 
     public double getSampleRate() {
@@ -28,12 +41,10 @@ public class DiscreteSignal extends Signal {
         return numberOfSamples;
     }
 
-    public double value(int i) {
-        return continuousSignal.value(argument(i));
-    }
+    public abstract double value(int i);
 
     public double argument(int i) {
-        return i * step + getRangeStart();
+        return i * (1.0 / sampleRate) + getRangeStart();
     }
 
     @Override

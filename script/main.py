@@ -1,3 +1,4 @@
+import glob
 import os
 import pathlib
 import platform
@@ -15,7 +16,7 @@ where $NUMBER$ is task number - 2,3,4
 if empty array is passed jar is being called with 0 args
 if you want to pass args just place them in array as a string
 
-  * Params for cmd mode
+     * Params for cmd mode
      * <p>
      * Generate - generate, filename to save, signal type, params for signal
      * Signal type abbreviation:
@@ -30,6 +31,15 @@ if you want to pass args just place them in array as a string
      * unit_jump - rangeStart, rangeLength, amplitude, jumpMoment
      * unit_impulse - rangeStart, rangeLength, sampleRate, amplitude, jumpMoment.intValue()
      * impulse_noise - rangeStart, rangeLength, sampleRate, amplitude,probability
+     * --
+     * low_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
+     * --
+     * band_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
+     * --
+     * high_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
      * <p>
      * Sampling - sampl, filename to read, filename to save, sampleRate
      * <p>
@@ -44,10 +54,18 @@ if you want to pass args just place them in array as a string
      * Comparison - comp, first filename to read, second filename to read
      * <p>
      * Draw charts - draw, filenames to read...
+     * <p>
+     * Convolution - conv, first filename to read, second filename to read, filename to save
+     * 
+     * Correlation - corr, first filename to read, second filename to read, filename to save
 
 '''
 
 JAR_NAME = "cps-0.0.1-jar-with-dependencies.jar"
+TXT = "*.txt"
+PNG = "*.png"
+JAR = "*.jar"
+DATA_EXTENSION = "*data"
 
 GENERATE = "generate"
 SAMPLING = "sampl"
@@ -60,6 +78,7 @@ FIRST_ORDER_INTERPOLATION = "first_order"
 RECONSTRUCTION_BASED_FUNCTION_SINC = "sinc"
 COMPARISON = "comp"
 DRAW_CHARTS = "draw"
+CONVOLUTION = "conv"
 
 UNIFORM_NOISE = "uni_noise"
 GAUSSIAN_NOISE = "gauss_noise"
@@ -72,6 +91,14 @@ TRIANGULAR_SIGNAL = "triang"
 UNIT_JUMP = "unit_jump"
 UNIT_IMPULSE = "unit_impulse"
 IMPULSE_NOISE = "impulse_noise"
+LOW_PASS_FILTER = "low_fil"
+BAND_PASS_FILTER = "band_fil"
+HIGH_PASS_FILTER = "high_fil"
+
+RECTANGULAR_WINDOW = "win_rect"
+HAMMING_WINDOW = "win_ham"
+HANNING_WINDOW = "win_han"
+BLACKMAN_WINDOW = "win_bla"
 
 
 # UTIL ------------------------------------------------------------------------ #
@@ -86,16 +113,29 @@ def build_jar() -> None:
         subprocess.call("copy target/" + JAR_NAME + " " + str(script_directory), shell=True)
 
 
+def remove_files(filenames: []) -> None:
+    for it in filenames:
+        os.remove(it)
+
+
+def clean_project_directories():
+    script_directory = pathlib.Path(os.getcwd())
+    remove_files(glob.glob(TXT))
+    remove_files(glob.glob(PNG))
+    remove_files(glob.glob(DATA_EXTENSION))
+    remove_files(glob.glob(JAR))
+
+    os.chdir(script_directory.parent)
+    remove_files(glob.glob(TXT))
+    remove_files(glob.glob(PNG))
+    pass
+
+
 def append_array(main_array: [], child_array: []) -> []:
     for it in child_array:
         main_array.append(it)
 
     return main_array
-
-
-def remove_files(filenames: []) -> None:
-    for it in filenames:
-        os.remove(it)
 
 
 def run_jar(args: []) -> None:
@@ -289,8 +329,57 @@ def task_2() -> None:
 
 
 # TASK3 ----------------------------------------------------------------------- #
-def task_3() -> None:
-    pass
+def task3_prepare_filtered():
+    run_jar([GENERATE, "sin1.data", "sin", "0", "1", "2", "0.333333"])
+    run_jar([GENERATE, "sin2.data", "sin", "0", "1", "2", "0.05"])
+    run_jar(["add", "sin1.data", "sin2.data", "filtered_continuous.data"])
+    run_jar([SAMPLING, "filtered_continuous.data", "filtered.data", "400"])
+
+
+def task3_filter(filter_type, M, f_o, window, experiment_id):
+    run_jar([GENERATE, experiment_id + "_filter.data", filter_type, "400", M, f_o, window])
+    run_jar([CONVOLUTION, "filtered.data", experiment_id + "_filter.data",
+             experiment_id + "_result.data"])
+    run_jar([DRAW_CHARTS, experiment_id + "_filter.data"])
+    run_jar([DRAW_CHARTS, experiment_id + "_result.data"])
+
+    remove_files([experiment_id + "_filter.data", experiment_id + "_result.data"])
+
+
+def task3_filter_reconstr(filter_type, M, f_o, window, experiment_id):
+    run_jar([GENERATE, experiment_id + "_filter.data", filter_type, "400", M, f_o, window])
+    run_jar([CONVOLUTION, "filtered.data", experiment_id + "_filter.data",
+             experiment_id + "_result.data"])
+    run_jar([RECONSTRUCTION, experiment_id + "_result.data",
+             experiment_id + "_result_reconstr.data", "first_order"])
+    run_jar([DRAW_CHARTS, experiment_id + "_filter.data"])
+    run_jar([DRAW_CHARTS, experiment_id + "_result_reconstr.data"])
+
+    remove_files([experiment_id + "_filter.data", experiment_id + "_result.data",
+                  experiment_id + "_result_reconstr.data"])
+
+
+def task_3():
+    task3_prepare_filtered()
+
+    # windows
+    task3_filter("low_fil", "51", "5", "win_rect", "1a")
+    task3_filter("low_fil", "51", "5", "win_ham", "1b")
+    task3_filter("low_fil", "51", "5", "win_han", "1c")
+    task3_filter("low_fil", "51", "5", "win_bla", "1d")
+
+    # rows
+    task3_filter("low_fil", "41", "5", "win_ham", "2a")
+    task3_filter("low_fil", "31", "5", "win_ham", "2b")
+    task3_filter("low_fil", "21", "5", "win_ham", "2c")
+
+    # frequencies and filters
+    task3_filter("low_fil", "51", "3", "win_ham", "3a")
+    task3_filter("low_fil", "51", "2", "win_ham", "3b")
+    task3_filter_reconstr("high_fil", "51", "190", "win_ham", "3c")
+    task3_filter_reconstr("high_fil", "51", "195", "win_ham", "3d")
+    task3_filter_reconstr("band_fil", "51", "90", "win_ham", "3e")
+    task3_filter_reconstr("band_fil", "51", "80", "win_ham", "3f")
 
 
 # TASK4 ----------------------------------------------------------------------- #
@@ -302,6 +391,8 @@ def task_4() -> None:
 def main() -> None:
     if len(sys.argv) == 2 and (sys.argv[1] == "build" or sys.argv[1] == "-b"):
         build_jar()
+    elif len(sys.argv) == 2 and (sys.argv[1] == "clean" or sys.argv[1] == "-c"):
+        clean_project_directories()
     elif len(sys.argv) == 3 and (sys.argv[1] == "run" or sys.argv[1] == "-r"):
         if sys.argv[2] == "2":
             task_2()

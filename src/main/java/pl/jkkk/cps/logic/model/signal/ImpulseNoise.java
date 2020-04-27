@@ -9,8 +9,8 @@ public class ImpulseNoise extends DiscreteSignal {
     private final Random rand;
 
     public ImpulseNoise(double rangeStart, double rangeLength, double sampleRate, double amplitude,
-            double probability) {
-        super(rangeStart, rangeLength, sampleRate, null);
+                        double probability) {
+        super(rangeStart, rangeLength, sampleRate);
         this.amplitude = amplitude;
         this.probability = probability;
         this.rand = new Random(47);

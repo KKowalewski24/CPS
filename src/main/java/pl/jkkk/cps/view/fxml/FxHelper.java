@@ -7,6 +7,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -17,6 +18,7 @@ import pl.jkkk.cps.view.model.ChartRecord;
 import pl.jkkk.cps.view.model.CustomTabPane;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,6 +28,18 @@ public class FxHelper {
 
     /*------------------------ METHODS REGION ------------------------*/
     private FxHelper() {
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    public static void changeTheme(String pathPanel, String title,
+                                   String pathCssDarkTheme, String pathCssLightTheme) {
+        if (StageController.getGlobalCssStyling().equals(pathCssDarkTheme)) {
+            StageController.setGlobalCssStyling(pathCssLightTheme);
+            StageController.reloadStage(pathPanel, title);
+        } else if (StageController.getGlobalCssStyling().equals(pathCssLightTheme)) {
+            StageController.setGlobalCssStyling(pathCssDarkTheme);
+            StageController.reloadStage(pathPanel, title);
+        }
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -59,6 +73,18 @@ public class FxHelper {
         pane.getChildren().addAll(nodes);
     }
 
+    public static void textFieldSetEditable(boolean value, TextField... textFields) {
+        Arrays.stream(textFields).forEach((it) -> it.setEditable(value));
+    }
+
+    public static Double getTextFieldValueToDouble(TextField textField) {
+        return Double.parseDouble(textField.getText());
+    }
+
+    public static Integer getTextFieldValueToInteger(TextField textField) {
+        return Integer.parseInt(textField.getText());
+    }
+
     public static void textFieldSetValue(TextField textField, String string) {
         textField.setText(string);
     }
@@ -83,6 +109,10 @@ public class FxHelper {
         Label label = (Label) node;
         String initialText = label.getText().substring(0, label.getText().indexOf(":") + 1);
         label.setText(initialText + "     " + text);
+    }
+
+    public static boolean isCheckBoxSelected(CheckBox checkBox) {
+        return checkBox.isSelected();
     }
 
     public static void fillComboBox(ComboBox comboBox, Collection collection) {
@@ -120,6 +150,14 @@ public class FxHelper {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    public static void updateNumberAxis(NumberAxis numberAxis, double lowerBound,
+                                        double upperBound, double tickUnit) {
+        numberAxis.setAutoRanging(false);
+        numberAxis.setLowerBound(lowerBound);
+        numberAxis.setUpperBound(upperBound);
+        numberAxis.setTickUnit(tickUnit);
+    }
+
     public static LineChart prepareLineChart(String... title) {
         LineChart lineChart = new LineChart<>(new NumberAxis(), new NumberAxis());
         lineChart.setCreateSymbols(false);
@@ -130,6 +168,11 @@ public class FxHelper {
         }
 
         return lineChart;
+    }
+
+    public static void prepareLineChart(LineChart lineChart) {
+        lineChart.setCreateSymbols(false);
+        lineChart.setAnimated(false);
     }
 
     public static BarChart prepareBarChart(String... title) {

@@ -2,7 +2,7 @@ package pl.jkkk.cps.executionmode.commandline;
 
 import java.util.Arrays;
 
-public enum SignalType {
+public enum SignalTypeCmd {
     UNIFORM_NOISE("uni_noise"),
     GAUSSIAN_NOISE("gauss_noise"),
     SINUSOIDAL_SIGNAL("sin"),
@@ -13,16 +13,19 @@ public enum SignalType {
     TRIANGULAR_SIGNAL("triang"),
     UNIT_JUMP("unit_jump"),
     UNIT_IMPULSE("unit_impulse"),
-    IMPULSE_NOISE("impulse_noise");
+    IMPULSE_NOISE("impulse_noise"),
+    LOW_PASS_FILTER("low_fil"),
+    BAND_PASS_FILTER("band_fil"),
+    HIGH_PASS_FILTER("high_fil");
 
     private final String abbreviation;
 
-    SignalType(final String abbreviation) {
+    SignalTypeCmd(final String abbreviation) {
         this.abbreviation = abbreviation;
     }
 
-    public static SignalType fromString(final String text) {
-        return Arrays.asList(SignalType.values())
+    public static SignalTypeCmd fromString(final String text) {
+        return Arrays.asList(SignalTypeCmd.values())
                 .stream()
                 .filter(signal -> signal.abbreviation.equals(text))
                 .findFirst()

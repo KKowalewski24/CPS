@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox fx:id="paneAnimationPanel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="700.0" prefWidth="1300.0"
+      xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="pl.jkkk.cps.view.controller.animationpanel.AnimationPanel">
+    <children>
+        <VBox prefHeight="680.0" prefWidth="585.0">
+            <ToolBar layoutX="24.0" layoutY="14.0" prefHeight="41.0" prefWidth="320.0">
+                <items>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Button layoutX="24.0" layoutY="14.0" mnemonicParsing="false"
+                            onAction="#onActionButtonReturn" prefHeight="29.0" prefWidth="72.0"
+                            text="Powrót"/>
+                    <Button layoutX="24.0" layoutY="14.0" mnemonicParsing="false"
+                            onAction="#onActionButtonChangeTheme" prefHeight="29.0"
+                            prefWidth="142.0" text="Tryb Ciemny ON/OFF"/>
+                    <Button layoutX="24.0" layoutY="14.0" mnemonicParsing="false"
+                            onAction="#onActionButtonReloadStage" prefHeight="29.0"
+                            prefWidth="109.0" text="Odśwież Stronę"/>
+                    <Button layoutX="24.0" layoutY="14.0" mnemonicParsing="false"
+                            onAction="#onActionButtonGenerateReport" prefHeight="29.0"
+                            prefWidth="106.0" text="Generuj Raport"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                </items>
+                <VBox.margin>
+                    <Insets bottom="20.0"/>
+                </VBox.margin>
+            </ToolBar>
+            <TabPane prefHeight="528.0" prefWidth="585.0" tabClosingPolicy="UNAVAILABLE">
+                <tabs>
+                    <Tab text="Parametry">
+                        <AnchorPane layoutX="0.0" layoutY="0.0">
+                            <children>
+                                <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Czas trwania jednego powtórzenia"/>
+                                        <TextField fx:id="textFieldTimeStep" layoutX="409.0"
+                                                   layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="40.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Prędkość sygnału"/>
+                                        <TextField fx:id="textFieldSignalVelocity" layoutX="409.0"
+                                                   layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="80.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Prędkość przedmiotu"/>
+                                        <TextField fx:id="textFieldItemVelocity" layoutX="409.0"
+                                                   layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="120.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Początkowy dystans"/>
+                                        <TextField fx:id="textFieldStartItemDistance"
+                                                   layoutX="409.0" layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="160.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Okres sygnału sondującego"/>
+                                        <TextField fx:id="textFieldProbeSignalTerm" layoutX="409.0"
+                                                   layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="200.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Częstotliwośc próbkowania"/>
+                                        <TextField fx:id="textFieldSampleRate" layoutX="409.0"
+                                                   layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="240.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0" text="Długość bufora"/>
+                                        <TextField fx:id="textFieldBufferLength" layoutX="409.0"
+                                                   layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="280.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Okres raportowania"/>
+                                        <TextField fx:id="textFieldReportTerm" layoutX="409.0"
+                                                   layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </Tab>
+                    <Tab text="Wyniki">
+                        <AnchorPane layoutX="0.0" layoutY="0.0">
+                            <children>
+                                <AnchorPane layoutX="0.0" layoutY="0.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0" text="Czas (t)"/>
+                                        <TextField fx:id="textFieldResultTimeStamp" editable="false"
+                                                   layoutX="409.0" layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="40.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Rzeczywisty dystans"/>
+                                        <TextField fx:id="textFieldResultRealDistance"
+                                                   editable="false" layoutX="409.0" layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane layoutX="0.0" layoutY="80.0" prefHeight="40.0"
+                                            prefWidth="585.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="11.0"
+                                               text="Obliczony dystans"/>
+                                        <TextField fx:id="textFieldResultCalculatedDistance"
+                                                   editable="false" layoutX="409.0" layoutY="6.0"/>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </Tab>
+                </tabs>
+            </TabPane>
+            <ToolBar prefHeight="40.0" prefWidth="318.0">
+                <items>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                    <Button mnemonicParsing="false" onAction="#onActionButtonStartAnimation"
+                            prefHeight="29.0" prefWidth="141.0" text="Rozpocznij Animacje"/>
+                    <Button mnemonicParsing="false" onAction="#onActionButtonPauseAnimation"
+                            prefHeight="29.0" prefWidth="182.0" text="Wstrzymaj/Wznów Animacje"/>
+                    <Button mnemonicParsing="false" onAction="#onActionButtonStopAnimation"
+                            prefHeight="29.0" prefWidth="141.0" text="Zakończ Animacje"/>
+                    <Pane HBox.hgrow="ALWAYS"/>
+                </items>
+            </ToolBar>
+            <HBox.margin>
+                <Insets left="20.0" right="25.0"/>
+            </HBox.margin>
+        </VBox>
+
+        <TitledPane animated="false" collapsible="false" layoutX="369.0" layoutY="14.0"
+                    prefHeight="632.0" prefWidth="649.0" text="Wykresy">
+            <content>
+                <VBox layoutX="391.0" layoutY="19.0" prefHeight="630.0" prefWidth="882.0">
+                    <children>
+                        <LineChart fx:id="lineChartSignalProbe" prefHeight="405.0" prefWidth="625.0"
+                                   title="Sygnał Sondujący">
+                            <xAxis>
+                                <NumberAxis fx:id="axisXSignalProbe" side="BOTTOM"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT"/>
+                            </yAxis>
+                        </LineChart>
+                        <LineChart fx:id="lineChartSignalFeedback" title="Sygnał Powrotny">
+                            <xAxis>
+                                <NumberAxis fx:id="axisXSignalFeedback" side="BOTTOM"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT"/>
+                            </yAxis>
+                        </LineChart>
+                        <LineChart fx:id="lineChartSignalCorrelation"
+                                   title="Korelacja Sygnałów Sondującego oraz Powrotnego">
+                            <xAxis>
+                                <NumberAxis fx:id="axisXSignalCorrelation" side="BOTTOM"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT"/>
+                            </yAxis>
+                        </LineChart>
+                    </children>
+                </VBox>
+            </content>
+        </TitledPane>
+    </children>
+    <padding>
+        <Insets top="20.0"/>
+    </padding>
+</HBox>

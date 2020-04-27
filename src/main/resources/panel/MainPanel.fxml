@@ -7,7 +7,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="pl.jkkk.cps.view.controller.mainpanel.MainPanel">
     <children>
-        <ToolBar layoutX="346.0" layoutY="14.0" prefHeight="61.0" prefWidth="609.0">
+        <ToolBar layoutX="268.0" layoutY="14.0" prefHeight="61.0" prefWidth="765.0">
             <items>
                 <Button minHeight="35.0" minWidth="100.0" mnemonicParsing="false"
                         onAction="#onActionButtonGenerateData" prefHeight="35.0" prefWidth="112.0"
@@ -15,6 +15,9 @@
                 <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
                         mnemonicParsing="false" onAction="#onActionButtonAddNewTab"
                         text="Dodaj Kartę"/>
+                <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
+                        mnemonicParsing="false" onAction="#onActionButtonOpenAnimationWindow"
+                        text="Otwórz Okno Animacji"/>
                 <Button layoutX="10.0" layoutY="10.0" minHeight="35.0" minWidth="100.0"
                         mnemonicParsing="false" onAction="#onActionButtonChangeTheme"
                         text="Tryb Ciemny ON/OFF"/>
@@ -26,9 +29,11 @@
             </items>
         </ToolBar>
 
-        <ToolBar layoutX="1012.0" layoutY="14.0" prefHeight="61.0" prefWidth="257.0">
+        <ToolBar layoutX="1128.0" layoutY="14.0" prefHeight="61.0" prefWidth="141.0">
             <items>
+                <Pane HBox.hgrow="ALWAYS"/>
                 <Spinner fx:id="spinnerHistogramRange" prefHeight="29.0" prefWidth="70.0"/>
+                <Pane HBox.hgrow="ALWAYS"/>
             </items>
         </ToolBar>
 
@@ -42,8 +47,16 @@
 
                         <ComboBox fx:id="comboBoxSignalTypes" layoutX="46.0" layoutY="56.0"
                                   prefHeight="29.0" prefWidth="402.0"/>
-                        <Pane fx:id="chooseParamsTab" layoutX="19.0" layoutY="134.0"
-                              prefHeight="392.0" prefWidth="402.0"/>
+                        <Pane fx:id="chooseParamsTab" layoutX="14.0" layoutY="102.0"
+                              prefHeight="250.0" prefWidth="402.0"/>
+                        <AnchorPane fx:id="windowTypePane" layoutX="23.0" layoutY="361.0"
+                                    prefHeight="106.0" prefWidth="449.0">
+                            <children>
+                                <Label layoutX="172.0" layoutY="5.0" text="Wybierz Typ Okna"/>
+                                <ComboBox layoutX="138.0" layoutY="30.0" prefHeight="29.0"
+                                          prefWidth="174.0"/>
+                            </children>
+                        </AnchorPane>
 
                     </AnchorPane>
                 </Tab>
@@ -119,6 +132,29 @@
                             <Button layoutX="147.0" layoutY="111.0" mnemonicParsing="false"
                                     onAction="#onActionSaveChart" prefHeight="50.0"
                                     prefWidth="200.0" text="Zapisz Wykres"/>
+                            <AnchorPane layoutX="15.0" layoutY="321.0" prefHeight="200.0"
+                                        prefWidth="465.0">
+                                <children>
+                                    <Label layoutX="136.0" layoutY="14.0"
+                                           text="Wybierz Raporty Do Generowania"/>
+                                    <CheckBox fx:id="checkBoxDataChart" layoutX="55.0"
+                                              layoutY="50.0"
+                                              mnemonicParsing="false"
+                                              selected="true" text="Wykres Liniowy / Punktowy"/>
+                                    <CheckBox fx:id="checkBoxHistogram" layoutX="55.0"
+                                              layoutY="85.0"
+                                              mnemonicParsing="false" selected="true"
+                                              text="Histogram"/>
+                                    <CheckBox fx:id="checkBoxSignalParams" layoutX="55.0"
+                                              layoutY="120.0"
+                                              mnemonicParsing="false" selected="true"
+                                              text="Parametry Sygnału"/>
+                                    <CheckBox fx:id="checkBoxComparison" layoutX="55.0"
+                                              layoutY="155.0"
+                                              mnemonicParsing="false" selected="true"
+                                              text="Porównanie"/>
+                                </children>
+                            </AnchorPane>
                         </children>
                     </AnchorPane>
                 </Tab>
