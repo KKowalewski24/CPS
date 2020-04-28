@@ -1,4 +1,4 @@
-package pl.jkkk.cps.executionmode.commandline;
+package pl.jkkk.cps.executionmode.commandline.processor;
 
 import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;

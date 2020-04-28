@@ -1,5 +1,7 @@
-package pl.jkkk.cps.executionmode.commandline;
+package pl.jkkk.cps.executionmode.commandline.processor;
 
+import pl.jkkk.cps.executionmode.commandline.enumtype.SignalTypeCmd;
+import pl.jkkk.cps.executionmode.commandline.enumtype.WindowTypeCmd;
 import pl.jkkk.cps.logic.model.signal.BandPassFilter;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;

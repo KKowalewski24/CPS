@@ -46,10 +46,14 @@ public class Main {
      * zero_order, first_order, sinc
      * <p>
      * DiscreteFourierTransformation - fou_trans, filename to read, filename to save,
-     * algorithm type, decimation type
+     * algorithm type
      * ---
      * algorithm type abbreviation: def, fast
-     * decimation type: time, freq
+     * <p>
+     * InverseDiscreteFourierTransformation - inver_fou_trans ilename to read, filename to save,
+     * algorithm type
+     * ---
+     * algorithm type abbreviation: def, fast
      * <p>
      * CosineTransformation - cos_trans, filename to read, filename to save, algorithm type
      * algorithm type abbreviation: def, fast

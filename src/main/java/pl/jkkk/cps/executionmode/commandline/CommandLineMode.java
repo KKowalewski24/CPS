@@ -12,6 +12,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pl.jkkk.cps.Main;
+import pl.jkkk.cps.executionmode.commandline.enumtype.OperationCmd;
+import pl.jkkk.cps.executionmode.commandline.processor.OneArgsOperationProcessor;
+import pl.jkkk.cps.executionmode.commandline.processor.SignalGenerator;
+import pl.jkkk.cps.executionmode.commandline.processor.TwoArgOperationProcessor;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.data.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
@@ -91,6 +95,10 @@ public class CommandLineMode extends Application {
                 OneArgsOperationProcessor.caseDiscreteFourierTransformation();
                 break;
             }
+            case INVERSE_DISCRETE_FOURIER_TRANSFORMATION: {
+                OneArgsOperationProcessor.caseInverseDiscreteFourierTransformation();
+                break;
+            }
             case COSINE_TRANSFORMATION: {
                 OneArgsOperationProcessor.caseCosineTransformation();
                 break;
@@ -147,7 +155,7 @@ public class CommandLineMode extends Application {
         new FileReaderWriter<>(filename).write(signal);
     }
 
-    public void caseGenerate() throws FileOperationException {
+    private void caseGenerate() throws FileOperationException {
         Signal signal = SignalGenerator.generate(Main.getMainArgs()
                 .stream()
                 .toArray(String[]::new));
@@ -294,8 +302,6 @@ public class CommandLineMode extends Application {
             fillLineChart((LineChart) customTabPane.getChartTab()
                     .getContent(), mainChartData);
         }
-
-        //        TODO COPY GENERATING W1 AND W2 CHARTS FROM LOADER
 
         latexGenerator = new LatexGenerator("Signal_Params");
         latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],

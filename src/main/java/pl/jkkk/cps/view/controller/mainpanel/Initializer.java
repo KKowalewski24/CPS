@@ -126,8 +126,7 @@ public class Initializer {
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
                 prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
                 prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
-                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200),
-                prepareLabelWithPosition("Czas obliczeń: ", 25, 240)
+                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
         );
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
@@ -276,7 +275,6 @@ public class Initializer {
         final String methodLabelValue = "Wybierz Metodę";
         final String algorithmLabelValue = "Wybierz Typ Algorytmu";
         final String algorithmLevelLabelValue = "Wybierz Poziom";
-        final String decimationLabelValue = "Wybierz Typ Decymacji";
 
         final Label labelMethodOrAlgorithm = (Label) topPane.getChildren().get(0);
         final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);

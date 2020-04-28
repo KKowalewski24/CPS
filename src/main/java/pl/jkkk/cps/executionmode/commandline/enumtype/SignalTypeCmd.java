@@ -1,4 +1,4 @@
-package pl.jkkk.cps.executionmode.commandline;
+package pl.jkkk.cps.executionmode.commandline.enumtype;
 
 import java.util.Arrays;
 

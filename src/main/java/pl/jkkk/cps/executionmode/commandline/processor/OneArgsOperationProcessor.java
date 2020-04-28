@@ -1,6 +1,8 @@
-package pl.jkkk.cps.executionmode.commandline;
+package pl.jkkk.cps.executionmode.commandline.processor;
 
 import pl.jkkk.cps.Main;
+import pl.jkkk.cps.executionmode.commandline.CommandLineMode;
+import pl.jkkk.cps.executionmode.commandline.enumtype.OperationCmd;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
@@ -82,20 +84,23 @@ public final class OneArgsOperationProcessor {
         Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            if (OperationCmd.TIME_DOMAIN == OperationCmd.fromString(Main.getMainArgs().get(4))) {
-                //signal=
-            } else if (OperationCmd.FREQUENCY_DOMAIN == OperationCmd
-                    .fromString(Main.getMainArgs().get(4))) {
-                //signal=
-            }
+
         } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-            if (OperationCmd.TIME_DOMAIN == OperationCmd.fromString(Main.getMainArgs().get(4))) {
-                //signal=
-            } else if (OperationCmd.FREQUENCY_DOMAIN == OperationCmd
-                    .fromString(Main.getMainArgs().get(4))) {
-                //signal=
-            }
+
+        }
+
+        CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
+    }
+
+    public static void caseInverseDiscreteFourierTransformation() throws FileOperationException {
+        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+
+        if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
+
+        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+                .fromString(Main.getMainArgs().get(3))) {
+
         }
 
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
