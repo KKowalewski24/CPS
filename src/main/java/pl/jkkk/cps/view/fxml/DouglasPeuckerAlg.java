@@ -46,7 +46,7 @@ public class DouglasPeuckerAlg {
         }
 
         /* check if horizontal line */
-        if (a.getY() == b.getY()) {
+        if (a.getY().equals(b.getY())) {
             return Math.abs(c.getY() - a.getY());
         }
 
