@@ -4,7 +4,7 @@ import org.apache.commons.math3.complex.Complex;
 
 public class DFTSignal extends ComplexDiscreteSignal {
     
-    private final DiscreteSignal discreteSignal;
+    protected final DiscreteSignal discreteSignal;
 
     public DFTSignal(DiscreteSignal discreteSignal) {
         super(0.0, discreteSignal.getNumberOfSamples(), discreteSignal.getSampleRate());
