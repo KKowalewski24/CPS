@@ -82,6 +82,13 @@
                                                   prefWidth="400.0"/>
                                     </children>
                                 </AnchorPane>
+                                <AnchorPane layoutX="13.0" layoutY="110.0" prefHeight="84.0"
+                                            prefWidth="411.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="33.0" text="Czas obliczeń:"/>
+                                        <TextField editable="false" layoutX="235.0" layoutY="28.0"/>
+                                    </children>
+                                </AnchorPane>
                                 <AnchorPane layoutX="13.0" layoutY="200.0" prefHeight="60.0"
                                             prefWidth="411.0">
                                 </AnchorPane>

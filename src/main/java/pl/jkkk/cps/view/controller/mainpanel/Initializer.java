@@ -259,19 +259,21 @@ public class Initializer {
         fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
 
         final Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        final Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
+        final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
+        final Pane bottomPane = (Pane) oneArgsPane.getChildren().get(2);
 
-        setPaneVisibility(false, topPane);
+        setPaneVisibility(false, topPane, middlePane);
         removeAndAddNewPaneChildren(bottomPane,
                 prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
                 setTextFieldPosition(textFieldSampleRate, 250, 30)
         );
 
         comboBoxOperationTypesOneArgs.setOnAction((event ->
-                actionComboBoxOperationTypesOneArgs(topPane, bottomPane)));
+                actionComboBoxOperationTypesOneArgs(topPane, middlePane, bottomPane)));
     }
 
-    private void actionComboBoxOperationTypesOneArgs(Pane topPane, Pane bottomPane) {
+    private void actionComboBoxOperationTypesOneArgs(Pane topPane,
+                                                     Pane middlePane, Pane bottomPane) {
         final String methodLabelValue = "Wybierz Metodę";
         final String algorithmLabelValue = "Wybierz Typ Algorytmu";
         final String algorithmLevelLabelValue = "Wybierz Poziom";
@@ -280,7 +282,7 @@ public class Initializer {
         final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
 
         String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
-        setPaneVisibility(false, topPane);
+        setPaneVisibility(false, topPane, middlePane);
 
         if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
             setPaneVisibility(true, bottomPane);
@@ -295,6 +297,7 @@ public class Initializer {
 
             labelMethodOrAlgorithm.setText(methodLabelValue);
             setPaneVisibility(true, topPane, bottomPane);
+            setPaneVisibility(false, middlePane);
 
             if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
                 fillComboBox(comboBoxMethodOrAlgorithm, QuantizationType.getNamesList());
@@ -318,7 +321,7 @@ public class Initializer {
                 || selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
 
             setPaneVisibility(false, bottomPane);
-            setPaneVisibility(true, topPane);
+            setPaneVisibility(true, topPane, middlePane);
 
             labelMethodOrAlgorithm.setText(algorithmLabelValue);
 

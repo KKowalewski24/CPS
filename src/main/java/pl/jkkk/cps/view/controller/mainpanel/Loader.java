@@ -255,7 +255,10 @@ public class Loader {
         Signal selectedSignal = signals.get(selectedSignalIndex);
 
         final Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
         final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
+        final TextField textFieldComputationTime = (TextField) middlePane.getChildren().get(1);
+//        TODO ADD SETTING VALUE OF COMPUTATIONTIME
 
         try {
             long startTime = System.currentTimeMillis();
