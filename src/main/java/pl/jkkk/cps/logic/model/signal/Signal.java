@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import pl.jkkk.cps.logic.exception.NotSameLengthException;
-import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.Range;
+import pl.jkkk.cps.logic.model.data.Data;
+import pl.jkkk.cps.logic.model.data.Range;
 
 public abstract class Signal implements Serializable {
 

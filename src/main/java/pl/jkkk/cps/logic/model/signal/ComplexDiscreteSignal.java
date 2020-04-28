@@ -3,8 +3,8 @@ package pl.jkkk.cps.logic.model.signal;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.jkkk.cps.logic.model.Data;
-import pl.jkkk.cps.logic.model.ComplexData;
+import pl.jkkk.cps.logic.model.data.Data;
+import pl.jkkk.cps.logic.model.data.ComplexData;
 import org.apache.commons.math3.complex.Complex;
 
 public abstract class ComplexDiscreteSignal extends Signal{

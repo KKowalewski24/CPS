@@ -1,4 +1,4 @@
-package pl.jkkk.cps.logic.model;
+package pl.jkkk.cps.logic.model.data;
 
 import org.apache.commons.math3.complex.Complex;
 

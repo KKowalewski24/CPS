@@ -1,6 +1,6 @@
 package pl.jkkk.cps.view.fxml;
 
-import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.data.Data;
 
 import java.util.HashSet;
 import java.util.List;

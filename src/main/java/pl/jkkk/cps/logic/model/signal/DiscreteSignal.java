@@ -3,7 +3,7 @@ package pl.jkkk.cps.logic.model.signal;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.data.Data;
 
 public abstract class DiscreteSignal extends Signal {
 

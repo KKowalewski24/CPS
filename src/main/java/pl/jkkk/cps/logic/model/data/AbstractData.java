@@ -1,4 +1,4 @@
-package pl.jkkk.cps.logic.model;
+package pl.jkkk.cps.logic.model.data;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
