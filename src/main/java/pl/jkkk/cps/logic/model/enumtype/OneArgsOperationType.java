@@ -11,6 +11,7 @@ public enum OneArgsOperationType {
     QUANTIZATION("Kwantyzacja"),
     SIGNAL_RECONSTRUCTION("Rekonstrukcja sygnału"),
     DISCRETE_FOURIER_TRANSFORMATION("Dyskretna transformacja Fouriera"),
+    INVERSE_DISCRETE_FOURIER_TRANSFORMATION("Odwrócona dyskretna transformacja Fouriera"),
     COSINE_TRANSFORMATION("Transformacja kosinusowa"),
     WALSH_HADAMARD_TRANSFORMATION("Transformacja Walsha-Hadamarda"),
     WAVELET_TRANSFORMATION("Transformacja falkowa");

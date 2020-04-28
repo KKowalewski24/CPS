@@ -20,7 +20,6 @@ import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.data.Data;
 import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
-import pl.jkkk.cps.logic.model.enumtype.DecimationType;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
@@ -256,9 +255,7 @@ public class Loader {
         Signal selectedSignal = signals.get(selectedSignalIndex);
 
         final Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
         final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
-        final ComboBox comboBoxDecimation = (ComboBox) middlePane.getChildren().get(1);
 
         try {
             long startTime = System.currentTimeMillis();
@@ -296,20 +293,21 @@ public class Loader {
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType
                     .DISCRETE_FOURIER_TRANSFORMATION.getName())) {
                 final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
-                final String decimation = getValueFromComboBox(comboBoxDecimation);
 
                 if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
-                    if (decimation.equals(DecimationType.TIME_DOMAIN.getName())) {
 
-                    } else if (decimation.equals(DecimationType.FREQUENCY_DOMAIN.getName())) {
-
-                    }
                 } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION.getName())) {
-                    if (decimation.equals(DecimationType.TIME_DOMAIN.getName())) {
 
-                    } else if (decimation.equals(DecimationType.FREQUENCY_DOMAIN.getName())) {
+                }
 
-                    }
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .INVERSE_DISCRETE_FOURIER_TRANSFORMATION.getName())) {
+                final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
+
+                if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
+
+                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION.getName())) {
+
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType
@@ -557,10 +555,14 @@ public class Loader {
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
                                            double[] signalParams, boolean isScatterChart//,
-                                           //           Collection<ChartRecord<Number, Number>> dataW1First,
-                                           //           Collection<ChartRecord<Number, Number>> dataW1Second,
-                                           //           Collection<ChartRecord<Number, Number>> dataW2First,
-                                           //           Collection<ChartRecord<Number, Number>> dataW2Second,
+                                           //           Collection<ChartRecord<Number, Number>>
+                                           //           dataW1First,
+                                           //           Collection<ChartRecord<Number, Number>>
+                                           //           dataW1Second,
+                                           //           Collection<ChartRecord<Number, Number>>
+                                           //           dataW2First,
+                                           //           Collection<ChartRecord<Number, Number>>
+                                           //           dataW2Second,
     ) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 

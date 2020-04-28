@@ -10,7 +10,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
-import pl.jkkk.cps.logic.model.enumtype.DecimationType;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
@@ -261,21 +260,19 @@ public class Initializer {
         fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
 
         final Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
-        final Pane bottomPane = (Pane) oneArgsPane.getChildren().get(2);
+        final Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
 
-        setPaneVisibility(false, topPane, middlePane);
+        setPaneVisibility(false, topPane);
         removeAndAddNewPaneChildren(bottomPane,
                 prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
                 setTextFieldPosition(textFieldSampleRate, 250, 30)
         );
 
         comboBoxOperationTypesOneArgs.setOnAction((event ->
-                actionComboBoxOperationTypesOneArgs(topPane, middlePane, bottomPane)));
+                actionComboBoxOperationTypesOneArgs(topPane, bottomPane)));
     }
 
-    private void actionComboBoxOperationTypesOneArgs(Pane topPane,
-                                                     Pane middlePane, Pane bottomPane) {
+    private void actionComboBoxOperationTypesOneArgs(Pane topPane, Pane bottomPane) {
         final String methodLabelValue = "Wybierz Metodę";
         final String algorithmLabelValue = "Wybierz Typ Algorytmu";
         final String algorithmLevelLabelValue = "Wybierz Poziom";
@@ -284,11 +281,8 @@ public class Initializer {
         final Label labelMethodOrAlgorithm = (Label) topPane.getChildren().get(0);
         final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
 
-        final Label labelDecimation = (Label) middlePane.getChildren().get(0);
-        final ComboBox comboBoxDecimation = (ComboBox) middlePane.getChildren().get(1);
-
         String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
-        setPaneVisibility(false, topPane, middlePane);
+        setPaneVisibility(false, topPane);
 
         if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
             setPaneVisibility(true, bottomPane);
@@ -303,7 +297,6 @@ public class Initializer {
 
             labelMethodOrAlgorithm.setText(methodLabelValue);
             setPaneVisibility(true, topPane, bottomPane);
-            setPaneVisibility(false, middlePane);
 
             if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
                 fillComboBox(comboBoxMethodOrAlgorithm, QuantizationType.getNamesList());
@@ -320,6 +313,8 @@ public class Initializer {
                 );
             }
         } else if (selectedOperation.equals(OneArgsOperationType.DISCRETE_FOURIER_TRANSFORMATION.getName())
+                || selectedOperation.equals(
+                OneArgsOperationType.INVERSE_DISCRETE_FOURIER_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.COSINE_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.WALSH_HADAMARD_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
@@ -328,18 +323,12 @@ public class Initializer {
             setPaneVisibility(true, topPane);
 
             labelMethodOrAlgorithm.setText(algorithmLabelValue);
-            labelDecimation.setText(decimationLabelValue);
 
             if (!selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
                 fillComboBox(comboBoxMethodOrAlgorithm, AlgorithmType.getNamesList());
             }
 
             if (selectedOperation.equals(OneArgsOperationType
-                    .DISCRETE_FOURIER_TRANSFORMATION.getName())) {
-                fillComboBox(comboBoxDecimation, DecimationType.getNamesList());
-                setPaneVisibility(true, middlePane);
-
-            } else if (selectedOperation.equals(OneArgsOperationType
                     .WAVELET_TRANSFORMATION.getName())) {
                 fillComboBox(comboBoxMethodOrAlgorithm, WaveletType.getNamesList());
                 labelMethodOrAlgorithm.setText(algorithmLevelLabelValue);

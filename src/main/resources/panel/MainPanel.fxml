@@ -82,14 +82,6 @@
                                                   prefWidth="400.0"/>
                                     </children>
                                 </AnchorPane>
-                                <AnchorPane layoutX="13.0" layoutY="110.0" prefHeight="84.0"
-                                            prefWidth="411.0">
-                                    <children>
-                                        <Label layoutX="150.0" layoutY="14.0" text=""/>
-                                        <ComboBox layoutX="7.0" layoutY="42.0" prefHeight="29.0"
-                                                  prefWidth="400.0"/>
-                                    </children>
-                                </AnchorPane>
                                 <AnchorPane layoutX="13.0" layoutY="200.0" prefHeight="60.0"
                                             prefWidth="411.0">
                                 </AnchorPane>
