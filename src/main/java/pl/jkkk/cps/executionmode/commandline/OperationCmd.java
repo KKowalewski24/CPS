@@ -24,6 +24,18 @@ public enum OperationCmd {
     FIRST_ORDER_INTERPOLATION("first_order"),
     RECONSTRUCTION_BASED_FUNCTION_SINC("sinc"),
 
+    DISCRETE_FOURIER_TRANSFORMATION("fou_trans"),
+    COSINE_TRANSFORMATION("cos_trans"),
+    WALSH_HADAMARD_TRANSFORMATION("wals_trans"),
+    WAVELET_TRANSFORMATION("wave_trans"),
+    BY_DEFINITION("def"),
+    FAST_TRANSFORMATION("fast"),
+    TIME_DOMAIN("time"),
+    FREQUENCY_DOMAIN("freq"),
+    DB4("DB4"),
+    DB6("DB6"),
+    DB8("DB8"),
+
     COMPARISON("comp"),
     DRAW_CHARTS("draw");
 

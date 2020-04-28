@@ -2,16 +2,21 @@ package pl.jkkk.cps.view.controller.mainpanel;
 
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
+import pl.jkkk.cps.logic.model.enumtype.DecimationType;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.WaveletType;
 import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.view.model.CustomTab;
 import pl.jkkk.cps.view.model.CustomTabPane;
@@ -28,6 +33,7 @@ import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLabelWithPosition;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.removeAndAddNewPaneChildren;
+import static pl.jkkk.cps.view.fxml.FxHelper.setPaneVisibility;
 import static pl.jkkk.cps.view.fxml.FxHelper.setTextFieldPosition;
 import static pl.jkkk.cps.view.fxml.FxHelper.textFieldSetValue;
 
@@ -121,14 +127,25 @@ public class Initializer {
                 prepareLabelWithPosition("Wartość średnia bezwzględna sygnału: ", 25, 80),
                 prepareLabelWithPosition("Wartość skuteczna sygnału: ", 25, 120),
                 prepareLabelWithPosition("Wariancja sygnału: ", 25, 160),
-                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200)
+                prepareLabelWithPosition("Moc średnia sygnału: ", 25, 200),
+                prepareLabelWithPosition("Czas obliczeń: ", 25, 240)
         );
 
         tabPaneResults.getTabs().add(new Tab("Karta " + index,
                 new CustomTabPane(
                         new CustomTab("Wykres", prepareLineChart(), false),
                         new CustomTab("Histogram", prepareBarChart(), false),
-                        new CustomTab("Parametry", pane, false)
+                        new CustomTab("Parametry", pane, false),
+                        new CustomTab("W1", new VBox(
+                                prepareLineChart(
+                                        "Część rzeczywista amplitudy w funkcji częstotliwości"),
+                                prepareLineChart(
+                                        "Część urojona amplitudy w funkcji częstotliwości")),
+                                false),
+                        new CustomTab("W2", new VBox(
+                                prepareLineChart("Moduł liczby zespolonej"),
+                                prepareLineChart("Argument liczby w funkcji częstotliwości")),
+                                false)
                 )));
     }
 
@@ -158,11 +175,11 @@ public class Initializer {
         ).collect(Collectors.toCollection(ArrayList::new));
 
         chooseParamsTab.getChildren().setAll(basicInputs);
-        windowTypePane.setVisible(false);
+        setPaneVisibility(false, windowTypePane);
 
         comboBoxSignalTypes.setOnAction((event -> {
             String selectedSignal = getValueFromComboBox(comboBoxSignalTypes);
-            windowTypePane.setVisible(false);
+            setPaneVisibility(false, windowTypePane);
 
             if (selectedSignal.equals(SignalType.UNIFORM_NOISE.getName())
                     || selectedSignal.equals(SignalType.GAUSSIAN_NOISE.getName())) {
@@ -230,53 +247,12 @@ public class Initializer {
 
                 ComboBox comboBoxWindowType = (ComboBox) windowTypePane.getChildren().get(1);
                 fillComboBox(comboBoxWindowType, WindowType.getNamesList());
-                windowTypePane.setVisible(true);
+                setPaneVisibility(true, windowTypePane);
             }
         }));
     }
 
     /*--------------------------------------------------------------------------------------------*/
-    private void actionComboBoxOperationTypesOneArgs() {
-        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
-
-        String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
-        topPane.setVisible(false);
-
-        if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
-            bottomPane.setVisible(true);
-
-            removeAndAddNewPaneChildren(bottomPane,
-                    prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
-                    setTextFieldPosition(textFieldSampleRate, 250, 30)
-            );
-
-        } else {
-            if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-                fillComboBox(comboBoxMethod, QuantizationType.getNamesList());
-                topPane.setVisible(true);
-                bottomPane.setVisible(true);
-
-                removeAndAddNewPaneChildren(bottomPane,
-                        prepareLabelWithPosition("Liczba Poziomów Kwantyzacji", 14, 33),
-                        setTextFieldPosition(textFieldQuantizationLevels, 250, 30)
-                );
-
-            } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
-                fillComboBox(comboBoxMethod, SignalReconstructionType.getNamesList());
-                topPane.setVisible(true);
-                bottomPane.setVisible(true);
-
-                removeAndAddNewPaneChildren(bottomPane,
-                        prepareLabelWithPosition("Parametr funkcji sinc", 14, 33),
-                        setTextFieldPosition(textFieldReconstructionSincParam,
-                                250, 30)
-                );
-            }
-        }
-    }
-
     private void fillOneArgsTab() {
         fillComboBox(comboBoxOperationTypesOneArgs, OneArgsOperationType.getNamesList());
         textFieldSetValue(textFieldQuantizationLevels, String.valueOf(10));
@@ -284,17 +260,91 @@ public class Initializer {
         textFieldSetValue(textFieldReconstructionSincParam, String.valueOf(1));
         fillComboBox(comboBoxSignalOneArgs, getTabNameList(tabPaneResults.getTabs()));
 
-        Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-        Pane bottomPane = (Pane) oneArgsPane.getChildren().get(1);
-        topPane.setVisible(false);
+        final Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
+        final Pane bottomPane = (Pane) oneArgsPane.getChildren().get(2);
+
+        setPaneVisibility(false, topPane, middlePane);
         removeAndAddNewPaneChildren(bottomPane,
                 prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
                 setTextFieldPosition(textFieldSampleRate, 250, 30)
         );
 
-        comboBoxOperationTypesOneArgs.setOnAction((event -> {
-            actionComboBoxOperationTypesOneArgs();
-        }));
+        comboBoxOperationTypesOneArgs.setOnAction((event ->
+                actionComboBoxOperationTypesOneArgs(topPane, middlePane, bottomPane)));
+    }
+
+    private void actionComboBoxOperationTypesOneArgs(Pane topPane,
+                                                     Pane middlePane, Pane bottomPane) {
+        final String methodLabelValue = "Wybierz Metodę";
+        final String algorithmLabelValue = "Wybierz Typ Algorytmu";
+        final String algorithmLevelLabelValue = "Wybierz Poziom";
+        final String decimationLabelValue = "Wybierz Typ Decymacji";
+
+        final Label labelMethodOrAlgorithm = (Label) topPane.getChildren().get(0);
+        final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
+
+        final Label labelDecimation = (Label) middlePane.getChildren().get(0);
+        final ComboBox comboBoxDecimation = (ComboBox) middlePane.getChildren().get(1);
+
+        String selectedOperation = getValueFromComboBox(comboBoxOperationTypesOneArgs);
+        setPaneVisibility(false, topPane, middlePane);
+
+        if (selectedOperation.equals(OneArgsOperationType.SAMPLING.getName())) {
+            setPaneVisibility(true, bottomPane);
+
+            removeAndAddNewPaneChildren(bottomPane,
+                    prepareLabelWithPosition("Częstotliwość próbkowania", 14, 33),
+                    setTextFieldPosition(textFieldSampleRate, 250, 30)
+            );
+
+        } else if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())
+                || selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+
+            labelMethodOrAlgorithm.setText(methodLabelValue);
+            setPaneVisibility(true, topPane, bottomPane);
+            setPaneVisibility(false, middlePane);
+
+            if (selectedOperation.equals(OneArgsOperationType.QUANTIZATION.getName())) {
+                fillComboBox(comboBoxMethodOrAlgorithm, QuantizationType.getNamesList());
+                removeAndAddNewPaneChildren(bottomPane,
+                        prepareLabelWithPosition("Liczba Poziomów Kwantyzacji", 14, 33),
+                        setTextFieldPosition(textFieldQuantizationLevels, 250, 30)
+                );
+            } else if (selectedOperation.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
+                fillComboBox(comboBoxMethodOrAlgorithm, SignalReconstructionType.getNamesList());
+                removeAndAddNewPaneChildren(bottomPane,
+                        prepareLabelWithPosition("Parametr funkcji sinc", 14, 33),
+                        setTextFieldPosition(textFieldReconstructionSincParam,
+                                250, 30)
+                );
+            }
+        } else if (selectedOperation.equals(OneArgsOperationType.DISCRETE_FOURIER_TRANSFORMATION.getName())
+                || selectedOperation.equals(OneArgsOperationType.COSINE_TRANSFORMATION.getName())
+                || selectedOperation.equals(OneArgsOperationType.WALSH_HADAMARD_TRANSFORMATION.getName())
+                || selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
+
+            setPaneVisibility(false, bottomPane);
+            setPaneVisibility(true, topPane);
+
+            labelMethodOrAlgorithm.setText(algorithmLabelValue);
+            labelDecimation.setText(decimationLabelValue);
+
+            if (!selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {
+                fillComboBox(comboBoxMethodOrAlgorithm, AlgorithmType.getNamesList());
+            }
+
+            if (selectedOperation.equals(OneArgsOperationType
+                    .DISCRETE_FOURIER_TRANSFORMATION.getName())) {
+                fillComboBox(comboBoxDecimation, DecimationType.getNamesList());
+                setPaneVisibility(true, middlePane);
+
+            } else if (selectedOperation.equals(OneArgsOperationType
+                    .WAVELET_TRANSFORMATION.getName())) {
+                fillComboBox(comboBoxMethodOrAlgorithm, WaveletType.getNamesList());
+                labelMethodOrAlgorithm.setText(algorithmLevelLabelValue);
+            }
+        }
     }
 
     /*--------------------------------------------------------------------------------------------*/

@@ -43,6 +43,9 @@ public class LatexGenerator {
                 .append(df.format(varianceValue) + "\n")
                 .append("\t\\item Moc średnia sygnału: ")
                 .append(df.format(meanPowerValue) + "\n")
+                //                TODO
+                //                .append("\t\\item Czas obliczeń: ")
+                //                .append(df.format() + "\n")
                 .append("\\end{itemize}\n")
                 .toString();
     }
