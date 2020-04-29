@@ -17,10 +17,7 @@ public class FastDFTSignal extends DFTSignal {
         }
 
         /* calculate FFT */
-        Complex[] FFT = new Complex[samples.length];
-        for (int i = 0; i < samples.length; i++) {
-            FFT[i] = recursiveFFT(samples, i);
-        }
+        Complex[] FFT = inSituFFT(samples);
 
         return FFT;
     }

@@ -18,6 +18,17 @@ public class FastDFTSignalTest {
         });
 
     @Test
+    public void calculate() {
+        double[] yr = {10, -2, -2, -2};
+        double[] yi = {0.0, 2, 0.0, -2};
+        Complex[] dft = signal.calculate();
+        for (int i = 0; i < dft.length; i++) {
+            Assertions.assertEquals(yr[i], dft[i].getReal(), 0.00000001);
+            Assertions.assertEquals(yi[i], dft[i].getImaginary(), 0.00000001);
+        }
+    }
+   
+    @Test
     public void calculateInSituFFT() {
         double[] x = {1, 2, 3, 4};
         double[] yr = {10, -2, -2, -2};
