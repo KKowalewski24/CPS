@@ -51,12 +51,31 @@ if you want to pass args just place them in array as a string
      * Type abbreviation:
      * zero_order, first_order, sinc
      * <p>
+     * DiscreteFourierTransformation - fou_trans, filename to read, filename to save,
+     * algorithm type
+     * ---
+     * algorithm type abbreviation: def, fast
+     * <p>
+     * InverseDiscreteFourierTransformation - inver_fou_trans ilename to read, filename to save,
+     * algorithm type
+     * ---
+     * algorithm type abbreviation: def, fast
+     * <p>
+     * CosineTransformation - cos_trans, filename to read, filename to save, algorithm type
+     * algorithm type abbreviation: def, fast
+     * <p>
+     * WalshHadamardTransformation - wals_trans, filename to read, filename to save, algorithm type
+     * algorithm type abbreviation: def, fast
+     * <p>
+     * WaveletTransformation - wave_trans, filename to read, filename to save, wavelet type
+     * wavelet type abbreviation: DB4, DB6, DB8
+     * <p>
      * Comparison - comp, first filename to read, second filename to read
      * <p>
      * Draw charts - draw, filenames to read...
      * <p>
      * Convolution - conv, first filename to read, second filename to read, filename to save
-     * 
+     * <p>
      * Correlation - corr, first filename to read, second filename to read, filename to save
 
 '''
@@ -68,6 +87,13 @@ JAR = "*.jar"
 DATA_EXTENSION = "*data"
 
 GENERATE = "generate"
+REPRESENT = "represent"
+ADD = "add"
+SUBTRACT = "sub"
+MULTIPLY = "mult"
+DIVIDE = "div"
+CONVOLUTION = "conv"
+CORRELATION = "corr"
 SAMPLING = "sampl"
 QUANTIZATION = "quant"
 EVEN_QUANTIZATION_WITH_TRUNCATION = "qu_trun"
@@ -76,9 +102,18 @@ RECONSTRUCTION = "recon"
 ZERO_ORDER_EXTRAPOLATION = "zero_order"
 FIRST_ORDER_INTERPOLATION = "first_order"
 RECONSTRUCTION_BASED_FUNCTION_SINC = "sinc"
+DISCRETE_FOURIER_TRANSFORMATION = "fou_trans"
+INVERSE_DISCRETE_FOURIER_TRANSFORMATION = "inver_fou_trans"
+COSINE_TRANSFORMATION = "cos_trans"
+WALSH_HADAMARD_TRANSFORMATION = "wals_trans"
+WAVELET_TRANSFORMATION = "wave_trans"
+BY_DEFINITION = "def"
+FAST_TRANSFORMATION = "fast"
+DB4 = "DB4"
+DB6 = "DB6"
+DB8 = "DB8"
 COMPARISON = "comp"
 DRAW_CHARTS = "draw"
-CONVOLUTION = "conv"
 
 UNIFORM_NOISE = "uni_noise"
 GAUSSIAN_NOISE = "gauss_noise"
@@ -118,12 +153,13 @@ def remove_files(filenames: []) -> None:
         os.remove(it)
 
 
-def clean_project_directories():
+def clean_project_directories(remove_jar: bool) -> None:
     script_directory = pathlib.Path(os.getcwd())
     remove_files(glob.glob(TXT))
     remove_files(glob.glob(PNG))
     remove_files(glob.glob(DATA_EXTENSION))
-    remove_files(glob.glob(JAR))
+    if remove_jar:
+        remove_files(glob.glob(JAR))
 
     os.chdir(script_directory.parent)
     remove_files(glob.glob(TXT))
@@ -383,7 +419,19 @@ def task_3():
 
 
 # TASK4 ----------------------------------------------------------------------- #
+def task4_transformation(file_in, file_out):
+    run_jar([DISCRETE_FOURIER_TRANSFORMATION, file_in, file_out, BY_DEFINITION])
+    run_jar([DRAW_CHARTS, file_out])
+    pass
+
+
 def task_4() -> None:
+    generate_signal = "sinus.data"
+    sampling_signal = "sinus_sampling.data"
+    transformation_signal = "sinus_sampling_trans.data"
+    run_jar([GENERATE, generate_signal, "sin", "0", "1", "1", "1"])
+    run_jar([SAMPLING, generate_signal, sampling_signal, "30"])
+    task4_transformation(sampling_signal, transformation_signal)
     pass
 
 
@@ -391,8 +439,11 @@ def task_4() -> None:
 def main() -> None:
     if len(sys.argv) == 2 and (sys.argv[1] == "build" or sys.argv[1] == "-b"):
         build_jar()
-    elif len(sys.argv) == 2 and (sys.argv[1] == "clean" or sys.argv[1] == "-c"):
-        clean_project_directories()
+    elif len(sys.argv) >= 2 and (sys.argv[1] == "clean" or sys.argv[1] == "-c"):
+        if len(sys.argv) == 3 and (sys.argv[2] == "jar" or sys.argv[2] == "-j"):
+            clean_project_directories(True)
+        else:
+            clean_project_directories(False)
     elif len(sys.argv) == 3 and (sys.argv[1] == "run" or sys.argv[1] == "-r"):
         if sys.argv[2] == "2":
             task_2()

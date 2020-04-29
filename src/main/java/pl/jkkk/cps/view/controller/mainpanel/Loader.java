@@ -12,12 +12,14 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.exception.NotSameLengthException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
+import pl.jkkk.cps.logic.model.data.ComplexData;
 import pl.jkkk.cps.logic.model.data.Data;
 import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
@@ -28,10 +30,13 @@ import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.WaveletType;
 import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.logic.model.signal.BandPassFilter;
+import pl.jkkk.cps.logic.model.signal.ComplexDiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
 import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
+import pl.jkkk.cps.logic.model.signal.DFTSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
+import pl.jkkk.cps.logic.model.signal.FastDFTSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -258,7 +263,7 @@ public class Loader {
         final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
         final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
         final TextField textFieldComputationTime = (TextField) middlePane.getChildren().get(1);
-//        TODO ADD SETTING VALUE OF COMPUTATIONTIME
+        //        TODO ADD SETTING VALUE OF COMPUTATIONTIME
 
         try {
             long startTime = System.currentTimeMillis();
@@ -298,9 +303,9 @@ public class Loader {
                 final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
 
                 if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
-
+                    signal = new DFTSignal((DiscreteSignal) selectedSignal);
                 } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION.getName())) {
-
+                    signal = new FastDFTSignal((DiscreteSignal) selectedSignal);
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType
@@ -348,7 +353,11 @@ public class Loader {
 
             overallTime += ((System.currentTimeMillis() - startTime) / 1000.0);
 
-            representSignal(signal);
+            if (signal instanceof ComplexDiscreteSignal) {
+                representComplexSignal(signal);
+            } else {
+                representSignal(signal);
+            }
 
         } catch (NullPointerException | NumberFormatException e) {
             PopOutWindow.messageBox("Błędne dane", "Wprowadzono błędne dane",
@@ -498,6 +507,54 @@ public class Loader {
     }
 
     /*--------------------------------------------------------------------------------------------*/
+    private void representComplexSignal(Signal signal) {
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPaneResults);
+
+        List<ComplexData> signalComplexData = ((ComplexDiscreteSignal) signal)
+                .generateComplexDiscreteRepresentation();
+
+        List<ChartRecord<Number, Number>> chartDataReal = signalComplexData
+                .stream()
+                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getReal()))
+                .collect(Collectors.toList());
+
+        List<ChartRecord<Number, Number>> chartDataImaginary = signalComplexData
+                .stream()
+                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getImaginary()))
+                .collect(Collectors.toList());
+
+        List<ChartRecord<Number, Number>> chartDataAbs = signalComplexData
+                .stream()
+                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().abs()))
+                .collect(Collectors.toList());
+
+        List<ChartRecord<Number, Number>> chartDataArgument = signalComplexData
+                .stream()
+                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getArgument()))
+                .collect(Collectors.toList());
+
+        try {
+            VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
+            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0), chartDataReal);
+            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1), chartDataImaginary);
+            switchTabToAnother(customTabPane, 3);
+            reportWriter.writeFxChart("W1", Main.getMainArgs(), tabPaneResults);
+
+            VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
+            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0), chartDataAbs);
+            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1), chartDataArgument);
+            switchTabToAnother(customTabPane, 4);
+            reportWriter.writeFxChart("W2", Main.getMainArgs(), tabPaneResults);
+
+            switchTabToAnother(customTabPane, 3);
+        } catch (FileOperationException e) {
+            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+                    "Nie można zapisać raportu do pliku",
+                    Alert.AlertType.WARNING);
+        }
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
     private void representSignal(Signal signal) {
         /* remember signal */
         int tabIndex = getSelectedTabIndex(tabPaneResults);
@@ -557,16 +614,7 @@ public class Loader {
     private void fillCustomTabPaneWithData(TabPane tabPane,
                                            Collection<ChartRecord<Number, Number>> mainChartData,
                                            Collection<ChartRecord<String, Number>> histogramData,
-                                           double[] signalParams, boolean isScatterChart//,
-                                           //           Collection<ChartRecord<Number, Number>>
-                                           //           dataW1First,
-                                           //           Collection<ChartRecord<Number, Number>>
-                                           //           dataW1Second,
-                                           //           Collection<ChartRecord<Number, Number>>
-                                           //           dataW2First,
-                                           //           Collection<ChartRecord<Number, Number>>
-                                           //           dataW2Second,
-    ) {
+                                           double[] signalParams, boolean isScatterChart) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
 
         try {
@@ -603,23 +651,10 @@ public class Loader {
 
             if (isCheckBoxSelected(checkBoxSignalParams)) {
                 latexGenerator = new LatexGenerator("Signal_Params");
-                //                TODO ADD TIME
                 latexGenerator.createSummaryForSignal(signalParams[0], signalParams[1],
                         signalParams[2], signalParams[3], signalParams[4]);
                 latexGenerator.generate(ReportType.SIGNAL);
             }
-            //                TODO UNCOMMENT
-            //            VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
-            //            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0),
-            //            dataW1First);
-            //            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1),
-            //            dataW1Second);
-            //
-            //            VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
-            //            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0),
-            //            dataW2First);
-            //            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1),
-            //            dataW2Second);
 
         } catch (FileOperationException e) {
             PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
