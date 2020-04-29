@@ -31,25 +31,18 @@ public abstract class ComplexDiscreteSignal extends Signal{
         return numberOfSamples;
     }
 
-    public abstract Complex value(int n);
-
-    public double argument(int n) {
-        return n * (1.0 / sampleRate) + getRangeStart();
-    }
+    public abstract Complex[] calculate();
 
     @Override
     public List<Data> generateDiscreteRepresentation() {
-        List<Data> data = new ArrayList<>();
-        for (int i = 0; i < numberOfSamples; i++) {
-            data.add(new Data(argument(i), value(i).abs()));
-        }
-        return data;
+        return null;
     }
 
     public List<ComplexData> generateComplexDiscreteRepresentation() {
+        Complex[] samples = calculate();
         List<ComplexData> data = new ArrayList<>();
         for (int i = 0; i < numberOfSamples; i++) {
-            data.add(new ComplexData(argument(i), value(i)));
+            data.add(new ComplexData(i, samples[i]));
         }
         return data;
     }

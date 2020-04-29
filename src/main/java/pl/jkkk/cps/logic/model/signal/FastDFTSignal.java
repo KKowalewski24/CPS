@@ -9,21 +9,70 @@ public class FastDFTSignal extends DFTSignal {
     }
 
     @Override
-    public Complex value(int n) {
+    public Complex[] calculate() {
         /* prepare vector of samples */
         double[] samples = new double[discreteSignal.getNumberOfSamples()];
         for (int i = 0; i < samples.length; i++) {
             samples[i] = discreteSignal.value(i);
         }
 
-        samples = mixSamples(samples);
-        return fft(samples, 0, samples.length);
+        /* calculate FFT */
+        Complex[] FFT = inSituFFT(samples);
+
+        return FFT;
     }
 
+    /**
+     * This is in situ implementation of FFT
+     */
+    protected Complex[] inSituFFT(double[] samples) {
+        samples = mixSamples(samples);
+        Complex[] W = calculateVectorOfWParams(samples.length);
 
-    protected Complex fft(double[] samples, int begin, int end) {
-        //TODO
-        return null;
+        Complex[] X = new Complex[samples.length];
+        for (int i = 0; i < X.length; i++) {
+            X[i] = new Complex(samples[i]);
+        }
+
+        for (int N = 2; N <= X.length; N *= 2) {
+            for (int i = 0; i < X.length / N; i++) { /* repeat for each N-point transform */
+                for (int m = 0; m < N / 2; m++) {
+                    /* butterfly */
+                    int offset = i * N;
+                    Complex tmp = X[offset + m + N/2].multiply(retrieveWFromVector(N, -m, W));
+                    X[offset + m + N/2] = X[offset + m].subtract(tmp);
+                    X[offset + m] = X[offset + m].add(tmp);
+                }
+            }
+        }
+        
+        return X;
+    }
+ 
+    protected Complex retrieveWFromVector(int N, int k, Complex[] vectorW) {
+        /* normalize to [0, N - 1] */
+        k = k % N;
+        if (k < 0) {
+            k += N;
+        }
+
+        /* find k in new N (vectorW.length * 2) */
+        k = k * ((vectorW.length * 2) / N);
+        if (k < vectorW.length) {
+            return vectorW[k];
+        } else {
+            return vectorW[k - vectorW.length].multiply(new Complex(-1));
+        }
+    }
+
+    protected Complex[] calculateVectorOfWParams(int N) {
+        double Warg = 2.0 * Math.PI / N;
+        Complex W = new Complex(Math.cos(Warg), Math.sin(Warg));
+        Complex[] allW = new Complex[N/2];
+        for (int i = 0; i < allW.length; i++) {
+            allW[i] = W.pow(i);
+        }
+        return allW;
     }
 
     /**
@@ -60,5 +109,39 @@ public class FastDFTSignal extends DFTSignal {
             }
         }
         return value;
+    }
+
+    /**
+     * This is recursive implementation of FFT, each call require new
+     * memory allocation
+     */
+    protected Complex recursiveFFT(double[] samples, int m) {
+
+        /* stop condition */
+        if (samples.length == 1) {
+            return new Complex(samples[0]);
+        }
+
+        /* split into odd indexed and even indexed samples */
+        double[] even = new double[samples.length / 2];
+        double[] odd = new double[samples.length / 2];
+        int evenIterator = 0, oddIterator = 0;
+        for (int i = 0; i < samples.length; i++) {
+            if (i % 2 == 0)
+                even[evenIterator++] = samples[i];
+            else
+                odd[oddIterator++] = samples[i];
+        }
+
+        /* call recursively for each group of samples */
+        Complex a = recursiveFFT(even, m);
+        Complex b = recursiveFFT(odd, m);
+
+        /* calculate value of W_{samples.length}^{-m} */
+        double Warg = 2.0 * Math.PI / samples.length;
+        Complex w = new Complex(Math.cos(Warg), Math.sin(Warg)).pow(-m);
+
+        /* return result */
+        return a.add(w.multiply(b));
     }
 }
