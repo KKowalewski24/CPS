@@ -15,25 +15,48 @@ public class FastDFTSignal extends DFTSignal {
         for (int i = 0; i < samples.length; i++) {
             samples[i] = discreteSignal.value(i);
         }
-        samples = mixSamples(samples);
 
-        /* prepare vector of W */
-        Complex[] W = calculateW(samples.length);
-
-        return null;
-    }
-
-    protected Complex fft(double[] samples, int begin, int end, Complex[] W, int m) {
-        /*int N = end - begin;
-
-        if (N == 1) {
-            return new Complex(samples[begin]);
+        /* calculate FFT */
+        Complex[] FFT = new Complex[samples.length];
+        for (int i = 0; i < samples.length; i++) {
+            FFT[i] = recursiveFFT(samples, i);
         }
 
-        Complex a = fft(samples, begin, begin + N / 2, W);
-        Complex b = fft(samples, begin + N / 2, end, W);
-        Complex w = W[W.length * 2 / N*/
-        return null;
+        return FFT;
+    }
+
+    /**
+     * This is recursive implementation of FFT, each call require new
+     * memory allocation
+     */
+    protected Complex recursiveFFT(double[] samples, int m) {
+
+        /* stop condition */
+        if (samples.length == 1) {
+            return new Complex(samples[0]);
+        }
+
+        /* split into odd indexed and even indexed samples */
+        double[] even = new double[samples.length / 2];
+        double[] odd = new double[samples.length / 2];
+        int evenIterator = 0, oddIterator = 0;
+        for (int i = 0; i < samples.length; i++) {
+            if (i % 2 == 0)
+                even[evenIterator++] = samples[i];
+            else
+                odd[oddIterator++] = samples[i];
+        }
+
+        /* call recursively for each group of samples */
+        Complex a = recursiveFFT(even, m);
+        Complex b = recursiveFFT(odd, m);
+
+        /* calculate value of W_{samples.length}^{-m} */
+        double Warg = 2.0 * Math.PI / samples.length;
+        Complex w = new Complex(Math.cos(Warg), Math.sin(Warg)).pow(-m);
+
+        /* return result */
+        return a.add(w.multiply(b));
     }
     
     protected Complex[] calculateW(int N) {

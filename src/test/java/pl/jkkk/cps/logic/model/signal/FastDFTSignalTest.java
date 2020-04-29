@@ -1,5 +1,7 @@
 package pl.jkkk.cps.logic.model.signal;
 
+import org.apache.commons.math3.complex.Complex;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +16,17 @@ public class FastDFTSignalTest {
                 return x[n];
             }
         });
+
+    @Test
+    public void calculateRecursiveFFT() {
+        double[] x = {1, 2, 3, 4};
+        double[] yr = {10, -2, -2, -2};
+        double[] yi = {0.0, 2, 0.0, -2};
+        for (int i = 0; i < x.length; i++) {
+            Assertions.assertEquals(yr[i], signal.recursiveFFT(x, i).getReal(), 0.00000001);
+            Assertions.assertEquals(yi[i], signal.recursiveFFT(x, i).getImaginary(), 0.00000001);
+        }
+    }
 
     @Test
     public void reverseBits() {
