@@ -70,6 +70,8 @@ public class MainPanel implements Initializable {
     private CheckBox checkBoxSignalParams;
     @FXML
     private CheckBox checkBoxComparison;
+    @FXML
+    private CheckBox checkBoxTransformation;
 
     private TextField textFieldAmplitude = new TextField();
     private TextField textFieldStartTime = new TextField();
@@ -118,7 +120,7 @@ public class MainPanel implements Initializable {
                 comparisonPane, oneArgsPane, textFieldQuantizationLevels,
                 textFieldSampleRate, textFieldReconstructionSincParam, windowTypePane,
                 textFieldCuttingFrequency, textFieldFilterRow, checkBoxDataChart,
-                checkBoxHistogram, checkBoxSignalParams, checkBoxComparison
+                checkBoxHistogram, checkBoxSignalParams, checkBoxComparison,checkBoxTransformation
         );
 
         initializer.prepareTabPaneResults(0);

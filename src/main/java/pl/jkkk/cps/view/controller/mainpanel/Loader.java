@@ -109,6 +109,7 @@ public class Loader {
     private CheckBox checkBoxHistogram;
     private CheckBox checkBoxSignalParams;
     private CheckBox checkBoxComparison;
+    private CheckBox checkBoxTransformation;
 
     private ComboBox comboBoxOperationTypesOneArgs;
     private ComboBox comboBoxSignalOneArgs;
@@ -147,7 +148,8 @@ public class Loader {
                   TextField textFieldReconstructionSincParam, AnchorPane windowTypePane,
                   TextField textFieldCuttingFrequency, TextField textFieldFilterRow,
                   CheckBox checkBoxDataChart, CheckBox checkBoxHistogram,
-                  CheckBox checkBoxSignalParams, CheckBox checkBoxComparison) {
+                  CheckBox checkBoxSignalParams, CheckBox checkBoxComparison,
+                  CheckBox checkBoxTransformation) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -178,6 +180,7 @@ public class Loader {
         this.checkBoxHistogram = checkBoxHistogram;
         this.checkBoxSignalParams = checkBoxSignalParams;
         this.checkBoxComparison = checkBoxComparison;
+        this.checkBoxTransformation = checkBoxTransformation;
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -537,14 +540,18 @@ public class Loader {
             VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
             clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0), chartDataReal);
             clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1), chartDataImaginary);
-            switchTabToAnother(customTabPane, 3);
-            reportWriter.writeFxChart("W1", Main.getMainArgs(), tabPaneResults);
 
             VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
             clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0), chartDataAbs);
             clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1), chartDataArgument);
-            switchTabToAnother(customTabPane, 4);
-            reportWriter.writeFxChart("W2", Main.getMainArgs(), tabPaneResults);
+
+            if (isCheckBoxSelected(checkBoxTransformation)) {
+                switchTabToAnother(customTabPane, 3);
+                reportWriter.writeFxChart("W1", Main.getMainArgs(), tabPaneResults);
+
+                switchTabToAnother(customTabPane, 4);
+                reportWriter.writeFxChart("W2", Main.getMainArgs(), tabPaneResults);
+            }
 
             switchTabToAnother(customTabPane, 3);
         } catch (FileOperationException e) {
