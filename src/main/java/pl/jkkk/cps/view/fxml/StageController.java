@@ -7,11 +7,14 @@ import pl.jkkk.cps.view.fxml.core.WindowDimensions;
 
 import java.io.IOException;
 
-public class StageController {
+public class StageController extends FxmlStageSetup {
 
     /*------------------------ FIELDS REGION ------------------------*/
 
     /*------------------------ METHODS REGION ------------------------*/
+    private StageController() {
+    }
+
     public static Stage getApplicationStage() {
         return FxmlStageSetup.getApplicationStage();
     }
