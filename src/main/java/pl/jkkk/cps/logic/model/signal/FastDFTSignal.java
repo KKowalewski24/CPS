@@ -26,6 +26,35 @@ public class FastDFTSignal extends DFTSignal {
     }
 
     /**
+     * This is in situ implementation of FFT
+     */
+    protected Complex[] inSituFFT(double[] samples) {
+        samples = mixSamples(samples);
+
+        Complex[] X = new Complex[samples.length];
+        for (int i = 0; i < X.length; i++) {
+            X[i] = new Complex(samples[i]);
+        }
+
+        for (int N = 2; N <= X.length; N *= 2) {
+            for (int i = 0; i < X.length / N; i++) { /* repeat for each N-point transform */
+                for (int m = 0; m < N / 2; m++) {
+                    /* w param */
+                    double Warg = 2.0 * Math.PI / N;
+                    Complex w = new Complex(Math.cos(Warg), Math.sin(Warg)).pow(-m);
+                    /* butterfly */
+                    int offset = i * N;
+                    Complex tmp = X[offset + m + N/2].multiply(w);
+                    X[offset + m + N/2] = X[offset + m].subtract(tmp);
+                    X[offset + m] = X[offset + m].add(tmp);
+                }
+            }
+        }
+        
+        return X;
+    }
+
+    /**
      * This is recursive implementation of FFT, each call require new
      * memory allocation
      */
