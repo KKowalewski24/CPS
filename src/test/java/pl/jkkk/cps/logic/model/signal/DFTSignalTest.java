@@ -1,5 +1,7 @@
 package pl.jkkk.cps.logic.model.signal;
 
+import org.apache.commons.math3.complex.Complex;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,9 +20,10 @@ public class DFTSignalTest {
 
         double[] yr = {2.5, -0.5, -0.5, -0.5};
         double[] yi = {0.0, 0.5, 0.0, -0.5};
-        for (int i = 0; i < signal.getNumberOfSamples(); i++) {
-            Assertions.assertEquals(yr[i], signal.value(i).getReal(), 0.00000001);
-            Assertions.assertEquals(yi[i], signal.value(i).getImaginary(), 0.00000001);
+        Complex[] dft = signal.calculate();
+        for (int i = 0; i < dft.length; i++) {
+            Assertions.assertEquals(yr[i], dft[i].getReal(), 0.00000001);
+            Assertions.assertEquals(yi[i], dft[i].getImaginary(), 0.00000001);
         }
     }
 }

@@ -12,7 +12,15 @@ public class DFTSignal extends ComplexDiscreteSignal {
     }
 
     @Override
-    public Complex value(int n) {
+    public Complex[] calculate() {
+        Complex[] samples = new Complex[discreteSignal.getNumberOfSamples()];
+        for (int i = 0; i < samples.length; i++) {
+            samples[i] = value(i);
+        }
+        return samples;
+    }
+
+    private Complex value(int n) {
         double Warg = 2.0 * Math.PI / discreteSignal.getNumberOfSamples();
         Complex W = new Complex(Math.cos(Warg), Math.sin(Warg));
 

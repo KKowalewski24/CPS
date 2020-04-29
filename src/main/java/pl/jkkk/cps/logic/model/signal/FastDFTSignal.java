@@ -9,21 +9,41 @@ public class FastDFTSignal extends DFTSignal {
     }
 
     @Override
-    public Complex value(int n) {
+    public Complex[] calculate() {
         /* prepare vector of samples */
         double[] samples = new double[discreteSignal.getNumberOfSamples()];
         for (int i = 0; i < samples.length; i++) {
             samples[i] = discreteSignal.value(i);
         }
-
         samples = mixSamples(samples);
-        return fft(samples, 0, samples.length);
+
+        /* prepare vector of W */
+        Complex[] W = calculateW(samples.length);
+
+        return null;
     }
 
+    protected Complex fft(double[] samples, int begin, int end, Complex[] W, int m) {
+        /*int N = end - begin;
 
-    protected Complex fft(double[] samples, int begin, int end) {
-        //TODO
+        if (N == 1) {
+            return new Complex(samples[begin]);
+        }
+
+        Complex a = fft(samples, begin, begin + N / 2, W);
+        Complex b = fft(samples, begin + N / 2, end, W);
+        Complex w = W[W.length * 2 / N*/
         return null;
+    }
+    
+    protected Complex[] calculateW(int N) {
+        double Warg = 2.0 * Math.PI / N;
+        Complex W = new Complex(Math.cos(Warg), Math.sin(Warg));
+        Complex[] allW = new Complex[N/2];
+        for (int i = 0; i < allW.length; i++) {
+            allW[i] = W.pow(i);
+        }
+        return allW;
     }
 
     /**
