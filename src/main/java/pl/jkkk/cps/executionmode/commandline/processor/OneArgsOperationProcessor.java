@@ -7,9 +7,7 @@ import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
-import pl.jkkk.cps.logic.model.signal.DFTSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
-import pl.jkkk.cps.logic.model.signal.FastDFTSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
 import pl.jkkk.cps.logic.report.LatexGenerator;
 import pl.jkkk.cps.logic.report.ReportType;
@@ -86,10 +84,10 @@ public final class OneArgsOperationProcessor {
         Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            signal = new DFTSignal((DiscreteSignal) signal);
+
         } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-            signal = new FastDFTSignal((DiscreteSignal) signal);
+
         }
 
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));

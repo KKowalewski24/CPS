@@ -2,7 +2,7 @@ package pl.jkkk.cps.logic.model.transform;
 
 import org.apache.commons.math3.complex.Complex;
 
-public class InvertedDiscreteFourierTransform {
+public class InvertedDiscreteFourierTransform extends Transform {
 
     @Override
     public Complex[] transform(Complex[] x) {

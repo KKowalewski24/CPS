@@ -19,6 +19,7 @@ import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.exception.NotSameLengthException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
+import pl.jkkk.cps.logic.model.Operation;
 import pl.jkkk.cps.logic.model.data.ComplexData;
 import pl.jkkk.cps.logic.model.data.Data;
 import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
@@ -30,13 +31,10 @@ import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.WaveletType;
 import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.logic.model.signal.BandPassFilter;
-import pl.jkkk.cps.logic.model.signal.ComplexDiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
 import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
-import pl.jkkk.cps.logic.model.signal.DFTSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
-import pl.jkkk.cps.logic.model.signal.FastDFTSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;
 import pl.jkkk.cps.logic.model.signal.ImpulseNoise;
@@ -53,7 +51,6 @@ import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
-import pl.jkkk.cps.logic.model.Operation;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
 import pl.jkkk.cps.logic.report.LatexGenerator;
@@ -306,9 +303,11 @@ public class Loader {
                 final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
 
                 if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
-                    signal = new DFTSignal((DiscreteSignal) selectedSignal);
+                    //                    signal
+                    //                    signal = new DFTSignal((DiscreteSignal) selectedSignal);
                 } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION.getName())) {
-                    signal = new FastDFTSignal((DiscreteSignal) selectedSignal);
+                    //                    signal = new FastDFTSignal((DiscreteSignal)
+                    //                    selectedSignal);
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType
@@ -356,11 +355,11 @@ public class Loader {
 
             overallTime += ((System.currentTimeMillis() - startTime) / 1000.0);
 
-            if (signal instanceof ComplexDiscreteSignal) {
-                representComplexSignal(signal);
-            } else {
-                representSignal(signal);
-            }
+            //            if (signal instanceof ComplexDiscreteSignal) {
+            //                representComplexSignal(signal);
+            //            } else {
+            representSignal(signal);
+            //            }
 
         } catch (NullPointerException | NumberFormatException e) {
             PopOutWindow.messageBox("Błędne dane", "Wprowadzono błędne dane",
@@ -513,52 +512,57 @@ public class Loader {
     private void representComplexSignal(Signal signal) {
         CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPaneResults);
 
-        List<ComplexData> signalComplexData = ((ComplexDiscreteSignal) signal)
-                .generateComplexDiscreteRepresentation();
-
-        List<ChartRecord<Number, Number>> chartDataReal = signalComplexData
-                .stream()
-                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getReal()))
-                .collect(Collectors.toList());
-
-        List<ChartRecord<Number, Number>> chartDataImaginary = signalComplexData
-                .stream()
-                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getImaginary()))
-                .collect(Collectors.toList());
-
-        List<ChartRecord<Number, Number>> chartDataAbs = signalComplexData
-                .stream()
-                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().abs()))
-                .collect(Collectors.toList());
-
-        List<ChartRecord<Number, Number>> chartDataArgument = signalComplexData
-                .stream()
-                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getArgument()))
-                .collect(Collectors.toList());
-
-        try {
-            VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
-            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0), chartDataReal);
-            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1), chartDataImaginary);
-
-            VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
-            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0), chartDataAbs);
-            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1), chartDataArgument);
-
-            if (isCheckBoxSelected(checkBoxTransformation)) {
-                switchTabToAnother(customTabPane, 3);
-                reportWriter.writeFxChart("W1", Main.getMainArgs(), tabPaneResults);
-
-                switchTabToAnother(customTabPane, 4);
-                reportWriter.writeFxChart("W2", Main.getMainArgs(), tabPaneResults);
-            }
-
-            switchTabToAnother(customTabPane, 3);
-        } catch (FileOperationException e) {
-            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
-                    "Nie można zapisać raportu do pliku",
-                    Alert.AlertType.WARNING);
-        }
+        //        List<ComplexData> signalComplexData = ((ComplexDiscreteSignal) signal)
+        //                .generateComplexDiscreteRepresentation();
+        //
+        //        List<ChartRecord<Number, Number>> chartDataReal = signalComplexData
+        //                .stream()
+        //                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY()
+        //                .getReal()))
+        //                .collect(Collectors.toList());
+        //
+        //        List<ChartRecord<Number, Number>> chartDataImaginary = signalComplexData
+        //                .stream()
+        //                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY()
+        //                .getImaginary()))
+        //                .collect(Collectors.toList());
+        //
+        //        List<ChartRecord<Number, Number>> chartDataAbs = signalComplexData
+        //                .stream()
+        //                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().abs()))
+        //                .collect(Collectors.toList());
+        //
+        //        List<ChartRecord<Number, Number>> chartDataArgument = signalComplexData
+        //                .stream()
+        //                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY()
+        //                .getArgument()))
+        //                .collect(Collectors.toList());
+        //
+        //        try {
+        //            VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
+        //            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0), chartDataReal);
+        //            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1),
+        //            chartDataImaginary);
+        //
+        //            VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
+        //            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0), chartDataAbs);
+        //            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1),
+        //            chartDataArgument);
+        //
+        //            if (isCheckBoxSelected(checkBoxTransformation)) {
+        //                switchTabToAnother(customTabPane, 3);
+        //                reportWriter.writeFxChart("W1", Main.getMainArgs(), tabPaneResults);
+        //
+        //                switchTabToAnother(customTabPane, 4);
+        //                reportWriter.writeFxChart("W2", Main.getMainArgs(), tabPaneResults);
+        //            }
+        //
+        //            switchTabToAnother(customTabPane, 3);
+        //        } catch (FileOperationException e) {
+        //            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+        //                    "Nie można zapisać raportu do pliku",
+        //                    Alert.AlertType.WARNING);
+        //        }
     }
 
     /*--------------------------------------------------------------------------------------------*/
