@@ -76,15 +76,20 @@ public class InSituFastFourierTransformTest {
 
     @Test
     public void mixSamples() {
-//        InSituFastFourierTransform transform = new InSituFastFourierTransform();
-//        Complex[] x = {
-//            new Complex(), new Complex(), new Complex(), new Complex(),
-//            new Complex(), new Complex(), new Complex(), new Complex()
-//        };
-//        Complex[] y = {
-//            x[0], x[4], x[2], x[6], x[1], x[5], x[3], x[7]
-//        };
-//        Assertions.assertArrayEquals(y, transform.mixSamples(x));
+        InSituFastFourierTransform transform = new InSituFastFourierTransform();
+        Complex[] x = {
+            new Complex(0), new Complex(1), new Complex(2), new Complex(3),
+            new Complex(4), new Complex(5), new Complex(6), new Complex(7)
+        };
+        Complex[] y = {
+            new Complex(0), new Complex(4), new Complex(2), new Complex(6),
+            new Complex(1), new Complex(5), new Complex(3), new Complex(7)
+        };
+        Complex[] z = transform.mixSamples(x);
+        for (int i = 0; i < z.length; i++) {
+            Assertions.assertEquals(y[i].getReal(), z[i].getReal(), 0.0000001);
+            Assertions.assertEquals(y[i].getImaginary(), z[i].getImaginary(), 0.0000001);
+        }
     }
 
     @Test
