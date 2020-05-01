@@ -17,7 +17,7 @@ public class InvertedDiscreteFourierTransform extends Transform {
             for (int n = 0; n < N; n++) {
                 sum = sum.add(x[n].multiply(W.pow(m * n)));
             }
-            X[m] = sum.divide(N);
+            X[m] = sum;
         }
 
         return X;
