@@ -54,18 +54,18 @@ if you want to pass args just place them in array as a string
      * DiscreteFourierTransformation - fou_trans, filename to read, filename to save,
      * algorithm type
      * ---
-     * algorithm type abbreviation: def, fast
+     * algorithm type abbreviation: def, fast_in, fast_rec
      * <p>
      * InverseDiscreteFourierTransformation - inver_fou_trans ilename to read, filename to save,
      * algorithm type
      * ---
-     * algorithm type abbreviation: def, fast
+     * algorithm type abbreviation: def, fast_in
      * <p>
      * CosineTransformation - cos_trans, filename to read, filename to save, algorithm type
-     * algorithm type abbreviation: def, fast
+     * algorithm type abbreviation: def, fast_in
      * <p>
      * WalshHadamardTransformation - wals_trans, filename to read, filename to save, algorithm type
-     * algorithm type abbreviation: def, fast
+     * algorithm type abbreviation: def, fast_in
      * <p>
      * WaveletTransformation - wave_trans, filename to read, filename to save, wavelet type
      * wavelet type abbreviation: DB4, DB6, DB8
@@ -77,7 +77,7 @@ if you want to pass args just place them in array as a string
      * Convolution - conv, first filename to read, second filename to read, filename to save
      * <p>
      * Correlation - corr, first filename to read, second filename to read, filename to save
-
+     
 '''
 
 JAR_NAME = "cps-0.0.1-jar-with-dependencies.jar"
@@ -108,7 +108,8 @@ COSINE_TRANSFORMATION = "cos_trans"
 WALSH_HADAMARD_TRANSFORMATION = "wals_trans"
 WAVELET_TRANSFORMATION = "wave_trans"
 BY_DEFINITION = "def"
-FAST_TRANSFORMATION = "fast"
+FAST_TRANSFORMATION_IN_SITU = "fast_in"
+FAST_TRANSFORMATION_RECURSIVE = "fast_rec"
 DB4 = "DB4"
 DB6 = "DB6"
 DB8 = "DB8"

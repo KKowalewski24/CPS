@@ -9,6 +9,11 @@ import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
+import pl.jkkk.cps.logic.model.signal.TransformResultSignal;
+import pl.jkkk.cps.logic.model.transform.DiscreteFourierTransform;
+import pl.jkkk.cps.logic.model.transform.InSituFastFourierTransform;
+import pl.jkkk.cps.logic.model.transform.InvertedDiscreteFourierTransform;
+import pl.jkkk.cps.logic.model.transform.RecursiveFastFourierTransform;
 import pl.jkkk.cps.logic.report.LatexGenerator;
 import pl.jkkk.cps.logic.report.ReportType;
 
@@ -84,12 +89,16 @@ public final class OneArgsOperationProcessor {
         Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-
-        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+            signal = new TransformResultSignal(signal, new DiscreteFourierTransform());
+        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-
+            signal = new TransformResultSignal(signal, new InSituFastFourierTransform());
+        } else if (OperationCmd.FAST_TRANSFORMATION_RECURSIVE == OperationCmd
+                .fromString(Main.getMainArgs().get(3))) {
+            signal = new TransformResultSignal(signal, new RecursiveFastFourierTransform());
         }
 
+        generateTransformation(signal);
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
@@ -97,12 +106,13 @@ public final class OneArgsOperationProcessor {
         Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-
-        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+            signal = new TransformResultSignal(signal, new InvertedDiscreteFourierTransform());
+        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-
+            //            signal = new TransformResultSignal(signal, new);
         }
 
+        generateTransformation(signal);
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
@@ -110,12 +120,13 @@ public final class OneArgsOperationProcessor {
         Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
-        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+            //            signal = new TransformResultSignal(signal, new);
+        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-            //signal=
+            //            signal = new TransformResultSignal(signal, new);
         }
 
+        generateTransformation(signal);
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
@@ -123,12 +134,13 @@ public final class OneArgsOperationProcessor {
         Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
-        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+            //            signal = new TransformResultSignal(signal, new);
+        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-            //signal=
+            //            signal = new TransformResultSignal(signal, new);
         }
 
+        generateTransformation(signal);
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
@@ -136,14 +148,25 @@ public final class OneArgsOperationProcessor {
         Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
 
         if (OperationCmd.DB4 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
+            //            signal = new TransformResultSignal(signal, new);
         } else if (OperationCmd.DB6 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
+            //            signal = new TransformResultSignal(signal, new);
         } else if (OperationCmd.DB8 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
+            //            signal = new TransformResultSignal(signal, new);
         }
 
+        generateTransformation(signal);
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
+    }
+
+    private static void generateTransformation(Signal signal) {
+        long startGenerate = System.currentTimeMillis();
+        ((TransformResultSignal) signal).generate();
+        double endGeneration = ((System.currentTimeMillis() - startGenerate) / 1000.0);
+
+        latexGenerator = new LatexGenerator("trans_gene_time");
+        latexGenerator.createSummaryForTransformationGeneratingTime(endGeneration);
+        latexGenerator.generate(ReportType.TRANSFORMATION_GENERATING);
     }
 }
     

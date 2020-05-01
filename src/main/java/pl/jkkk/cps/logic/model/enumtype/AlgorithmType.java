@@ -8,7 +8,8 @@ public enum AlgorithmType {
 
     /*------------------------ FIELDS REGION ------------------------*/
     BY_DEFINITION("Z definicji"),
-    FAST_TRANSFORMATION("Szybka transformacja");
+    FAST_TRANSFORMATION_IN_SITU("Szybka transformacja in situ"),
+    FAST_TRANSFORMATION_RECURSIVE("Szybka transformacja rekurencyjna");
 
     private final String name;
 

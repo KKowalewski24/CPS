@@ -14,6 +14,7 @@ public class LatexGenerator {
     private StringBuilder inputParameters = new StringBuilder();
     private StringBuilder summaryForSignal = new StringBuilder();
     private StringBuilder summaryForComparison = new StringBuilder();
+    private StringBuilder summaryForTransfomation = new StringBuilder();
     DecimalFormat df = new DecimalFormat("##.####");
 
     /*------------------------ METHODS REGION ------------------------*/
@@ -80,6 +81,12 @@ public class LatexGenerator {
                 .toString();
     }
 
+    public void createSummaryForTransformationGeneratingTime(double time) {
+        summaryForTransfomation
+                .append(time)
+                .toString();
+    }
+
     public void generate(ReportType reportType) {
         if (ReportType.INPUT_PARAMETERS == reportType) {
             reportWriter.writePlainText(filename, Main.getMainArgs(),
@@ -95,6 +102,11 @@ public class LatexGenerator {
             reportWriter.writePlainText(filename, Main.getMainArgs(),
                     new StringBuilder()
                             .append(summaryForComparison)
+                            .toString());
+        } else if (ReportType.TRANSFORMATION_GENERATING == reportType) {
+            reportWriter.writePlainText(filename, Main.getMainArgs(),
+                    new StringBuilder()
+                            .append(summaryForTransfomation)
                             .toString());
         }
     }
