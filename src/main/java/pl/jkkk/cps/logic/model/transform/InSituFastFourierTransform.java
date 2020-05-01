@@ -1,38 +1,16 @@
-package pl.jkkk.cps.logic.model.signal;
+package pl.jkkk.cps.logic.model.transform;
 
 import org.apache.commons.math3.complex.Complex;
 
-public class FastDFTSignal extends DFTSignal {
+public class InSituFastFourierTransform extends Transform {
     
-    public FastDFTSignal(DiscreteSignal discreteSignal) {
-        super(discreteSignal);
-    }
-
-    @Override
-    public Complex[] calculate() {
-        /* prepare vector of samples */
-        double[] samples = new double[discreteSignal.getNumberOfSamples()];
-        for (int i = 0; i < samples.length; i++) {
-            samples[i] = discreteSignal.value(i);
-        }
-
-        /* calculate FFT */
-        Complex[] FFT = inSituFFT(samples);
-
-        return FFT;
-    }
-
     /**
      * This is in situ implementation of FFT
      */
-    protected Complex[] inSituFFT(double[] samples) {
-        samples = mixSamples(samples);
-        Complex[] W = calculateVectorOfWParams(samples.length);
-
-        Complex[] X = new Complex[samples.length];
-        for (int i = 0; i < X.length; i++) {
-            X[i] = new Complex(samples[i]);
-        }
+    @Override
+    public Complex[] transform(Complex[] x) {
+        Complex[] X = mixSamples(x);
+        Complex[] W = calculateVectorOfWParams(x.length);
 
         for (int N = 2; N <= X.length; N *= 2) {
             for (int i = 0; i < X.length / N; i++) { /* repeat for each N-point transform */
@@ -48,7 +26,7 @@ public class FastDFTSignal extends DFTSignal {
         
         return X;
     }
- 
+
     protected Complex retrieveWFromVector(int N, int k, Complex[] vectorW) {
         /* normalize to [0, N - 1] */
         k = k % N;
@@ -82,7 +60,7 @@ public class FastDFTSignal extends DFTSignal {
      *
      * Don't worry, there is no real recursive calls, it use some tricky algorithm.
      */
-    protected double[] mixSamples(double[] samples) {
+    protected Complex[] mixSamples(Complex[] samples) {
         /* calculate number of bits of samples.length */
         int numberOfBits = 0;
         for (int i = 0; i < 32; i++) {
@@ -93,7 +71,7 @@ public class FastDFTSignal extends DFTSignal {
         }
 
         /* mix */
-        double[] mixedSamples = new double[samples.length];
+        Complex[] mixedSamples = new Complex[samples.length];
         for (int i = 0; i < samples.length; i++) {
             int newIndex = reverseBits(i, numberOfBits);
             mixedSamples[newIndex] = samples[i];
@@ -109,39 +87,5 @@ public class FastDFTSignal extends DFTSignal {
             }
         }
         return value;
-    }
-
-    /**
-     * This is recursive implementation of FFT, each call require new
-     * memory allocation
-     */
-    protected Complex recursiveFFT(double[] samples, int m) {
-
-        /* stop condition */
-        if (samples.length == 1) {
-            return new Complex(samples[0]);
-        }
-
-        /* split into odd indexed and even indexed samples */
-        double[] even = new double[samples.length / 2];
-        double[] odd = new double[samples.length / 2];
-        int evenIterator = 0, oddIterator = 0;
-        for (int i = 0; i < samples.length; i++) {
-            if (i % 2 == 0)
-                even[evenIterator++] = samples[i];
-            else
-                odd[oddIterator++] = samples[i];
-        }
-
-        /* call recursively for each group of samples */
-        Complex a = recursiveFFT(even, m);
-        Complex b = recursiveFFT(odd, m);
-
-        /* calculate value of W_{samples.length}^{-m} */
-        double Warg = 2.0 * Math.PI / samples.length;
-        Complex w = new Complex(Math.cos(Warg), Math.sin(Warg)).pow(-m);
-
-        /* return result */
-        return a.add(w.multiply(b));
     }
 }
