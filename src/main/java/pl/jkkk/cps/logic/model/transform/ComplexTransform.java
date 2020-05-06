@@ -4,7 +4,7 @@ import org.apache.commons.math3.complex.Complex;
 
 import java.io.Serializable;
 
-public abstract class Transform implements Serializable {
+public abstract class ComplexTransform {
 
     public abstract Complex[] transform(Complex[] x);
 
