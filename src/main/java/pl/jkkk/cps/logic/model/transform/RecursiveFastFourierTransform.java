@@ -2,7 +2,7 @@ package pl.jkkk.cps.logic.model.transform;
 
 import org.apache.commons.math3.complex.Complex;
 
-public class RecursiveFastFourierTransform extends Transform {
+public class RecursiveFastFourierTransform extends ComplexTransform {
 
     @Override
     public Complex[] transform(Complex[] x) {
@@ -31,10 +31,11 @@ public class RecursiveFastFourierTransform extends Transform {
         Complex[] odd = new Complex[N / 2];
         int evenIterator = 0, oddIterator = 0;
         for (int i = 0; i < N; i++) {
-            if (i % 2 == 0)
+            if (i % 2 == 0) {
                 even[evenIterator++] = x[i];
-            else
+            } else {
                 odd[oddIterator++] = x[i];
+            }
         }
 
         /* call recursively for each group of samples */

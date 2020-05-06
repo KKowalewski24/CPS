@@ -1,22 +1,19 @@
 package pl.jkkk.cps.logic.model.transform;
 
-import org.apache.commons.math3.complex.Complex;
-
-public class DiscreteCosineTransform extends Transform {
+public class DiscreteCosineTransform extends RealTransform {
 
     @Override
-    public Complex[] transform(Complex[] x) {
+    public double[] transform(double[] x) {
 
         int N = x.length;
-        Complex[] X = new Complex[N];
+        double[] X = new double[N];
 
         for (int m = 0; m < N; m++) {
             double sum = 0.0;
             for (int n = 0; n < N; n++) {
-                sum += x[n].getReal() * 
-                    Math.cos(Math.PI * (2.0 * n + 1) * m / (2.0 * N));
+                sum += x[n] * Math.cos(Math.PI * (2.0 * n + 1) * m / (2.0 * N));
             }
-            X[m] = new Complex(c(m, N) * sum);
+            X[m] = c(m, N) * sum;
         }
 
         return X;
@@ -29,5 +26,4 @@ public class DiscreteCosineTransform extends Transform {
             return Math.sqrt(2.0 / N);
         }
     }
-
 }

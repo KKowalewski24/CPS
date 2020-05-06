@@ -2,7 +2,7 @@ package pl.jkkk.cps.logic.model.transform;
 
 import org.apache.commons.math3.complex.Complex;
 
-public abstract class Transform {
+public abstract class ComplexTransform {
 
     public abstract Complex[] transform(Complex[] x);
 
