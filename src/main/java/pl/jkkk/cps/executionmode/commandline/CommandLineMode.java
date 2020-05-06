@@ -17,13 +17,11 @@ import pl.jkkk.cps.executionmode.commandline.processor.OneArgsOperationProcessor
 import pl.jkkk.cps.executionmode.commandline.processor.SignalGenerator;
 import pl.jkkk.cps.executionmode.commandline.processor.TwoArgOperationProcessor;
 import pl.jkkk.cps.logic.exception.FileOperationException;
-import pl.jkkk.cps.logic.model.data.ComplexData;
 import pl.jkkk.cps.logic.model.data.Data;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.Signal;
-import pl.jkkk.cps.logic.model.signal.TransformResultSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
@@ -43,7 +41,6 @@ import java.util.stream.Collectors;
 import static pl.jkkk.cps.view.constant.Constants.PATH_CSS_LIGHT_STYLING;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeLineChartToScatterChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.changeScatterChartToLineChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.clearAndFillLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.fillScatterChart;
@@ -51,7 +48,6 @@ import static pl.jkkk.cps.view.fxml.FxHelper.getCurrentCustomTabPaneFromTabPane;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareBarChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareLineChart;
 import static pl.jkkk.cps.view.fxml.FxHelper.prepareScatterChart;
-import static pl.jkkk.cps.view.fxml.FxHelper.switchTabToAnother;
 
 public class CommandLineMode extends Application {
 
@@ -224,58 +220,58 @@ public class CommandLineMode extends Application {
         commandLineStage.setScene(scene);
         commandLineStage.show();
 
-        if (readSignal(Main.getMainArgs().get(1)) instanceof TransformResultSignal) {
-            representComplexSignal(readSignal(Main.getMainArgs().get(1)));
-        } else {
-            for (int i = 1; i < Main.getMainArgs().size(); i++) {
-                drawChart(readSignal(Main.getMainArgs().get(i)));
-            }
-
-            CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
-            switchTabToAnother(customTabPane, 1);
-            reportWriter.writeFxChart("histogram", Main.getMainArgs(), tabPane);
-            switchTabToAnother(customTabPane, 0);
-            reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
-        }
+//        if (readSignal(Main.getMainArgs().get(1)) instanceof TransformResultSignal) {
+//            representComplexSignal(readSignal(Main.getMainArgs().get(1)));
+//        } else {
+//            for (int i = 1; i < Main.getMainArgs().size(); i++) {
+//                drawChart(readSignal(Main.getMainArgs().get(i)));
+//            }
+//
+//            CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+//            switchTabToAnother(customTabPane, 1);
+//            reportWriter.writeFxChart("histogram", Main.getMainArgs(), tabPane);
+//            switchTabToAnother(customTabPane, 0);
+//            reportWriter.writeFxChart("data", Main.getMainArgs(), tabPane);
+//        }
     }
 
     private void representComplexSignal(Signal signal) throws FileOperationException {
-        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
-
-        List<ComplexData> signalComplexData = ((TransformResultSignal) signal)
-                .generateComplexDiscreteRepresentation();
-
-        List<ChartRecord<Number, Number>> chartDataReal = signalComplexData
-                .stream()
-                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getReal()))
-                .collect(Collectors.toList());
-
-        List<ChartRecord<Number, Number>> chartDataImaginary = signalComplexData
-                .stream()
-                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getImaginary()))
-                .collect(Collectors.toList());
-
-        List<ChartRecord<Number, Number>> chartDataAbs = signalComplexData
-                .stream()
-                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().abs()))
-                .collect(Collectors.toList());
-
-        List<ChartRecord<Number, Number>> chartDataArgument = signalComplexData
-                .stream()
-                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getArgument()))
-                .collect(Collectors.toList());
-
-        VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
-        clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0), chartDataReal);
-        clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1), chartDataImaginary);
-        switchTabToAnother(customTabPane, 3);
-        reportWriter.writeFxChart("W1", Main.getMainArgs(), tabPane);
-
-        VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
-        clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0), chartDataAbs);
-        clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1), chartDataArgument);
-        switchTabToAnother(customTabPane, 4);
-        reportWriter.writeFxChart("W2", Main.getMainArgs(), tabPane);
+//        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPane);
+//
+//        List<ComplexData> signalComplexData = ((TransformResultSignal) signal)
+//                .generateComplexDiscreteRepresentation();
+//
+//        List<ChartRecord<Number, Number>> chartDataReal = signalComplexData
+//                .stream()
+//                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getReal()))
+//                .collect(Collectors.toList());
+//
+//        List<ChartRecord<Number, Number>> chartDataImaginary = signalComplexData
+//                .stream()
+//                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getImaginary()))
+//                .collect(Collectors.toList());
+//
+//        List<ChartRecord<Number, Number>> chartDataAbs = signalComplexData
+//                .stream()
+//                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().abs()))
+//                .collect(Collectors.toList());
+//
+//        List<ChartRecord<Number, Number>> chartDataArgument = signalComplexData
+//                .stream()
+//                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY().getArgument()))
+//                .collect(Collectors.toList());
+//
+//        VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
+//        clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0), chartDataReal);
+//        clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1), chartDataImaginary);
+//        switchTabToAnother(customTabPane, 3);
+//        reportWriter.writeFxChart("W1", Main.getMainArgs(), tabPane);
+//
+//        VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
+//        clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0), chartDataAbs);
+//        clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1), chartDataArgument);
+//        switchTabToAnother(customTabPane, 4);
+//        reportWriter.writeFxChart("W2", Main.getMainArgs(), tabPane);
     }
 
     private void drawChart(Signal signal) {
