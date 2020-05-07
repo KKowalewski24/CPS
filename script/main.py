@@ -366,14 +366,14 @@ def task_2() -> None:
 
 
 # TASK3 ----------------------------------------------------------------------- #
-def task3_prepare_filtered():
+def task3_prepare_filtered() -> None:
     run_jar([GENERATE, "sin1.data", "sin", "0", "1", "2", "0.333333"])
     run_jar([GENERATE, "sin2.data", "sin", "0", "1", "2", "0.05"])
     run_jar(["add", "sin1.data", "sin2.data", "filtered_continuous.data"])
     run_jar([SAMPLING, "filtered_continuous.data", "filtered.data", "400"])
 
 
-def task3_filter(filter_type, M, f_o, window, experiment_id):
+def task3_filter(filter_type: str, M: str, f_o: str, window: str, experiment_id: str) -> None:
     run_jar([GENERATE, experiment_id + "_filter.data", filter_type, "400", M, f_o, window])
     run_jar([CONVOLUTION, "filtered.data", experiment_id + "_filter.data",
              experiment_id + "_result.data"])
@@ -383,7 +383,8 @@ def task3_filter(filter_type, M, f_o, window, experiment_id):
     remove_files([experiment_id + "_filter.data", experiment_id + "_result.data"])
 
 
-def task3_filter_reconstr(filter_type, M, f_o, window, experiment_id):
+def task3_filter_reconstruction(filter_type: str, M: str, f_o: str,
+                                window: str, experiment_id: str) -> None:
     run_jar([GENERATE, experiment_id + "_filter.data", filter_type, "400", M, f_o, window])
     run_jar([CONVOLUTION, "filtered.data", experiment_id + "_filter.data",
              experiment_id + "_result.data"])
@@ -396,7 +397,7 @@ def task3_filter_reconstr(filter_type, M, f_o, window, experiment_id):
                   experiment_id + "_result_reconstr.data"])
 
 
-def task_3():
+def task_3() -> None:
     task3_prepare_filtered()
 
     # windows
@@ -413,26 +414,67 @@ def task_3():
     # frequencies and filters
     task3_filter("low_fil", "51", "3", "win_ham", "3a")
     task3_filter("low_fil", "51", "2", "win_ham", "3b")
-    task3_filter_reconstr("high_fil", "51", "190", "win_ham", "3c")
-    task3_filter_reconstr("high_fil", "51", "195", "win_ham", "3d")
-    task3_filter_reconstr("band_fil", "51", "90", "win_ham", "3e")
-    task3_filter_reconstr("band_fil", "51", "80", "win_ham", "3f")
+    task3_filter_reconstruction("high_fil", "51", "190", "win_ham", "3c")
+    task3_filter_reconstruction("high_fil", "51", "195", "win_ham", "3d")
+    task3_filter_reconstruction("band_fil", "51", "90", "win_ham", "3e")
+    task3_filter_reconstruction("band_fil", "51", "80", "win_ham", "3f")
 
 
 # TASK4 ----------------------------------------------------------------------- #
-def task4_transformation(file_in, file_out):
-    run_jar([DISCRETE_FOURIER_TRANSFORMATION, file_in, file_out, BY_DEFINITION])
+def task4_generate_signals(s1_filenames: [], s2_filenames: [], s3_filenames: []) -> None:
+    # TODO CHANGE PARAMS FOR PROPER ONE
+    run_jar([GENERATE, s1_filenames[0], "sin", "0", "1", "1", "1"])
+    run_jar([SAMPLING, s1_filenames[0], s1_filenames[1], "30"])
+
+    run_jar([GENERATE, s2_filenames[0], "sin", "0", "1", "1", "1"])
+    run_jar([SAMPLING, s2_filenames[0], s2_filenames[1], "30"])
+
+    run_jar([GENERATE, s3_filenames[0], "sin", "0", "1", "1", "1"])
+    run_jar([SAMPLING, s3_filenames[0], s3_filenames[1], "30"])
+    pass
+
+
+def task4_single_transformation(operation_type: str, algorithm_type: str,
+                                file_in: str, file_out: str, experiment_id: str) -> None:
+    run_jar([operation_type, file_in, experiment_id + file_out, algorithm_type])
     run_jar([DRAW_CHARTS, file_out])
     pass
 
 
+def task4_series_transformation(filenames: []) -> None:
+    task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, BY_DEFINITION,
+                                filenames[1], filenames[2], "1_")
+    task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,
+                                filenames[1], filenames[2], "2_")
+    task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, FAST_TRANSFORMATION_RECURSIVE,
+                                filenames[1], filenames[2], "3_")
+    task4_single_transformation(INVERSE_DISCRETE_FOURIER_TRANSFORMATION, BY_DEFINITION,
+                                filenames[1], filenames[2], "4_")
+    task4_single_transformation(INVERSE_DISCRETE_FOURIER_TRANSFORMATION,
+                                FAST_TRANSFORMATION_IN_SITU,
+                                filenames[1], filenames[2], "5_")
+    task4_single_transformation(COSINE_TRANSFORMATION, BY_DEFINITION,
+                                filenames[1], filenames[2], "6_")
+    task4_single_transformation(COSINE_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,
+                                filenames[1], filenames[2], "7_")
+    task4_single_transformation(WALSH_HADAMARD_TRANSFORMATION, BY_DEFINITION,
+                                filenames[1], filenames[2], "8_")
+    task4_single_transformation(WALSH_HADAMARD_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,
+                                filenames[1], filenames[2], "9_")
+    task4_single_transformation(WAVELET_TRANSFORMATION, DB4,
+                                filenames[1], filenames[2], "10_")
+    pass
+
+
 def task_4() -> None:
-    generate_signal = "sinus.data"
-    sampling_signal = "sinus_sampling.data"
-    transformation_signal = "sinus_sampling_trans.data"
-    run_jar([GENERATE, generate_signal, "sin", "0", "1", "1", "1"])
-    run_jar([SAMPLING, generate_signal, sampling_signal, "30"])
-    task4_transformation(sampling_signal, transformation_signal)
+    s1_filenames = ["sinus_s1.data", "sinus_sampling_s1.data", "sinus_sampling_trans_s1.data"]
+    s2_filenames = ["sinus_s2.data", "sinus_sampling_s2.data", "sinus_sampling_trans_s2.data"]
+    s3_filenames = ["sinus_s3.data", "sinus_sampling_s3.data", "sinus_sampling_trans_s3.data"]
+    task4_generate_signals(s1_filenames, s2_filenames, s3_filenames)
+
+    task4_series_transformation(s1_filenames)
+    task4_series_transformation(s2_filenames)
+    task4_series_transformation(s3_filenames)
     pass
 
 
