@@ -12,7 +12,6 @@ public class Transformer {
     final private DiscreteFourierTransform discreteFourierTransform;
     final private InSituFastFourierTransform inSituFastFourierTransform;
     final private RecursiveFastFourierTransform recursiveFastFourierTransform;
-    final private InvertedDiscreteFourierTransform invertedDiscreteFourierTransform;
 
     /* discrete cosine transform */
     final private DiscreteCosineTransform discreteCosineTransform;
@@ -29,7 +28,6 @@ public class Transformer {
         discreteFourierTransform = new DiscreteFourierTransform();
         inSituFastFourierTransform = new InSituFastFourierTransform();
         recursiveFastFourierTransform = new RecursiveFastFourierTransform();
-        invertedDiscreteFourierTransform = new InvertedDiscreteFourierTransform();
         discreteCosineTransform = new DiscreteCosineTransform();
         fastCosineTransform = new FastCosineTransform();
         walshHadamardTransform = new WalshHadamardTransform();
@@ -47,10 +45,6 @@ public class Transformer {
 
     public DiscreteComplexSignal fastFourierTransformRecursive(DiscreteSignal discreteSignal) {
         return transformRealSignalToComplexSignal(discreteSignal, recursiveFastFourierTransform);
-    }
-
-    public DiscreteComplexSignal invertedDiscreteFourierTransform(DiscreteComplexSignal discreteComplexSignal) {
-        return transformComplexSignalToComplexSignal(discreteComplexSignal, invertedDiscreteFourierTransform);
     }
 
     public DiscreteSignal discreteCosineTransform(DiscreteSignal discreteSignal) {
