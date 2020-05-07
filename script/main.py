@@ -437,7 +437,7 @@ def task4_generate_signals(s1_filenames: [], s2_filenames: [], s3_filenames: [])
 def task4_single_transformation(operation_type: str, algorithm_type: str,
                                 file_in: str, file_out: str, experiment_id: str) -> None:
     run_jar([operation_type, file_in, experiment_id + file_out, algorithm_type])
-    run_jar([DRAW_CHARTS, file_out])
+    run_jar([DRAW_CHARTS, experiment_id + file_out])
     pass
 
 
