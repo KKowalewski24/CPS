@@ -48,18 +48,18 @@ public class Main {
      * DiscreteFourierTransformation - fou_trans, filename to read, filename to save,
      * algorithm type
      * ---
-     * algorithm type abbreviation: def, fast
+     * algorithm type abbreviation: def, fast_in, fast_rec
      * <p>
      * InverseDiscreteFourierTransformation - inver_fou_trans ilename to read, filename to save,
      * algorithm type
      * ---
-     * algorithm type abbreviation: def, fast
+     * algorithm type abbreviation: def, fast_in
      * <p>
      * CosineTransformation - cos_trans, filename to read, filename to save, algorithm type
-     * algorithm type abbreviation: def, fast
+     * algorithm type abbreviation: def, fast_in
      * <p>
      * WalshHadamardTransformation - wals_trans, filename to read, filename to save, algorithm type
-     * algorithm type abbreviation: def, fast
+     * algorithm type abbreviation: def, fast_in
      * <p>
      * WaveletTransformation - wave_trans, filename to read, filename to save, wavelet type
      * wavelet type abbreviation: DB4, DB6, DB8

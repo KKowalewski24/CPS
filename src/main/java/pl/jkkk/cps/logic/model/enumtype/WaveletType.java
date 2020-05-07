@@ -7,9 +7,7 @@ import java.util.stream.Collectors;
 public enum WaveletType {
 
     /*------------------------ FIELDS REGION ------------------------*/
-    DB4("DB4"),
-    DB6("DB6"),
-    DB8("DB8");
+    DB4("DB4");
 
     private final String name;
 

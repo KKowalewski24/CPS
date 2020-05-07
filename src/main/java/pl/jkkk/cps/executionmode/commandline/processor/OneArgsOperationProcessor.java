@@ -7,10 +7,14 @@ import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
+import pl.jkkk.cps.logic.model.signal.DiscreteComplexSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
+import pl.jkkk.cps.logic.model.transform.Transformer;
 import pl.jkkk.cps.logic.report.LatexGenerator;
 import pl.jkkk.cps.logic.report.ReportType;
+
+import java.util.concurrent.Callable;
 
 public final class OneArgsOperationProcessor {
 
@@ -80,70 +84,103 @@ public final class OneArgsOperationProcessor {
         latexGenerator.generate(ReportType.INPUT_PARAMETERS);
     }
 
-    public static void caseDiscreteFourierTransformation() throws FileOperationException {
-        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+    public static void caseDiscreteFourierTransformation() throws Exception {
+        final Signal loadedSignal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+        Signal signal = null;
+        Transformer transformer = new Transformer();
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-
-        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .discreteFourierTransform((DiscreteSignal) loadedSignal));
+        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .fastFourierTransformInSitu((DiscreteSignal) loadedSignal));
+        } else if (OperationCmd.FAST_TRANSFORMATION_RECURSIVE == OperationCmd
+                .fromString(Main.getMainArgs().get(3))) {
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .fastFourierTransformRecursive((DiscreteSignal) loadedSignal));
         }
 
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
-    public static void caseInverseDiscreteFourierTransformation() throws FileOperationException {
-        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+    public static void caseInverseDiscreteFourierTransformation() throws Exception {
+        final Signal loadedSignal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+        Signal signal = null;
+        Transformer transformer = new Transformer();
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-
-        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .invertedDiscreteFourierTransform((DiscreteComplexSignal) loadedSignal));
+        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-
+            //            todo
+            //            signal = generateSummaryForTransformationTime(() -> transformer
+            //                    . ((DiscreteSignal) loadedSignal));
         }
 
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
-    public static void caseCosineTransformation() throws FileOperationException {
-        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+    public static void caseCosineTransformation() throws Exception {
+        final Signal loadedSignal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+        Signal signal = null;
+        Transformer transformer = new Transformer();
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
-        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .discreteCosineTransform((DiscreteSignal) loadedSignal));
+        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-            //signal=
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .fastCosineTransform((DiscreteSignal) loadedSignal));
         }
 
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
-    public static void caseWalshHadamardTransformation() throws FileOperationException {
-        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+    public static void caseWalshHadamardTransformation() throws Exception {
+        final Signal loadedSignal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+        Signal signal = null;
+        Transformer transformer = new Transformer();
 
         if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
-        } else if (OperationCmd.FAST_TRANSFORMATION == OperationCmd
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .walshHadamardTransform((DiscreteSignal) loadedSignal));
+        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
                 .fromString(Main.getMainArgs().get(3))) {
-            //signal=
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .fastWalshHadamardTransform((DiscreteSignal) loadedSignal));
         }
 
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
     }
 
-    public static void caseWaveletTransformation() throws FileOperationException {
-        Signal signal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+    public static void caseWaveletTransformation() throws Exception {
+        final Signal loadedSignal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
+        Signal signal = null;
+        Transformer transformer = new Transformer();
 
         if (OperationCmd.DB4 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
-        } else if (OperationCmd.DB6 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
-        } else if (OperationCmd.DB8 == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            //signal=
+            signal = generateSummaryForTransformationTime(() -> transformer
+                    .discreteWaveletTransform((DiscreteSignal) loadedSignal));
         }
 
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
+    }
+
+    private static Signal generateSummaryForTransformationTime(Callable<Signal> callable)
+            throws Exception {
+        long begin = System.currentTimeMillis();
+        Signal signal = callable.call();
+        double end = ((System.currentTimeMillis() - begin) / 1000.0);
+
+        latexGenerator = new LatexGenerator("trans_gene_time");
+        latexGenerator.createSummaryForTransformationGeneratingTime(end);
+        latexGenerator.generate(ReportType.TRANSFORMATION_GENERATING);
+
+        return signal;
     }
 }
     

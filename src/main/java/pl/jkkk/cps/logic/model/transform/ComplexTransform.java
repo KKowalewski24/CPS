@@ -2,6 +2,8 @@ package pl.jkkk.cps.logic.model.transform;
 
 import org.apache.commons.math3.complex.Complex;
 
+import java.io.Serializable;
+
 public abstract class ComplexTransform {
 
     public abstract Complex[] transform(Complex[] x);
