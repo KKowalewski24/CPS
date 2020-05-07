@@ -9,22 +9,22 @@ public class InSituFastFourierTransform extends ComplexTransform {
      */
     @Override
     public Complex[] transform(Complex[] x) {
-        Complex[] X = mixSamples(x);
+        mixSamples(x);
         Complex[] W = calculateVectorOfWParams(x.length);
 
-        for (int N = 2; N <= X.length; N *= 2) {
-            for (int i = 0; i < X.length / N; i++) { /* repeat for each N-point transform */
+        for (int N = 2; N <= x.length; N *= 2) {
+            for (int i = 0; i < x.length / N; i++) { /* repeat for each N-point transform */
                 for (int m = 0; m < N / 2; m++) {
                     /* butterfly */
                     int offset = i * N;
-                    Complex tmp = X[offset + m + N / 2].multiply(retrieveWFromVector(N, -m, W));
-                    X[offset + m + N / 2] = X[offset + m].subtract(tmp);
-                    X[offset + m] = X[offset + m].add(tmp);
+                    Complex tmp = x[offset + m + N / 2].multiply(retrieveWFromVector(N, -m, W));
+                    x[offset + m + N / 2] = x[offset + m].subtract(tmp);
+                    x[offset + m] = x[offset + m].add(tmp);
                 }
             }
         }
 
-        return X;
+        return x;
     }
 
     protected Complex retrieveWFromVector(int N, int k, Complex[] vectorW) {
@@ -60,7 +60,7 @@ public class InSituFastFourierTransform extends ComplexTransform {
      * <p>
      * Don't worry, there is no real recursive calls, it use some tricky algorithm.
      */
-    protected Complex[] mixSamples(Complex[] samples) {
+    protected void mixSamples(Complex[] samples) {
         /* calculate number of bits of samples.length */
         int numberOfBits = 0;
         for (int i = 0; i < 32; i++) {
@@ -71,12 +71,14 @@ public class InSituFastFourierTransform extends ComplexTransform {
         }
 
         /* mix */
-        Complex[] mixedSamples = new Complex[samples.length];
         for (int i = 0; i < samples.length; i++) {
             int newIndex = reverseBits(i, numberOfBits);
-            mixedSamples[newIndex] = samples[i];
+            if(newIndex > i) {
+                Complex tmp = samples[i];
+                samples[i] = samples[newIndex];
+                samples[newIndex] = tmp;
+            }
         }
-        return mixedSamples;
     }
 
     protected int reverseBits(int value, int numberOfBits) {
