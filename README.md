@@ -1,5 +1,9 @@
 # CPS
 
+### Team Members
+* [Jan Karwowski](https://github.com/karwojan)
+* [Kamil Kowalewski](https://github.com/KKowalewski24)
+
 #### How To
 * Run `./mvnw package exec:java`
 * Build `./mvnw clean install`
