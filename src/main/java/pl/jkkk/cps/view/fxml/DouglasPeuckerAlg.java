@@ -1,6 +1,6 @@
 package pl.jkkk.cps.view.fxml;
 
-import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.data.Data;
 
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +46,7 @@ public class DouglasPeuckerAlg {
         }
 
         /* check if horizontal line */
-        if (a.getY() == b.getY()) {
+        if (a.getY().equals(b.getY())) {
             return Math.abs(c.getY() - a.getY());
         }
 

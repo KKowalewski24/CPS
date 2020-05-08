@@ -10,7 +10,6 @@ to run in command line mode for easier generating data for report
 
 `java -jar $JAR_NAME$ args...`
 
-
      * Params for cmd mode
      * <p>
      * Generate - generate, filename to save, signal type, params for signal
@@ -26,6 +25,15 @@ to run in command line mode for easier generating data for report
      * unit_jump - rangeStart, rangeLength, amplitude, jumpMoment
      * unit_impulse - rangeStart, rangeLength, sampleRate, amplitude, jumpMoment.intValue()
      * impulse_noise - rangeStart, rangeLength, sampleRate, amplitude,probability
+     * --
+     * low_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
+     * --
+     * band_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
+     * --
+     * high_fil - sampleRate, filterRow, cuttingFrequency,
+     * windowType: win_rect || win_ham || win_han || win_bla
      * <p>
      * Sampling - sampl, filename to read, filename to save, sampleRate
      * <p>
@@ -37,7 +45,24 @@ to run in command line mode for easier generating data for report
      * Type abbreviation:
      * zero_order, first_order, sinc
      * <p>
+     * DiscreteFourierTransformation - fou_trans, filename to read, filename to save,
+     * algorithm type
+     * ---
+     * algorithm type abbreviation: def, fast_in, fast_rec
+     * <p>
+     * CosineTransformation - cos_trans, filename to read, filename to save, algorithm type
+     * algorithm type abbreviation: def, fast_in
+     * <p>
+     * WalshHadamardTransformation - wals_trans, filename to read, filename to save, algorithm type
+     * algorithm type abbreviation: def, fast_in
+     * <p>
+     * WaveletTransformation - wave_trans, filename to read, filename to save, wavelet type
+     * wavelet type abbreviation: DB4
+     * <p>
      * Comparison - comp, first filename to read, second filename to read
      * <p>
      * Draw charts - draw, filenames to read...
-     
+     * <p>
+     * Convolution - conv, first filename to read, second filename to read, filename to save
+     * <p>
+     * Correlation - corr, first filename to read, second filename to read, filename to save

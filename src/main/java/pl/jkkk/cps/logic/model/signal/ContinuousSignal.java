@@ -1,8 +1,8 @@
 package pl.jkkk.cps.logic.model.signal;
 
-import java.util.List;
+import pl.jkkk.cps.logic.model.data.Data;
 
-import pl.jkkk.cps.logic.model.Data;
+import java.util.List;
 
 public abstract class ContinuousSignal extends Signal {
 

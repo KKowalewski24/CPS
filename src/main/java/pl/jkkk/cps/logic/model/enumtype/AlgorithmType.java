@@ -4,21 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum OneArgsOperationType {
+public enum AlgorithmType {
 
     /*------------------------ FIELDS REGION ------------------------*/
-    SAMPLING("Próbkowanie"),
-    QUANTIZATION("Kwantyzacja"),
-    SIGNAL_RECONSTRUCTION("Rekonstrukcja sygnału"),
-    DISCRETE_FOURIER_TRANSFORMATION("Dyskretna transformacja Fouriera"),
-    COSINE_TRANSFORMATION("Transformacja kosinusowa"),
-    WALSH_HADAMARD_TRANSFORMATION("Transformacja Walsha-Hadamarda"),
-    WAVELET_TRANSFORMATION("Transformacja falkowa");
+    BY_DEFINITION("Z definicji"),
+    FAST_TRANSFORMATION_IN_SITU("Szybka transformacja in situ"),
+    FAST_TRANSFORMATION_RECURSIVE("Szybka transformacja rekurencyjna");
 
     private final String name;
 
     /*------------------------ METHODS REGION ------------------------*/
-    OneArgsOperationType(String name) {
+    AlgorithmType(String name) {
         this.name = name;
     }
 
@@ -26,8 +22,8 @@ public enum OneArgsOperationType {
         return name;
     }
 
-    public static OneArgsOperationType fromString(final String text) {
-        return Arrays.asList(OneArgsOperationType.values())
+    public static AlgorithmType fromString(final String text) {
+        return Arrays.asList(AlgorithmType.values())
                 .stream()
                 .filter((it) -> it.getName().equals(text))
                 .findFirst()
@@ -35,10 +31,9 @@ public enum OneArgsOperationType {
     }
 
     public static List<String> getNamesList() {
-        return Arrays.asList(OneArgsOperationType.values())
+        return Arrays.asList(AlgorithmType.values())
                 .stream()
                 .map((it) -> it.getName())
                 .collect(Collectors.toList());
     }
 }
-    

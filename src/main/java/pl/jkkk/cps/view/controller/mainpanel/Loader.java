@@ -12,20 +12,25 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import pl.jkkk.cps.Main;
 import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.exception.NotSameLengthException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
-import pl.jkkk.cps.logic.model.Data;
+import pl.jkkk.cps.logic.model.Operation;
+import pl.jkkk.cps.logic.model.data.Data;
+import pl.jkkk.cps.logic.model.enumtype.AlgorithmType;
 import pl.jkkk.cps.logic.model.enumtype.OneArgsOperationType;
 import pl.jkkk.cps.logic.model.enumtype.QuantizationType;
 import pl.jkkk.cps.logic.model.enumtype.SignalReconstructionType;
 import pl.jkkk.cps.logic.model.enumtype.SignalType;
 import pl.jkkk.cps.logic.model.enumtype.TwoArgsOperationType;
+import pl.jkkk.cps.logic.model.enumtype.WaveletType;
 import pl.jkkk.cps.logic.model.enumtype.WindowType;
 import pl.jkkk.cps.logic.model.signal.BandPassFilter;
+import pl.jkkk.cps.logic.model.signal.ComplexSignal;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
 import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
@@ -46,7 +51,7 @@ import pl.jkkk.cps.logic.model.signal.TriangularSignal;
 import pl.jkkk.cps.logic.model.signal.UniformNoise;
 import pl.jkkk.cps.logic.model.signal.UnitImpulseSignal;
 import pl.jkkk.cps.logic.model.signal.UnitJumpSignal;
-import pl.jkkk.cps.logic.model.Operation;
+import pl.jkkk.cps.logic.model.transform.Transformer;
 import pl.jkkk.cps.logic.readerwriter.FileReaderWriter;
 import pl.jkkk.cps.logic.readerwriter.ReportWriter;
 import pl.jkkk.cps.logic.report.LatexGenerator;
@@ -63,6 +68,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static pl.jkkk.cps.view.fxml.FxHelper.appendLabelText;
@@ -102,6 +108,7 @@ public class Loader {
     private CheckBox checkBoxHistogram;
     private CheckBox checkBoxSignalParams;
     private CheckBox checkBoxComparison;
+    private CheckBox checkBoxTransformation;
 
     private ComboBox comboBoxOperationTypesOneArgs;
     private ComboBox comboBoxSignalOneArgs;
@@ -140,7 +147,8 @@ public class Loader {
                   TextField textFieldReconstructionSincParam, AnchorPane windowTypePane,
                   TextField textFieldCuttingFrequency, TextField textFieldFilterRow,
                   CheckBox checkBoxDataChart, CheckBox checkBoxHistogram,
-                  CheckBox checkBoxSignalParams, CheckBox checkBoxComparison) {
+                  CheckBox checkBoxSignalParams, CheckBox checkBoxComparison,
+                  CheckBox checkBoxTransformation) {
         this.comboBoxSignalTypes = comboBoxSignalTypes;
         this.comboBoxOperationTypesTwoArgs = comboBoxOperationTypesTwoArgs;
         this.comboBoxFirstSignalTwoArgs = comboBoxFirstSignalTwoArgs;
@@ -171,6 +179,7 @@ public class Loader {
         this.checkBoxHistogram = checkBoxHistogram;
         this.checkBoxSignalParams = checkBoxSignalParams;
         this.checkBoxComparison = checkBoxComparison;
+        this.checkBoxTransformation = checkBoxTransformation;
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -248,23 +257,28 @@ public class Loader {
 
     public void performOneArgsOperationOnCharts() {
         Signal signal = null;
-        String selectedOperationOneArgs = getValueFromComboBox(comboBoxOperationTypesOneArgs);
-        Integer selectedSignalIndex = getIndexFromComboBox(comboBoxSignalOneArgs);
-        Signal selectedSignal = signals.get(selectedSignalIndex);
+        final String selectedOperationOneArgs = getValueFromComboBox(comboBoxOperationTypesOneArgs);
+        final Integer selectedSignalIndex = getIndexFromComboBox(comboBoxSignalOneArgs);
+        final Signal selectedSignal = signals.get(selectedSignalIndex);
+
+        final Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
+        final Pane middlePane = (Pane) oneArgsPane.getChildren().get(1);
+        final ComboBox comboBoxMethodOrAlgorithm = (ComboBox) topPane.getChildren().get(1);
+        final TextField textFieldComputationTime = (TextField) middlePane.getChildren().get(1);
+
+        final Transformer transformer = new Transformer();
 
         try {
             long startTime = System.currentTimeMillis();
 
             if (selectedOperationOneArgs.equals(OneArgsOperationType.SAMPLING.getName())) {
                 double sampleRate = Double.valueOf(textFieldSampleRate.getText());
-
                 signal = adc.sampling((ContinuousSignal) selectedSignal, sampleRate);
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.QUANTIZATION.getName())) {
-                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-                Integer quantizationLevels = Integer.valueOf(textFieldQuantizationLevels.getText());
-                String method = getValueFromComboBox(comboBoxMethod);
+                final Integer quantizationLevels = Integer
+                        .valueOf(textFieldQuantizationLevels.getText());
+                final String method = getValueFromComboBox(comboBoxMethodOrAlgorithm);
 
                 if (method.equals(QuantizationType.EVEN_QUANTIZATION_WITH_TRUNCATION.getName())) {
                     signal = adc.truncatingQuantization((DiscreteSignal) selectedSignal,
@@ -275,9 +289,7 @@ public class Loader {
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType.SIGNAL_RECONSTRUCTION.getName())) {
-                Pane topPane = (Pane) oneArgsPane.getChildren().get(0);
-                ComboBox comboBoxMethod = (ComboBox) topPane.getChildren().get(1);
-                String method = getValueFromComboBox(comboBoxMethod);
+                final String method = getValueFromComboBox(comboBoxMethodOrAlgorithm);
 
                 if (method.equals(SignalReconstructionType.ZERO_ORDER_EXTRAPOLATION.getName())) {
                     signal = dac.zeroOrderHold((DiscreteSignal) selectedSignal);
@@ -286,23 +298,90 @@ public class Loader {
                 } else if (method.equals(SignalReconstructionType.RECONSTRUCTION_BASED_FUNCTION_SINC
                         .getName())) {
                     Integer sincParam = Integer.valueOf(textFieldReconstructionSincParam.getText());
-
                     signal = dac.sincBasic((DiscreteSignal) selectedSignal, sincParam);
+
+                }
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .DISCRETE_FOURIER_TRANSFORMATION.getName())) {
+                final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
+
+                if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
+                    signal = calculateInvocationTime(() -> transformer
+                                    .discreteFourierTransform((DiscreteSignal) selectedSignal),
+                            textFieldComputationTime
+                    );
+
+                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION_IN_SITU.getName())) {
+                    signal = calculateInvocationTime(() -> transformer
+                                    .fastFourierTransformInSitu((DiscreteSignal) selectedSignal),
+                            textFieldComputationTime);
+                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION_RECURSIVE.getName())) {
+                    signal = calculateInvocationTime(() -> transformer
+                                    .fastFourierTransformRecursive((DiscreteSignal) selectedSignal),
+                            textFieldComputationTime
+                    );
+                }
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .COSINE_TRANSFORMATION.getName())) {
+                final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
+
+                if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
+                    signal = calculateInvocationTime(() -> transformer
+                                    .discreteCosineTransform((DiscreteSignal) selectedSignal),
+                            textFieldComputationTime
+                    );
+                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION_IN_SITU.getName())) {
+                    signal = calculateInvocationTime(() -> transformer
+                                    .fastCosineTransform((DiscreteSignal) selectedSignal),
+                            textFieldComputationTime
+                    );
+                }
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .WALSH_HADAMARD_TRANSFORMATION.getName())) {
+                final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
+
+                if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
+                    signal = calculateInvocationTime(() -> transformer
+                                    .walshHadamardTransform((DiscreteSignal) selectedSignal),
+                            textFieldComputationTime
+                    );
+                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION_IN_SITU.getName())) {
+                    signal = calculateInvocationTime(() -> transformer
+                                    .fastWalshHadamardTransform((DiscreteSignal) selectedSignal),
+                            textFieldComputationTime
+                    );
+                }
+
+            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
+                    .WAVELET_TRANSFORMATION.getName())) {
+                final String level = getValueFromComboBox(comboBoxMethodOrAlgorithm);
+
+                if (level.equals(WaveletType.DB4.getName())) {
+                    signal = calculateInvocationTime(() -> transformer
+                                    .discreteWaveletTransform((DiscreteSignal) selectedSignal),
+                            textFieldComputationTime
+                    );
                 }
             }
 
             overallTime += ((System.currentTimeMillis() - startTime) / 1000.0);
 
-            representSignal(signal);
+            if (signal instanceof ComplexSignal) {
+                representComplexSignal(signal);
+            } else {
+                representSignal(signal);
+            }
 
         } catch (NullPointerException | NumberFormatException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błędne dane", "Wprowadzono błędne dane",
                     Alert.AlertType.WARNING);
         } catch (ClassCastException e) {
-            e.printStackTrace();
             PopOutWindow.messageBox("Błędne dane", "Wybrano niepoprawny typ sygnału",
                     Alert.AlertType.WARNING);
+        } catch (Exception e) {
+            PopOutWindow.messageBox("Błąd Obliczania Czasu", "", Alert.AlertType.WARNING);
         }
     }
 
@@ -344,7 +423,9 @@ public class Loader {
                             operation);
                 }
             }
+
             representSignal(resultSignal);
+
         } catch (NotSameLengthException e) {
             PopOutWindow.messageBox("Błednie wybrane wykresy",
                     "Wykresy mają błędnie dobraną długość",
@@ -440,6 +521,73 @@ public class Loader {
                     "Nie można zapisać do wybranego pliku",
                     Alert.AlertType.WARNING);
         }
+    }
+
+    private Signal calculateInvocationTime(Callable<Signal> callable,
+                                           TextField textField) throws Exception {
+        long begin = System.currentTimeMillis();
+        Signal signal = callable.call();
+        double end = ((System.currentTimeMillis() - begin) / 1000.0);
+        textField.setText(String.valueOf(end));
+
+        return signal;
+    }
+
+    /*--------------------------------------------------------------------------------------------*/
+    private void representComplexSignal(Signal signal) {
+        CustomTabPane customTabPane = getCurrentCustomTabPaneFromTabPane(tabPaneResults);
+        ComplexSignal complexSignal = (ComplexSignal) signal;
+
+        List<ChartRecord<Number, Number>> chartDataReal =
+                convertDiscreteRepresentationToChartRecord(complexSignal,
+                        ComplexSignal.DiscreteRepresentationType.REAL);
+
+        List<ChartRecord<Number, Number>> chartDataImaginary =
+                convertDiscreteRepresentationToChartRecord(complexSignal,
+                        ComplexSignal.DiscreteRepresentationType.IMAGINARY);
+
+        List<ChartRecord<Number, Number>> chartDataAbs =
+                convertDiscreteRepresentationToChartRecord(complexSignal,
+                        ComplexSignal.DiscreteRepresentationType.ABS);
+
+        List<ChartRecord<Number, Number>> chartDataArgument =
+                convertDiscreteRepresentationToChartRecord(complexSignal,
+                        ComplexSignal.DiscreteRepresentationType.ARG);
+
+        try {
+            VBox vBoxW1 = (VBox) customTabPane.getTabW1().getContent();
+            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(0), chartDataReal);
+            clearAndFillLineChart((LineChart) vBoxW1.getChildren().get(1), chartDataImaginary);
+
+            VBox vBoxW2 = (VBox) customTabPane.getTabW2().getContent();
+            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(0), chartDataAbs);
+            clearAndFillLineChart((LineChart) vBoxW2.getChildren().get(1), chartDataArgument);
+
+            if (isCheckBoxSelected(checkBoxTransformation)) {
+                switchTabToAnother(customTabPane, 3);
+                reportWriter.writeFxChart("W1", Main.getMainArgs(), tabPaneResults);
+
+                switchTabToAnother(customTabPane, 4);
+                reportWriter.writeFxChart("W2", Main.getMainArgs(), tabPaneResults);
+            }
+
+            switchTabToAnother(customTabPane, 3);
+        } catch (FileOperationException e) {
+            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+                    "Nie można zapisać raportu do pliku",
+                    Alert.AlertType.WARNING);
+        }
+    }
+
+    private List<ChartRecord<Number, Number>> convertDiscreteRepresentationToChartRecord(
+            ComplexSignal complexSignal,
+            ComplexSignal.DiscreteRepresentationType discreteRepresentationType) {
+        complexSignal.setDiscreteRepresentationType(discreteRepresentationType);
+
+        return complexSignal.generateDiscreteRepresentation()
+                .stream()
+                .map((it) -> new ChartRecord<Number, Number>(it.getX(), it.getY()))
+                .collect(Collectors.toList());
     }
 
     /*--------------------------------------------------------------------------------------------*/
@@ -545,7 +693,9 @@ public class Loader {
             }
 
         } catch (FileOperationException e) {
-            e.printStackTrace();
+            PopOutWindow.messageBox("Błąd Zapisu Do Pliku",
+                    "Nie można zapisać raportu do pliku",
+                    Alert.AlertType.WARNING);
         }
     }
 

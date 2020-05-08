@@ -1,4 +1,4 @@
-package pl.jkkk.cps.executionmode.commandline;
+package pl.jkkk.cps.executionmode.commandline.enumtype;
 
 import pl.jkkk.cps.logic.model.window.BlackmanWindow;
 import pl.jkkk.cps.logic.model.window.HammingWindow;
