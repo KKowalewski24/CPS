@@ -299,6 +299,8 @@ public class CommandLineMode extends Application {
             data = signalData;
         }
 
+        System.out.println("Wygenerowanu punktów: " + data.size());
+
         List<ChartRecord<Number, Number>> chartData = data
                 .stream()
                 .map(d -> new ChartRecord<Number, Number>(d.getX(), d.getY()))
