@@ -34,7 +34,6 @@ import pl.jkkk.cps.logic.model.signal.ComplexSignal;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ConvolutionSignal;
 import pl.jkkk.cps.logic.model.signal.CorrelationSignal;
-import pl.jkkk.cps.logic.model.signal.DiscreteComplexSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.GaussianNoise;
 import pl.jkkk.cps.logic.model.signal.HighPassFilter;
@@ -321,23 +320,6 @@ public class Loader {
                                     .fastFourierTransformRecursive((DiscreteSignal) selectedSignal),
                             textFieldComputationTime
                     );
-                }
-
-            } else if (selectedOperationOneArgs.equals(OneArgsOperationType
-                    .INVERSE_DISCRETE_FOURIER_TRANSFORMATION.getName())) {
-                final String algorithm = getValueFromComboBox(comboBoxMethodOrAlgorithm);
-
-                if (algorithm.equals(AlgorithmType.BY_DEFINITION.getName())) {
-                    signal = calculateInvocationTime(() -> transformer
-                                    .invertedDiscreteFourierTransform((DiscreteComplexSignal) selectedSignal),
-                            textFieldComputationTime
-                    );
-                } else if (algorithm.equals(AlgorithmType.FAST_TRANSFORMATION_IN_SITU.getName())) {
-                    //        signal = calculateInvocationTime(()->,
-                    //        textFieldComputationTime
-                    //        );
-                    //                    todo
-                    //                    signal = new TransformResultSignal(selectedSignal,new);
                 }
 
             } else if (selectedOperationOneArgs.equals(OneArgsOperationType

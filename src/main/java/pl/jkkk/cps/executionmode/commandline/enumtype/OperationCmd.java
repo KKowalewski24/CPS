@@ -25,7 +25,6 @@ public enum OperationCmd {
     RECONSTRUCTION_BASED_FUNCTION_SINC("sinc"),
 
     DISCRETE_FOURIER_TRANSFORMATION("fou_trans"),
-    INVERSE_DISCRETE_FOURIER_TRANSFORMATION("inver_fou_trans"),
     COSINE_TRANSFORMATION("cos_trans"),
     WALSH_HADAMARD_TRANSFORMATION("wals_trans"),
     WAVELET_TRANSFORMATION("wave_trans"),

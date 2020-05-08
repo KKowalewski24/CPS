@@ -314,8 +314,6 @@ public class Initializer {
                 );
             }
         } else if (selectedOperation.equals(OneArgsOperationType.DISCRETE_FOURIER_TRANSFORMATION.getName())
-                || selectedOperation.equals(
-                OneArgsOperationType.INVERSE_DISCRETE_FOURIER_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.COSINE_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.WALSH_HADAMARD_TRANSFORMATION.getName())
                 || selectedOperation.equals(OneArgsOperationType.WAVELET_TRANSFORMATION.getName())) {

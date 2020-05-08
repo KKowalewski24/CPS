@@ -103,7 +103,6 @@ ZERO_ORDER_EXTRAPOLATION = "zero_order"
 FIRST_ORDER_INTERPOLATION = "first_order"
 RECONSTRUCTION_BASED_FUNCTION_SINC = "sinc"
 DISCRETE_FOURIER_TRANSFORMATION = "fou_trans"
-INVERSE_DISCRETE_FOURIER_TRANSFORMATION = "inver_fou_trans"
 COSINE_TRANSFORMATION = "cos_trans"
 WALSH_HADAMARD_TRANSFORMATION = "wals_trans"
 WAVELET_TRANSFORMATION = "wave_trans"
@@ -423,6 +422,8 @@ def task_3() -> None:
 # TASK4 ----------------------------------------------------------------------- #
 def task4_generate_signals(s1_filenames: [], s2_filenames: [], s3_filenames: []) -> None:
     # TODO CHANGE PARAMS FOR PROPER ONE
+    # pi/2,64 gdy za długo na 32 lub 16, 2,2
+    # dodac wykresy
     run_jar([GENERATE, s1_filenames[0], "sin", "0", "1", "1", "1"])
     run_jar([SAMPLING, s1_filenames[0], s1_filenames[1], "30"])
 
@@ -448,11 +449,7 @@ def task4_series_transformation(filenames: []) -> None:
                                 filenames[1], filenames[2], "2_")
     task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, FAST_TRANSFORMATION_RECURSIVE,
                                 filenames[1], filenames[2], "3_")
-    task4_single_transformation(INVERSE_DISCRETE_FOURIER_TRANSFORMATION, BY_DEFINITION,
-                                filenames[1], filenames[2], "4_")
-    task4_single_transformation(INVERSE_DISCRETE_FOURIER_TRANSFORMATION,
-                                FAST_TRANSFORMATION_IN_SITU,
-                                filenames[1], filenames[2], "5_")
+    # change numbers
     task4_single_transformation(COSINE_TRANSFORMATION, BY_DEFINITION,
                                 filenames[1], filenames[2], "6_")
     task4_single_transformation(COSINE_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,

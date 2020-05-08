@@ -7,7 +7,6 @@ import pl.jkkk.cps.logic.exception.FileOperationException;
 import pl.jkkk.cps.logic.model.ADC;
 import pl.jkkk.cps.logic.model.DAC;
 import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
-import pl.jkkk.cps.logic.model.signal.DiscreteComplexSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.Signal;
 import pl.jkkk.cps.logic.model.transform.Transformer;
@@ -100,24 +99,6 @@ public final class OneArgsOperationProcessor {
                 .fromString(Main.getMainArgs().get(3))) {
             signal = generateSummaryForTransformationTime(() -> transformer
                     .fastFourierTransformRecursive((DiscreteSignal) loadedSignal));
-        }
-
-        CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));
-    }
-
-    public static void caseInverseDiscreteFourierTransformation() throws Exception {
-        final Signal loadedSignal = CommandLineMode.readSignal(Main.getMainArgs().get(1));
-        Signal signal = null;
-        Transformer transformer = new Transformer();
-
-        if (OperationCmd.BY_DEFINITION == OperationCmd.fromString(Main.getMainArgs().get(3))) {
-            signal = generateSummaryForTransformationTime(() -> transformer
-                    .invertedDiscreteFourierTransform((DiscreteComplexSignal) loadedSignal));
-        } else if (OperationCmd.FAST_TRANSFORMATION_IN_SITU == OperationCmd
-                .fromString(Main.getMainArgs().get(3))) {
-            //            todo
-            //            signal = generateSummaryForTransformationTime(() -> transformer
-            //                    . ((DiscreteSignal) loadedSignal));
         }
 
         CommandLineMode.writeSignal(signal, Main.getMainArgs().get(2));

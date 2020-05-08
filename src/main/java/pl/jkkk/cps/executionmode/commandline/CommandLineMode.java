@@ -97,10 +97,6 @@ public class CommandLineMode extends Application {
                 OneArgsOperationProcessor.caseDiscreteFourierTransformation();
                 break;
             }
-            case INVERSE_DISCRETE_FOURIER_TRANSFORMATION: {
-                OneArgsOperationProcessor.caseInverseDiscreteFourierTransformation();
-                break;
-            }
             case COSINE_TRANSFORMATION: {
                 OneArgsOperationProcessor.caseCosineTransformation();
                 break;
