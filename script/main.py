@@ -366,8 +366,8 @@ def task_2() -> None:
 
 # TASK3 ----------------------------------------------------------------------- #
 def task3_prepare_filtered() -> None:
-    run_jar([GENERATE, "sin1.data", "sin", "0", "1", "2", "0.333333"])
-    run_jar([GENERATE, "sin2.data", "sin", "0", "1", "2", "0.05"])
+    run_jar([GENERATE, "sin1.data", SINUSOIDAL_SIGNAL, "0", "1", "2", "0.333333"])
+    run_jar([GENERATE, "sin2.data", SINUSOIDAL_SIGNAL, "0", "1", "2", "0.05"])
     run_jar(["add", "sin1.data", "sin2.data", "filtered_continuous.data"])
     run_jar([SAMPLING, "filtered_continuous.data", "filtered.data", "400"])
 
@@ -421,27 +421,45 @@ def task_3() -> None:
 
 # TASK4 ----------------------------------------------------------------------- #
 def task4_generate_signals(s1_filenames: [], s2_filenames: [], s3_filenames: []) -> None:
-    # TODO CHANGE PARAMS FOR PROPER ONE
-    # pi/2,64 gdy za długo na 32 lub 16, 2,2
-    # todo dodac wykresy
+    sample_rate = "16"
+    pi_divided_by_2 = "1.57079"
 
-    # todo change filenames
-    run_jar([GENERATE, s1_filenames[0], "sin", "0", "1", "1", "1"])
-    run_jar([SAMPLING, s1_filenames[0], s1_filenames[1], "30"])
+    s1_sin1 = "s1_sin1.data"
+    s1_sin2 = "s1_sin2.data"
+    run_jar([GENERATE, s1_sin1, SINUSOIDAL_SIGNAL, pi_divided_by_2, "64", "2", "2"])
+    run_jar([GENERATE, s1_sin2, SINUSOIDAL_SIGNAL, pi_divided_by_2, "64", "5", "0.5"])
+    run_jar([ADD, s1_sin1, s1_sin2, s1_filenames[0]])
+    run_jar([SAMPLING, s1_filenames[0], s1_filenames[1], sample_rate])
+    run_jar([DRAW_CHARTS, s1_filenames[1]])
 
-    run_jar([GENERATE, s2_filenames[0], "sin", "0", "1", "1", "1"])
-    run_jar([SAMPLING, s2_filenames[0], s2_filenames[1], "30"])
+    s2_sin1 = "s2_sin1.data"
+    s2_sin2 = "s2_sin2.data"
+    s2_sin1_2 = "s2_sin1_2.data"
+    s2_sin3 = "s2_sin3.data"
+    run_jar([GENERATE, s2_sin1, SINUSOIDAL_SIGNAL, "0", "64", "2", "2"])
+    run_jar([GENERATE, s2_sin2, SINUSOIDAL_SIGNAL, "0", "64", "1", "1"])
+    run_jar([GENERATE, s2_sin3, SINUSOIDAL_SIGNAL, "0", "64", "5", "0.5"])
+    run_jar([ADD, s1_sin1, s1_sin2, s2_sin1_2])
+    # TODO ERROR NOT SAME LENGTH
+    # run_jar([ADD, s2_sin1_2, s2_sin3, s2_filenames[0]])
+    # run_jar([SAMPLING, s2_filenames[0], s2_filenames[1], sample_rate])
+    # run_jar([DRAW_CHARTS, s2_filenames[1]])
 
-    run_jar([GENERATE, s3_filenames[0], "sin", "0", "1", "1", "1"])
-    run_jar([SAMPLING, s3_filenames[0], s3_filenames[1], "30"])
+    s3_sin1 = "s3_sin1.data"
+    s3_sin2 = "s3_sin2.data"
+    run_jar([GENERATE, s3_sin1, SINUSOIDAL_SIGNAL, "0", "64", "5", "2"])
+    run_jar([GENERATE, s3_sin2, SINUSOIDAL_SIGNAL, "0", "64", "1", "0.25"])
+    run_jar([ADD, s3_sin1, s3_sin2, s3_filenames[0]])
+    run_jar([SAMPLING, s3_filenames[0], s3_filenames[1], sample_rate])
+    run_jar([DRAW_CHARTS, s3_filenames[1]])
+
     pass
 
 
 def task4_single_transformation(operation_type: str, algorithm_type: str,
                                 file_in: str, file_out: str, experiment_id: str) -> None:
     run_jar([operation_type, file_in, experiment_id + file_out, algorithm_type])
-    # todo uncomment line below
-    # run_jar([DRAW_CHARTS, experiment_id + file_out])
+    run_jar([DRAW_CHARTS, experiment_id + file_out])
     pass
 
 
@@ -473,7 +491,8 @@ def task_4() -> None:
     task4_generate_signals(s1_filenames, s2_filenames, s3_filenames)
 
     task4_series_transformation(s1_filenames)
-    task4_series_transformation(s2_filenames)
+    # todo uncomment
+    # task4_series_transformation(s2_filenames)
     task4_series_transformation(s3_filenames)
     pass
 
