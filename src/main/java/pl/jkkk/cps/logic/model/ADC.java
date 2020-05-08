@@ -1,7 +1,7 @@
 package pl.jkkk.cps.logic.model;
 
-import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.ContinuousBasedDiscreteSignal;
+import pl.jkkk.cps.logic.model.signal.ContinuousSignal;
 import pl.jkkk.cps.logic.model.signal.DiscreteSignal;
 import pl.jkkk.cps.logic.model.signal.QuantizedSignalRounded;
 import pl.jkkk.cps.logic.model.signal.QuantizedSignalTruncated;

@@ -1,8 +1,8 @@
 package pl.jkkk.cps.logic.model.transform;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 public class DiscreteWaveletTransformTest {
 

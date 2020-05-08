@@ -1,10 +1,10 @@
 package pl.jkkk.cps.logic.model.signal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.math3.complex.Complex;
 import pl.jkkk.cps.logic.model.data.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class DiscreteComplexSignal extends ComplexSignal {
 
