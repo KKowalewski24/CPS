@@ -439,11 +439,10 @@ def task4_generate_signals(s1_filenames: [], s2_filenames: [], s3_filenames: [])
     run_jar([GENERATE, s2_sin1, SINUSOIDAL_SIGNAL, "0", "64", "2", "2"])
     run_jar([GENERATE, s2_sin2, SINUSOIDAL_SIGNAL, "0", "64", "1", "1"])
     run_jar([GENERATE, s2_sin3, SINUSOIDAL_SIGNAL, "0", "64", "5", "0.5"])
-    run_jar([ADD, s1_sin1, s1_sin2, s2_sin1_2])
-    # TODO ERROR NOT SAME LENGTH
-    # run_jar([ADD, s2_sin1_2, s2_sin3, s2_filenames[0]])
-    # run_jar([SAMPLING, s2_filenames[0], s2_filenames[1], sample_rate])
-    # run_jar([DRAW_CHARTS, s2_filenames[1]])
+    run_jar([ADD, s2_sin1, s2_sin2, s2_sin1_2])
+    run_jar([ADD, s2_sin1_2, s2_sin3, s2_filenames[0]])
+    run_jar([SAMPLING, s2_filenames[0], s2_filenames[1], sample_rate])
+    run_jar([DRAW_CHARTS, s2_filenames[1]])
 
     s3_sin1 = "s3_sin1.data"
     s3_sin2 = "s3_sin2.data"
@@ -468,9 +467,8 @@ def task4_series_transformation(filenames: []) -> None:
                                 filenames[1], filenames[2], "1_")
     task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,
                                 filenames[1], filenames[2], "2_")
-    # todo uncomment
-    # task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, FAST_TRANSFORMATION_RECURSIVE,
-    #                             filenames[1], filenames[2], "3_")
+    task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, FAST_TRANSFORMATION_RECURSIVE,
+                                filenames[1], filenames[2], "3_")
     task4_single_transformation(COSINE_TRANSFORMATION, BY_DEFINITION,
                                 filenames[1], filenames[2], "4_")
     task4_single_transformation(COSINE_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,
@@ -491,8 +489,7 @@ def task_4() -> None:
     task4_generate_signals(s1_filenames, s2_filenames, s3_filenames)
 
     task4_series_transformation(s1_filenames)
-    # todo uncomment
-    # task4_series_transformation(s2_filenames)
+    task4_series_transformation(s2_filenames)
     task4_series_transformation(s3_filenames)
     pass
 
