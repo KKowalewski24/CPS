@@ -9,20 +9,20 @@ import pl.jkkk.cps.logic.model.signal.StaticDiscreteSignal;
 public class Transformer {
 
     /* discrete fourier transform */
-    final private DiscreteFourierTransform discreteFourierTransform;
-    final private InSituFastFourierTransform inSituFastFourierTransform;
-    final private RecursiveFastFourierTransform recursiveFastFourierTransform;
+    private final DiscreteFourierTransform discreteFourierTransform;
+    private final InSituFastFourierTransform inSituFastFourierTransform;
+    private final RecursiveFastFourierTransform recursiveFastFourierTransform;
 
     /* discrete cosine transform */
-    final private DiscreteCosineTransform discreteCosineTransform;
-    final private FastCosineTransform fastCosineTransform;
+    private final DiscreteCosineTransform discreteCosineTransform;
+    private final FastCosineTransform fastCosineTransform;
 
     /* discrete Walsh-Hadamrd transform */
-    final private WalshHadamardTransform walshHadamardTransform;
-    final private FastWalshHadamardTransform fastWalshHadamardTransform;
+    private final WalshHadamardTransform walshHadamardTransform;
+    private final FastWalshHadamardTransform fastWalshHadamardTransform;
 
     /* discrete wavelet transform */
-    final private DiscreteWaveletTransform discreteWaveletTransform;
+    private final DiscreteWaveletTransform discreteWaveletTransform;
 
     public Transformer() {
         discreteFourierTransform = new DiscreteFourierTransform();
@@ -67,7 +67,8 @@ public class Transformer {
         return transformRealSignalToRealSignal(discreteSignal, discreteWaveletTransform);
     }
 
-    private DiscreteSignal transformRealSignalToRealSignal(DiscreteSignal signal, RealTransform realTransform) {
+    private DiscreteSignal transformRealSignalToRealSignal(DiscreteSignal signal,
+                                                           RealTransform realTransform) {
         double[] samples = new double[signal.getNumberOfSamples()];
         for (int i = 0; i < signal.getNumberOfSamples(); i++) {
             samples[i] = signal.value(i);
@@ -77,7 +78,7 @@ public class Transformer {
     }
 
     private DiscreteComplexSignal transformComplexSignalToComplexSignal(DiscreteComplexSignal signal,
-            ComplexTransform complexTransform) {
+                                                                        ComplexTransform complexTransform) {
         Complex[] samples = new Complex[signal.getNumberOfSamples()];
         for (int i = 0; i < signal.getNumberOfSamples(); i++) {
             samples[i] = signal.value(i);
@@ -87,7 +88,7 @@ public class Transformer {
     }
 
     private DiscreteComplexSignal transformRealSignalToComplexSignal(DiscreteSignal signal,
-            ComplexTransform complexTransform) {
+                                                                     ComplexTransform complexTransform) {
         double[] samples = new double[signal.getNumberOfSamples()];
         for (int i = 0; i < signal.getNumberOfSamples(); i++) {
             samples[i] = signal.value(i);

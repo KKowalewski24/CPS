@@ -54,10 +54,17 @@ public abstract class DiscreteComplexSignal extends ComplexSignal {
         for (int i = 0; i < numberOfSamples; i++) {
             double value;
             switch (getDiscreteRepresentationType()) {
-                case ABS: value = value(i).abs(); break;
-                case ARG: value = value(i).getArgument(); break;
-                case REAL: value = value(i).getReal(); break;
-                default /*IMAGINARY*/: value = value(i).getImaginary();
+                case ABS:
+                    value = value(i).abs();
+                    break;
+                case ARG:
+                    value = value(i).getArgument();
+                    break;
+                case REAL:
+                    value = value(i).getReal();
+                    break;
+                default /*IMAGINARY*/:
+                    value = value(i).getImaginary();
             }
             data.add(new Data(argument(i), value));
         }

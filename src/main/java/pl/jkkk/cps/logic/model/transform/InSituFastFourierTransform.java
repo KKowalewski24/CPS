@@ -5,7 +5,7 @@ import org.apache.commons.math3.complex.Complex;
 public class InSituFastFourierTransform extends ComplexTransform {
 
     /**
-     * This is in situ implementation of FFT
+     * This is in situ implementation of FFT.
      */
     @Override
     public Complex[] transform(Complex[] x) {
@@ -73,7 +73,7 @@ public class InSituFastFourierTransform extends ComplexTransform {
         /* mix */
         for (int i = 0; i < samples.length; i++) {
             int newIndex = reverseBits(i, numberOfBits);
-            if(newIndex > i) {
+            if (newIndex > i) {
                 Complex tmp = samples[i];
                 samples[i] = samples[newIndex];
                 samples[newIndex] = tmp;

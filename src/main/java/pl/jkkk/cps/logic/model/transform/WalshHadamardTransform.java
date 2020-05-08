@@ -20,7 +20,7 @@ public class WalshHadamardTransform extends RealTransform {
     protected double[] generateHadamardMatrix(int m) {
         int size = 1;
         double factor = 1.0;
-        double[] H = { 1.0 };
+        double[] H = {1.0};
         double[] previous;
         for (int i = 1; i <= m; i++) {
             size *= 2;
@@ -44,8 +44,9 @@ public class WalshHadamardTransform extends RealTransform {
      * @param row     index of row where to paste
      * @param col     index of column where to paste
      */
-    protected void pasteMatrixIntoMatrix(double[] src, int srcSize, double[] dst, int dstSize, int row, int col,
-            double factor) {
+    protected void pasteMatrixIntoMatrix(double[] src, int srcSize, double[] dst, int dstSize,
+                                         int row, int col,
+                                         double factor) {
         for (int i = 0; i < srcSize; i++) {
             for (int j = 0; j < srcSize; j++) {
                 dst[(i + row) * dstSize + (j + col)] = src[i * srcSize + j] * factor;

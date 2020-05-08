@@ -17,14 +17,15 @@ public class TwoArgOperationProcessor {
     private static int argCounter = 1;
 
     private static Signal readSignal() throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = 
-            new FileReaderWriter<>(Main.getMainArgs().get(argCounter++));
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(
+                Main.getMainArgs().get(argCounter++));
+
         return readerWriter.read();
     }
 
     private static void writeSignal(Signal signal) throws FileOperationException {
-        FileReaderWriter<Signal> readerWriter = 
-            new FileReaderWriter<>(Main.getMainArgs().get(argCounter++));
+        FileReaderWriter<Signal> readerWriter = new FileReaderWriter<>(
+                Main.getMainArgs().get(argCounter++));
         readerWriter.write(signal);
     }
 
@@ -65,16 +66,12 @@ public class TwoArgOperationProcessor {
     public static void convolution() throws FileOperationException {
         Signal s1 = readSignal();
         Signal s2 = readSignal();
-        writeSignal(new ConvolutionSignal(
-                    (DiscreteSignal) s1,
-                    (DiscreteSignal) s2));
+        writeSignal(new ConvolutionSignal((DiscreteSignal) s1, (DiscreteSignal) s2));
     }
 
     public static void correlation() throws FileOperationException {
         Signal s1 = readSignal();
         Signal s2 = readSignal();
-        writeSignal(new CorrelationSignal(
-                    (DiscreteSignal) s1,
-                    (DiscreteSignal) s2));
+        writeSignal(new CorrelationSignal((DiscreteSignal) s1, (DiscreteSignal) s2));
     }
 }
