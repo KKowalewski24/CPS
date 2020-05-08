@@ -450,30 +450,36 @@ def task4_generate_signals(s1_filenames: [], s2_filenames: [], s3_filenames: [])
     pass
 
 
-def task4_single_transformation(operation_type: str, algorithm_type: str,
-                                file_in: str, file_out: str, experiment_id: str) -> None:
-    run_jar([operation_type, file_in, experiment_id + file_out, algorithm_type])
+def task4_single_transformation(operation_type: str, algorithm_type: str, file_in: str,
+                                file_out: str, experiment_id: str, is_fourier: bool) -> None:
+    if is_fourier:
+        run_jar([operation_type, file_in, experiment_id + file_out, algorithm_type])
+    else:
+        temp_file = experiment_id + "temp_file.data"
+        run_jar([operation_type, file_in, temp_file, algorithm_type])
+        run_jar([RECONSTRUCTION, temp_file, experiment_id + file_out, FIRST_ORDER_INTERPOLATION])
+
     run_jar([DRAW_CHARTS, experiment_id + file_out])
     pass
 
 
 def task4_series_transformation(filenames: []) -> None:
     task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, BY_DEFINITION,
-                                filenames[1], filenames[2], "1_")
+                                filenames[1], filenames[2], "1_", True)
     task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,
-                                filenames[1], filenames[2], "2_")
+                                filenames[1], filenames[2], "2_", True)
     task4_single_transformation(DISCRETE_FOURIER_TRANSFORMATION, FAST_TRANSFORMATION_RECURSIVE,
-                                filenames[1], filenames[2], "3_")
+                                filenames[1], filenames[2], "3_", True)
     task4_single_transformation(COSINE_TRANSFORMATION, BY_DEFINITION,
-                                filenames[1], filenames[2], "4_")
+                                filenames[1], filenames[2], "4_", False)
     task4_single_transformation(COSINE_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,
-                                filenames[1], filenames[2], "5_")
+                                filenames[1], filenames[2], "5_", False)
     task4_single_transformation(WALSH_HADAMARD_TRANSFORMATION, BY_DEFINITION,
-                                filenames[1], filenames[2], "6_")
+                                filenames[1], filenames[2], "6_", False)
     task4_single_transformation(WALSH_HADAMARD_TRANSFORMATION, FAST_TRANSFORMATION_IN_SITU,
-                                filenames[1], filenames[2], "7_")
+                                filenames[1], filenames[2], "7_", False)
     task4_single_transformation(WAVELET_TRANSFORMATION, DB4,
-                                filenames[1], filenames[2], "8_")
+                                filenames[1], filenames[2], "8_", False)
     pass
 
 
