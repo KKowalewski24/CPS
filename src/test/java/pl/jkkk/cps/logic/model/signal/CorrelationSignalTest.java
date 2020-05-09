@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Test;
 public class CorrelationSignalTest {
 
     @Test
-    public void testConvolutionOperation(){
+    public void testConvolutionOperation() {
         double[] h = {1, 2, 3, 4};
         double[] x = {5, 6, 7};
         CorrelationSignal signal = new CorrelationSignal(
-                new DiscreteSignal(0.0, h.length, 1.0){
+                new DiscreteSignal(0.0, h.length, 1.0) {
                     @Override
                     public double value(int n) {
                         return h[n];

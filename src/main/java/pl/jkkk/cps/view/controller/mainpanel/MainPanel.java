@@ -120,7 +120,7 @@ public class MainPanel implements Initializable {
                 comparisonPane, oneArgsPane, textFieldQuantizationLevels,
                 textFieldSampleRate, textFieldReconstructionSincParam, windowTypePane,
                 textFieldCuttingFrequency, textFieldFilterRow, checkBoxDataChart,
-                checkBoxHistogram, checkBoxSignalParams, checkBoxComparison,checkBoxTransformation
+                checkBoxHistogram, checkBoxSignalParams, checkBoxComparison, checkBoxTransformation
         );
 
         initializer.prepareTabPaneResults(0);
