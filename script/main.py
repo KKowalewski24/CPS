@@ -140,7 +140,7 @@ def build_jar() -> None:
         subprocess.call("copy target\\" + JAR_NAME + " " + str(script_directory), shell=True)
     elif platform.system().lower() == "linux":
         subprocess.call("./mvnw clean package", shell=True)
-        subprocess.call("copy target/" + JAR_NAME + " " + str(script_directory), shell=True)
+        subprocess.call("cp target/" + JAR_NAME + " " + str(script_directory), shell=True)
 
 
 def remove_files(filenames: []) -> None:
