@@ -70,3 +70,8 @@ to run in command line mode for easier generating data for report
      * Convolution - conv, first filename to read, second filename to read, filename to save
      * <p>
      * Correlation - corr, first filename to read, second filename to read, filename to save
+     
+#### Chosen screenshots
+<kbd>![](assets/screen_1.png)</kbd>
+<kbd>![](assets/screen_2.png)</kbd>
+<kbd>![](assets/screen_3.png)</kbd>
