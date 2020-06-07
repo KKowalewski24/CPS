@@ -35,9 +35,13 @@ build/
 
 ### VS Code ###
 .vscode/
-!scenario_task2.txt
-!scenario_task3.txt
-!scenario_task4.txt
 *.png
 *.txt
 *.jar
+!scenario_task2.txt
+!scenario_task3.txt
+!scenario_task4.txt
+!screen_1.png
+!screen_2.png
+!screen_3.png
+
