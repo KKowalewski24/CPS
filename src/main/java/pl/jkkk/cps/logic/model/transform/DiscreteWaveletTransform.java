@@ -47,6 +47,15 @@ public class DiscreteWaveletTransform extends RealTransform {
             X[i] = sum;
             //System.out.println();
         }
-        return X;
+        /* mix samples */
+        double[] mixedX = new double[N];
+        int iterator = 0;
+        for (int i = 0; i < N; i += 2) {
+            mixedX[iterator++] = X[i];
+        }
+        for (int i = 1; i < N; i += 2) {
+            mixedX[iterator++] = X[i];
+        }
+        return mixedX;
     }
 }
